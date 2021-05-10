@@ -20,21 +20,23 @@ namespace ShowerUI
     {
         //private readonly Form _waterLevelSettingsForm = new WaterLevelSettings();
         private readonly List<ushort> _usecList = new(30000); // 20 минут
-        private CancellationTokenSource _temp_cts;
-        private CancellationTokenSource _wl_cts;
+        private CancellationTokenSource? _temp_cts;
+        private CancellationTokenSource? _wl_cts;
         /// <summary>
         /// Доступ только через основной поток.
         /// </summary>
         private List<InternalTempModel> _dataCollection;
-        private CancellationTokenSource _pingCts;
-        private CancellationTokenSource _cts_waterLevelCalibration;
-        private CancellationTokenSource _cts_loadProperties;
-        private Series _usecSeries;
-        private Series _percentSeries;
-        private Series _medianSeries;
-        private Series _averageSeries;
-        private SwiftPlotDiagramSecondaryAxisY _median;
-        private SwiftPlotDiagramSecondaryAxisY _avg;
+        private CancellationTokenSource? _pingCts;
+        private CancellationTokenSource? _cts_waterLevelCalibration;
+        private CancellationTokenSource? _cts_loadProperties;
+        private Series? _usecSeries;
+        private Series? _percentSeries;
+        private Series? _medianSeries;
+        private Series? _averageSeries;
+        private SwiftPlotDiagramSecondaryAxisY? _median;
+        private SwiftPlotDiagramSecondaryAxisY? _avg;
+        private ushort _waterLevelEmpty;
+        private ushort _waterLevelFull;
 
         // ctor
         public Form1()
@@ -679,10 +681,7 @@ namespace ShowerUI
             }
         }
 
-        private ushort _waterLevelEmpty;
-        private ushort _waterLevelFull;
-
-        /* From 0.0 to 50 */
+        // From 0.0 to 50
         private float GetPoint(ushort usec)
         {
             var usec_range = (ushort)(_waterLevelEmpty - _waterLevelFull);
