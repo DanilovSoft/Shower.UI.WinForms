@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using DevExpress.XtraBars.Docking2010.Views.WindowsUI;
 using DevExpress.XtraCharts;
 using Filters;
 using Newtonsoft.Json;
@@ -18,14 +19,17 @@ namespace ShowerUI
 {
     public partial class Form1 : Form
     {
-        //private readonly Form _waterLevelSettingsForm = new WaterLevelSettings();
+        private const string TempOnSeries = "TempOn";
+        private const string TempOffSeries = "TempOff";
+        private const string TempCalculatedSeries = "CalculatedTemp";
         private readonly List<ushort> _usecList = new(30000); // 20 минут
-        private CancellationTokenSource? _temp_cts;
+        private readonly Action<InternalTempModel> _addTemperatureRecordHandler;
+        private readonly List<InternalTempModel> _temperatureList = new(600);
+        private CancellationTokenSource? _tempRecorderCts;
         private CancellationTokenSource? _wl_cts;
         /// <summary>
         /// Доступ только через основной поток.
         /// </summary>
-        private List<InternalTempModel> _dataCollection;
         private CancellationTokenSource? _pingCts;
         private CancellationTokenSource? _cts_waterLevelCalibration;
         private CancellationTokenSource? _cts_loadProperties;
@@ -42,8 +46,7 @@ namespace ShowerUI
         public Form1()
         {
             InitializeComponent();
-            _dataCollection = new List<InternalTempModel>();
-            checkBox2.Checked = false;
+            _addTemperatureRecordHandler = AddTemperatureRecord;
 
             UpdateMedianCheckBox();
             UpdateAverageCheckBox();
@@ -154,7 +157,7 @@ namespace ShowerUI
             textBox_max_water_level.Text = waterLevelEmpty.ToString();
         }
 
-        private void LoadData()
+        private void LoadTempRecord()
         {
             using (var dialog = new OpenFileDialog())
             {
@@ -163,15 +166,18 @@ namespace ShowerUI
                 if (dialog.ShowDialog() == DialogResult.OK)
                 {
                     string json = File.ReadAllText(dialog.FileName);
-                    _dataCollection = JsonConvert.DeserializeObject<List<InternalTempModel>>(json);
+                    var dataCollection = JsonConvert.DeserializeObject<List<InternalTempModel>>(json);
+
+                    _temperatureList.Clear();
+                    _temperatureList.AddRange(dataCollection);
 
                     chartControl_temperature.BeginInit();
-                    foreach (var item in _dataCollection)
+                    foreach (var item in _temperatureList)
                     {
                         //chartControl1.Series[0].Points.Add(new SeriesPoint(item.Time, item.InternalTemp) { IsEmpty = !item.HeaterEnabled });
-                        chartControl_temperature.Series[1].Points.Add(new SeriesPoint(item.Time, item.AverageInternalTemp) { IsEmpty = !item.HeaterEnabled });
+                        chartControl_temperature.Series[1].Points.Add(new SeriesPoint(item.Number, item.InternalTemp) { IsEmpty = !item.HeaterEnabled });
                         //chartControl1.Series[2].Points.Add(new SeriesPoint(item.Time, item.InternalTemp) { IsEmpty = item.HeaterEnabled });
-                        chartControl_temperature.Series[3].Points.Add(new SeriesPoint(item.Time, item.AverageInternalTemp) { IsEmpty = item.HeaterEnabled });
+                        chartControl_temperature.Series[3].Points.Add(new SeriesPoint(item.Number, item.InternalTemp) { IsEmpty = item.HeaterEnabled });
                     }
                     chartControl_temperature.EndInit();
                 }
@@ -185,89 +191,88 @@ namespace ShowerUI
         /// <param name="e"></param>
         private async void Button_TempRecord_Click(object sender, EventArgs e)
         {
-            using (var cts = _temp_cts = new CancellationTokenSource())
+            var cts = _tempRecorderCts = new CancellationTokenSource();
+            try
             {
                 ClearChart();
-                int reconnect_count = -1;
+                int reconnectCount = -1;
 
-                button_temp_start.Enabled = false;
+                buttonTempStartRecord.Enabled = false;
                 button_temp_stop.Enabled = true;
 
-                while (true)
+            Retry:
+                try
                 {
+                    using (var connection = await ShowerConnection.CreateConnectionAsync(cts.Token))
+                    {
+                        reconnectCount++;
+                        errorProvider1.SetError(buttonTempStartRecord, null);
+                        await Task.Run(() => RecordDataAsync(connection, cts.Token));
+                    }
+                }
+                catch when (cts.IsCancellationRequested)
+                {
+                    return;
+                }
+                catch (Exception ex)
+                {
+                    errorProvider1.SetError(buttonTempStartRecord, ex.Message);
+                    label_temp_reconnect.Text = $"Reconnect count: {reconnectCount}";
+
                     try
                     {
-                        using (var connection = await ShowerConnection.CreateConnectionAsync(cts.Token))
-                        {
-                            reconnect_count++;
-                            using (connection.RegisterToken(cts.Token))
-                            {
-                                await Task.Run(() => RecordDataAsync(connection, cts.Token));
-                            }
-                        }
+                        await Task.Delay(2000, cts.Token);
                     }
-                    catch when (cts.IsCancellationRequested)
+                    catch (OperationCanceledException)
                     {
                         return;
                     }
-                    catch
-                    {
-                        label_temp_reconnect.Text = $"Reconnect count: {reconnect_count}";
-
-                        try
-                        {
-                            await Task.Delay(2000, cts.Token);
-                        }
-                        catch (Exception)
-                        {
-                            return;
-                        }
-
-                        //MessageBox.Show(this, ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    }
+                    goto Retry;
                 }
+            }
+            finally
+            {
+                cts.Cancel();
             }
         }
 
         private async Task RecordDataAsync(ShowerConnection con, CancellationToken cancellationToken)
         {
-            int time = 0;
+            int number = 0;
             while (!cancellationToken.IsCancellationRequested)
             {
-                float averageInternalTemp = await con.GetAverageInternalTemperatureAsync(cancellationToken);
+                float internalTemp = await con.GetInternalTemperatureAsync(cancellationToken);
                 bool heaterEnabled = await con.GetHeaterEnabledAsync(cancellationToken);
-                int timeLeft = await con.GetTimeLeftAsync(cancellationToken);
+                int minutesLeft = await con.GetMinutesLeftAsync(cancellationToken);
 
                 var model = new InternalTempModel
                 {
-                    Time = time,
-                    AverageInternalTemp = averageInternalTemp,
+                    Number = number,
+                    InternalTemp = internalTemp,
                     HeaterEnabled = heaterEnabled,
-                    TimeLeft = timeLeft,
+                    TimeLeft = TimeSpan.FromMinutes(minutesLeft),
                 };
+                number++;
 
-                BeginInvoke((Action<InternalTempModel>)AddTemperatureRecord, model);
+                BeginInvoke(_addTemperatureRecordHandler, model);
 
                 await Task.Delay(1000);
-                time++;
             }
         }
 
         private void AddTemperatureRecord(InternalTempModel model)
         {
-            _dataCollection.Add(model);
+            _temperatureList.Add(model);
 
-            TimeSpan timeLeftSpan = TimeSpan.FromMinutes(model.TimeLeft);
-            label_time_left.Text = timeLeftSpan.ToString();
-
-            chartControl_temperature.Series[1].Points.Add(new SeriesPoint(model.Time, model.AverageInternalTemp) { IsEmpty = !model.HeaterEnabled });
-            chartControl_temperature.Series[3].Points.Add(new SeriesPoint(model.Time, model.AverageInternalTemp) { IsEmpty = model.HeaterEnabled });
+            labelTimeLeft.Text = model.TimeLeft.ToString();
+            chartControl_temperature.Series[TempOnSeries].Points.Add(new SeriesPoint(model.Number, model.InternalTemp) { IsEmpty = !model.HeaterEnabled });
+            chartControl_temperature.Series[TempOffSeries].Points.Add(new SeriesPoint(model.Number, model.InternalTemp) { IsEmpty = model.HeaterEnabled });
         }
 
         private void Button_TemperatureStop_Click(object sender, EventArgs e)
         {
-            _temp_cts?.Cancel();
-            button_temp_start.Enabled = true;
+            _tempRecorderCts?.Cancel();
+            buttonTempStartRecord.Enabled = true;
             button_temp_stop.Enabled = false;
         }
 
@@ -282,7 +287,7 @@ namespace ShowerUI
                     dialog.Filter = "Json File|*.txt";
                     if (dialog.ShowDialog() == DialogResult.OK)
                     {
-                        string json = JsonConvert.SerializeObject(_dataCollection);
+                        string json = JsonConvert.SerializeObject(_temperatureList);
                         File.WriteAllText(dialog.FileName, json);
                     }
                 }
@@ -328,12 +333,12 @@ namespace ShowerUI
 
             var collection = JsonConvert.DeserializeObject<InternalTempModel[]>(File.ReadAllText(filePath));
 
-            var pid = new PidController.PidController(0.2, 0.001, 1, 39, 22)
-            {
+            //var pid = new PidController.PidController(0.2, 0.001, 1, 39, 22)
+            //{
 
-                // Уставка.
-                SetPoint = 38
-            };
+            //    // Уставка.
+            //    SetPoint = 38
+            //};
 
             TimeSpan interval = TimeSpan.Zero;
             for (int i = 0; i < collection.Length; i++)
@@ -345,14 +350,13 @@ namespace ShowerUI
                     return;
 
                 // Сколько получили на самом деле.
-                pid.ProcessVariable = measure.AverageInternalTemp;
+                //pid.ProcessVariable = measure.InternalTemp;
 
                 // Сколько времени ушло на измерение.
-                double pidVal = pid.ControlVariable(interval);
+                //double pidVal = pid.ControlVariable(interval);
 
-                chartControl_temperature.Series[1].Points.Add(new SeriesPoint(measure.Time, measure.AverageInternalTemp) { IsEmpty = !measure.HeaterEnabled });
-                chartControl_temperature.Series[3].Points.Add(new SeriesPoint(measure.Time, measure.AverageInternalTemp) { IsEmpty = measure.HeaterEnabled });
-                chartControl_temperature.Series[5].Points.Add(new SeriesPoint(measure.Time, pidVal));
+                chartControl_temperature.Series[1].Points.Add(new SeriesPoint(measure.Number, measure.InternalTemp) { IsEmpty = !measure.HeaterEnabled });
+                chartControl_temperature.Series[3].Points.Add(new SeriesPoint(measure.Number, measure.InternalTemp) { IsEmpty = measure.HeaterEnabled });
 
                 interval = TimeSpan.FromMilliseconds(10);
             }
@@ -376,34 +380,6 @@ namespace ShowerUI
             }
         }
 
-        private void CheckBox1_CheckedChanged(object sender, EventArgs e)
-        {
-            if (checkBox1.Checked)
-            {
-                chartControl_temperature.Series[1].Visible = true;
-                chartControl_temperature.Series[3].Visible = true;
-            }
-            else
-            {
-                chartControl_temperature.Series[1].Visible = false;
-                chartControl_temperature.Series[3].Visible = false;
-            }
-        }
-
-        private void CheckBox2_CheckedChanged(object sender, EventArgs e)
-        {
-            if (checkBox2.Checked)
-            {
-                chartControl_temperature.Series[0].Visible = true;
-                chartControl_temperature.Series[2].Visible = true;
-            }
-            else
-            {
-                chartControl_temperature.Series[0].Visible = false;
-                chartControl_temperature.Series[2].Visible = false;
-            }
-        }
-
         private void Button_Clear_Click(object sender, EventArgs e)
         {
             ClearChart();
@@ -411,18 +387,17 @@ namespace ShowerUI
 
         private void ClearChart()
         {
-            _dataCollection.Clear();
-            chartControl_temperature.Series[0].Points.Clear();
-            chartControl_temperature.Series[1].Points.Clear();
-            chartControl_temperature.Series[2].Points.Clear();
-            chartControl_temperature.Series[3].Points.Clear();
-            chartControl_temperature.Series[4].Points.Clear();
+            _temperatureList.Clear();
+            labelTimeLeft.Text = "__:__:__";
+            chartControl_temperature.Series[TempOnSeries].Points.Clear();
+            chartControl_temperature.Series[TempOffSeries].Points.Clear();
+            chartControl_temperature.Series[TempCalculatedSeries].Points.Clear();
         }
 
         private void Button_Load_Click(object sender, EventArgs e)
         {
             ClearChart();
-            LoadData();
+            LoadTempRecord();
             CalcTimeLeft();
         }
 
@@ -436,19 +411,19 @@ namespace ShowerUI
             int startMinute = trackBar1.Value;
             int startSec = startMinute * 60;
 
-            var startPoint = _dataCollection.FirstOrDefault(x => x.HeaterEnabled);
+            var startPoint = _temperatureList.FirstOrDefault(x => x.HeaterEnabled);
             if (startPoint != null)
             {
-                int time = startPoint.Time + startSec;
-                var point = _dataCollection.FirstOrDefault(x => x.HeaterEnabled && x.Time >= time);
+                int time = startPoint.Number + startSec;
+                var point = _temperatureList.FirstOrDefault(x => x.HeaterEnabled && x.Number >= time);
                 if (point != null)
                 {
-                    double timeH = CalcFormula(point.AverageInternalTemp, 37);
+                    double timeH = CalcFormula(point.InternalTemp, 37);
                     int sec = (int)(timeH * 60 * 60);
-                    sec += point.Time;
+                    sec += point.Number;
 
                     chartControl_temperature.Series[4].Points.Clear();
-                    chartControl_temperature.Series[4].Points.Add(new SeriesPoint(point.Time, point.AverageInternalTemp));
+                    chartControl_temperature.Series[4].Points.Add(new SeriesPoint(point.Number, point.InternalTemp));
                     chartControl_temperature.Series[4].Points.Add(new SeriesPoint(sec, 37));
                 }
             }
@@ -1302,7 +1277,7 @@ namespace ShowerUI
 
         private void AddUsec(short usec)
         {
-            const int dataIntervalSec = 30;
+            const int dataIntervalSec = 10;
             int maxPoints = (dataIntervalSec * 1000 / 100);
 
             decimal cm = usec / 58m;

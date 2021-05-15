@@ -1,31 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace ShowerUI
 {
-    [DebuggerDisplay("{ExternalTemp} => {InternalTemp}")]
-    public struct Step
-    {
-        public int InternalTemp { get; set; }
-        public int ExternalTemp { get; set; }
-    }
-
     public class SetupModel
     {
         public const int LOWER_BOUND = 15;
         public const int UPPER_BOUND = 40;
-        public const int STEP_COUNT = (UPPER_BOUND - LOWER_BOUND);
-
-        public Step[] Steps { get; }
+        public const int STEP_COUNT = UPPER_BOUND - LOWER_BOUND;
 
         public SetupModel()
         {
-            Steps = new Step[STEP_COUNT];
+            Steps = new TemperatureStep[STEP_COUNT];
         }
+
+        public TemperatureStep[] Steps { get; }
 
         public void ParseTemp(byte[] data)
         {
@@ -37,7 +29,7 @@ namespace ShowerUI
             }
         }
 
-        public Step this[int index]
+        public TemperatureStep this[int index]
         {
             get
             {

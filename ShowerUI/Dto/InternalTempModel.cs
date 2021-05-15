@@ -16,22 +16,25 @@ namespace ShowerUI.Dto
         }
 
         /// <summary>
-        /// Время в секундах.
+        /// Порядковый номер от 0.
         /// </summary>
-        public int Time { get; set; }
-        public float AverageInternalTemp { get; set; }
+        public int Number { get; set; }
+        /// <summary>
+        /// Температура в баке.
+        /// </summary>
+        public float InternalTemp { get; set; }
         public bool HeaterEnabled { get; set; }
-        public int TimeLeft { get; set; }
+        public TimeSpan TimeLeft { get; set; }
 
-        public void Serialize(Stream stream)
-        {
-            using (var bw = new BinaryWriter(stream, Encoding.UTF8, leaveOpen: true))
-            {
-                bw.Write(Time);   
-                bw.Write(AverageInternalTemp);   
-                bw.Write(HeaterEnabled);   
-                bw.Write(TimeLeft);   
-            }
-        }
+        //public void Serialize(Stream stream)
+        //{
+        //    using (var bw = new BinaryWriter(stream, Encoding.UTF8, leaveOpen: true))
+        //    {
+        //        bw.Write(Number);   
+        //        bw.Write(InternalTemp);   
+        //        bw.Write(HeaterEnabled);   
+        //        bw.Write(TimeLeft);   
+        //    }
+        //}
     }
 }

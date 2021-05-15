@@ -8,67 +8,81 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using DevExpress.Data.Helpers;
 
 namespace ShowerUI.ShowerClient
 {
     public sealed class ShowerConnection : IDisposable
     {
+        private const int PortNumber = 333;
         private const string Address = "10.2.2.11";
         private const int ReadTimeoutMsec = 10000;
-        private TcpClient _tcp;
-        private FixedNetworkStream _nstream;
+        private FixedNetworkStream? _nstream;
         private bool _disposed;
-        private ShowerBinaryReader _reader;
-        private MyBinaryWriter _writer;
+        private ShowerBinaryReader? _reader;
+        private MyBinaryWriter? _writer;
 
-        public CancellationTokenRegistration RegisterToken(CancellationToken cancellationToken)
+        public ShowerConnection()
         {
-            return cancellationToken.Register(() => 
-            {
-                _tcp.Dispose();
-            }, false);
+
         }
+
+        //public CancellationTokenRegistration RegisterToken(CancellationToken cancellationToken)
+        //{
+        //    return cancellationToken.Register(() => 
+        //    {
+        //        _nstream?.Dispose();
+        //    }, false);
+        //}
 
         public async Task ConnectAsync()
         {
-            _tcp = new TcpClient();
+            var tcp = new TcpClient();
             try
             {
-                await _tcp.ConnectAsync(Address, 333).ConfigureAwait(false);
+                await tcp.ConnectAsync(Address, PortNumber).ConfigureAwait(false);
+
+                var tcpCopy = NullableHelper.SetNull(ref tcp);
+
+                _nstream = new FixedNetworkStream(tcpCopy.GetStream())
+                {
+                    ReadTimeout = ReadTimeoutMsec,
+                    WriteTimeout = 5000
+                };
+                _writer = new MyBinaryWriter(_nstream);
+                _reader = new ShowerBinaryReader(_nstream, Encoding.ASCII, true);
             }
-            catch
+            finally
             {
-                _tcp.Dispose();
-                _tcp = null;
-                throw;
+                tcp?.Dispose();
             }
-            
-            _nstream = new FixedNetworkStream(_tcp.GetStream())
-            {
-                ReadTimeout = ReadTimeoutMsec,
-                WriteTimeout = 5000
-            };
-            _writer = new MyBinaryWriter(_nstream);
-            _reader = new ShowerBinaryReader(_nstream, Encoding.ASCII, true);
         }
 
+        /// <exception cref="OperationCanceledException"/>
         public static async Task<ShowerConnection> CreateConnectionAsync(CancellationToken cancellationToken)
         {
-            var con = new ShowerConnection();
+            cancellationToken.ThrowIfCancellationRequested();
 
-            using (cancellationToken.Register(() => { con.Dispose(); }))
+            var con = new ShowerConnection();
+            try
             {
-                try
+                using (cancellationToken.Register(static s => ((ShowerConnection)s).Dispose(), con, useSynchronizationContext: false))
                 {
-                    await con.ConnectAsync().ConfigureAwait(false);
-                    return con;
+                    try
+                    {
+                        await con.ConnectAsync().ConfigureAwait(false);
+                        return NullableHelper.SetNull(ref con);
+                    }
+                    catch when (cancellationToken.IsCancellationRequested)
+                    {
+                        cancellationToken.ThrowIfCancellationRequested();
+                        throw;
+                    }
                 }
-                catch
-                {
-                    con.Dispose();
-                    cancellationToken.ThrowIfCancellationRequested();
-                    throw;
-                }
+            }
+            finally
+            {
+                con?.Dispose();
             }
         }
         
@@ -98,15 +112,14 @@ namespace ShowerUI.ShowerClient
         /// <summary>
         /// Уровень воды в микросекундах, без всякой фильтрации. -1 если у датчика уровня произошел таймаут.
         /// </summary>
-        [DebuggerNonUserCode]
         public Task<short> GetWaterLevelRawAsync(CancellationToken cancellationToken)
         {
             return RequestAsync<short>(ShowerCodes.GetWaterLevelRaw, cancellationToken);
         }
 
-        public Task<float> GetAverageInternalTemperatureAsync(CancellationToken cancellationToken)
+        public Task<float> GetInternalTemperatureAsync(CancellationToken cancellationToken)
         {
-            return RequestAsync<float>(ShowerCodes.GetAverageInternalTemp, cancellationToken);
+            return RequestAsync<float>(ShowerCodes.GetInternalTemp, cancellationToken);
         }
 
         public async Task<bool> GetHeaterEnabledAsync(CancellationToken cancellationToken)
@@ -115,9 +128,9 @@ namespace ShowerUI.ShowerClient
             return Convert.ToBoolean(value);
         }
 
-        public Task<byte> GetTimeLeftAsync(CancellationToken cancellationToken)
+        public Task<byte> GetMinutesLeftAsync(CancellationToken cancellationToken)
         {
-            return RequestAsync<byte>(ShowerCodes.GetTimeLeft, cancellationToken);
+            return RequestAsync<byte>(ShowerCodes.GetMinutesLeft, cancellationToken);
         }
 
         public async Task<ushort> GetWaterLevelAsync(CancellationToken cancellationToken)
@@ -183,12 +196,11 @@ namespace ShowerUI.ShowerClient
         {
             if (!_disposed)
             {
+                _disposed = true;
+
                 _reader?.Dispose();
                 _writer?.Dispose();
                 _nstream?.Dispose();
-                _tcp?.Dispose();
-
-                _disposed = true;
             }
         }
 

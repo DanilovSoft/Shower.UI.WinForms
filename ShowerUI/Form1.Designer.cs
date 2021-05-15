@@ -36,32 +36,25 @@
             DevExpress.XtraCharts.SwiftPlotSeriesView swiftPlotSeriesView2 = new DevExpress.XtraCharts.SwiftPlotSeriesView();
             DevExpress.XtraCharts.Series series3 = new DevExpress.XtraCharts.Series();
             DevExpress.XtraCharts.SwiftPlotSeriesView swiftPlotSeriesView3 = new DevExpress.XtraCharts.SwiftPlotSeriesView();
-            DevExpress.XtraCharts.Series series4 = new DevExpress.XtraCharts.Series();
             DevExpress.XtraCharts.SwiftPlotSeriesView swiftPlotSeriesView4 = new DevExpress.XtraCharts.SwiftPlotSeriesView();
-            DevExpress.XtraCharts.Series series5 = new DevExpress.XtraCharts.Series();
-            DevExpress.XtraCharts.SwiftPlotSeriesView swiftPlotSeriesView5 = new DevExpress.XtraCharts.SwiftPlotSeriesView();
-            DevExpress.XtraCharts.Series series6 = new DevExpress.XtraCharts.Series();
-            DevExpress.XtraCharts.SwiftPlotSeriesView swiftPlotSeriesView6 = new DevExpress.XtraCharts.SwiftPlotSeriesView();
-            DevExpress.XtraCharts.SwiftPlotSeriesView swiftPlotSeriesView7 = new DevExpress.XtraCharts.SwiftPlotSeriesView();
             DevExpress.XtraCharts.SwiftPlotDiagram swiftPlotDiagram2 = new DevExpress.XtraCharts.SwiftPlotDiagram();
-            DevExpress.XtraCharts.Series series7 = new DevExpress.XtraCharts.Series();
-            DevExpress.XtraCharts.SwiftPlotSeriesView swiftPlotSeriesView8 = new DevExpress.XtraCharts.SwiftPlotSeriesView();
+            DevExpress.XtraCharts.Series series4 = new DevExpress.XtraCharts.Series();
+            DevExpress.XtraCharts.SwiftPlotSeriesView swiftPlotSeriesView5 = new DevExpress.XtraCharts.SwiftPlotSeriesView();
             DevExpress.XtraCharts.SwiftPlotDiagram swiftPlotDiagram3 = new DevExpress.XtraCharts.SwiftPlotDiagram();
-            DevExpress.XtraCharts.Series series8 = new DevExpress.XtraCharts.Series();
-            DevExpress.XtraCharts.SwiftPlotSeriesView swiftPlotSeriesView9 = new DevExpress.XtraCharts.SwiftPlotSeriesView();
+            DevExpress.XtraCharts.Series series5 = new DevExpress.XtraCharts.Series();
+            DevExpress.XtraCharts.SwiftPlotSeriesView swiftPlotSeriesView6 = new DevExpress.XtraCharts.SwiftPlotSeriesView();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.tabControl1 = new System.Windows.Forms.TabControl();
-            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.tabPageTemp = new System.Windows.Forms.TabPage();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.label7 = new System.Windows.Forms.Label();
             this.label_temp_reconnect = new System.Windows.Forms.Label();
             this.button_temp_stop = new System.Windows.Forms.Button();
             this.trackBar1 = new System.Windows.Forms.TrackBar();
-            this.label_time_left = new System.Windows.Forms.Label();
-            this.button_temp_start = new System.Windows.Forms.Button();
+            this.labelTimeLeft = new System.Windows.Forms.Label();
+            this.buttonTempStartRecord = new System.Windows.Forms.Button();
             this.button4 = new System.Windows.Forms.Button();
-            this.checkBox2 = new System.Windows.Forms.CheckBox();
             this.button6 = new System.Windows.Forms.Button();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.button3 = new System.Windows.Forms.Button();
             this.button5 = new System.Windows.Forms.Button();
             this.chartControl_temperature = new DevExpress.XtraCharts.ChartControl();
@@ -85,7 +78,7 @@
             this.button_clear_wl = new System.Windows.Forms.Button();
             this.checkBox3 = new System.Windows.Forms.CheckBox();
             this.button_wl_stop = new System.Windows.Forms.Button();
-            this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.tabPageSettings = new System.Windows.Forms.TabPage();
             this.groupBox_properties = new System.Windows.Forms.GroupBox();
             this.button1 = new System.Windows.Forms.Button();
             this.checkBox_iwd = new System.Windows.Forms.CheckBox();
@@ -108,7 +101,7 @@
             this.editText_wl_cut_off_percent = new ShowerUI.EditText();
             this.editText_internal_temp_buf_size = new ShowerUI.EditText();
             this.editText_wl_usec_per_deg = new ShowerUI.EditText();
-            this.tabPage4 = new System.Windows.Forms.TabPage();
+            this.tabPageDebug = new System.Windows.Forms.TabPage();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.label5 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
@@ -120,7 +113,7 @@
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.button10 = new System.Windows.Forms.Button();
             this.button7 = new System.Windows.Forms.Button();
-            this.tabPage5 = new System.Windows.Forms.TabPage();
+            this.tabPageCalibration = new System.Windows.Forms.TabPage();
             this.panel1 = new System.Windows.Forms.Panel();
             this.label6 = new System.Windows.Forms.Label();
             this.numeric_wl_interval = new System.Windows.Forms.NumericUpDown();
@@ -134,8 +127,9 @@
             this.resetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pnigToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.errorProvider1 = new System.Windows.Forms.ErrorProvider(this.components);
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.tabControl1.SuspendLayout();
-            this.tabPage1.SuspendLayout();
+            this.tabPageTemp.SuspendLayout();
             this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.chartControl_temperature)).BeginInit();
@@ -146,36 +140,30 @@
             ((System.ComponentModel.ISupportInitialize)(swiftPlotSeriesView2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(series3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(swiftPlotSeriesView3)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(series4)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(swiftPlotSeriesView4)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(series5)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(swiftPlotSeriesView5)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(series6)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(swiftPlotSeriesView6)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(swiftPlotSeriesView7)).BeginInit();
             this.tabPage_wl.SuspendLayout();
             this.panel4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chartControl_water_level)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(swiftPlotDiagram2)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(series7)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(swiftPlotSeriesView8)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(series4)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(swiftPlotSeriesView5)).BeginInit();
             this.panel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar_avg)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar_median)).BeginInit();
-            this.tabPage3.SuspendLayout();
+            this.tabPageSettings.SuspendLayout();
             this.groupBox_properties.SuspendLayout();
             this.panel_properties.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.panel_properties_custom.SuspendLayout();
-            this.tabPage4.SuspendLayout();
+            this.tabPageDebug.SuspendLayout();
             this.groupBox2.SuspendLayout();
-            this.tabPage5.SuspendLayout();
+            this.tabPageCalibration.SuspendLayout();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numeric_wl_interval)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.chartControl_wl_calibration)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(swiftPlotDiagram3)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(series8)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(swiftPlotSeriesView9)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(series5)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(swiftPlotSeriesView6)).BeginInit();
             this.Температуры.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).BeginInit();
@@ -183,11 +171,11 @@
             // 
             // tabControl1
             // 
-            this.tabControl1.Controls.Add(this.tabPage1);
+            this.tabControl1.Controls.Add(this.tabPageTemp);
             this.tabControl1.Controls.Add(this.tabPage_wl);
-            this.tabControl1.Controls.Add(this.tabPage3);
-            this.tabControl1.Controls.Add(this.tabPage4);
-            this.tabControl1.Controls.Add(this.tabPage5);
+            this.tabControl1.Controls.Add(this.tabPageCalibration);
+            this.tabControl1.Controls.Add(this.tabPageSettings);
+            this.tabControl1.Controls.Add(this.tabPageDebug);
             this.tabControl1.Controls.Add(this.Температуры);
             this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControl1.Location = new System.Drawing.Point(0, 24);
@@ -198,29 +186,28 @@
             this.tabControl1.TabIndex = 14;
             this.tabControl1.Selected += new System.Windows.Forms.TabControlEventHandler(this.TabControl1_Selected);
             // 
-            // tabPage1
+            // tabPageTemp
             // 
-            this.tabPage1.BackColor = System.Drawing.Color.Transparent;
-            this.tabPage1.Controls.Add(this.panel2);
-            this.tabPage1.Controls.Add(this.chartControl_temperature);
-            this.tabPage1.Location = new System.Drawing.Point(4, 22);
-            this.tabPage1.Name = "tabPage1";
-            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(1210, 592);
-            this.tabPage1.TabIndex = 0;
-            this.tabPage1.Text = "Температура";
+            this.tabPageTemp.BackColor = System.Drawing.Color.Transparent;
+            this.tabPageTemp.Controls.Add(this.panel2);
+            this.tabPageTemp.Controls.Add(this.chartControl_temperature);
+            this.tabPageTemp.Location = new System.Drawing.Point(4, 22);
+            this.tabPageTemp.Name = "tabPageTemp";
+            this.tabPageTemp.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPageTemp.Size = new System.Drawing.Size(1210, 592);
+            this.tabPageTemp.TabIndex = 0;
+            this.tabPageTemp.Text = "Температура";
             // 
             // panel2
             // 
+            this.panel2.Controls.Add(this.label7);
             this.panel2.Controls.Add(this.label_temp_reconnect);
             this.panel2.Controls.Add(this.button_temp_stop);
             this.panel2.Controls.Add(this.trackBar1);
-            this.panel2.Controls.Add(this.label_time_left);
-            this.panel2.Controls.Add(this.button_temp_start);
+            this.panel2.Controls.Add(this.labelTimeLeft);
+            this.panel2.Controls.Add(this.buttonTempStartRecord);
             this.panel2.Controls.Add(this.button4);
-            this.panel2.Controls.Add(this.checkBox2);
             this.panel2.Controls.Add(this.button6);
-            this.panel2.Controls.Add(this.checkBox1);
             this.panel2.Controls.Add(this.button3);
             this.panel2.Controls.Add(this.button5);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Bottom;
@@ -229,28 +216,38 @@
             this.panel2.Size = new System.Drawing.Size(1204, 59);
             this.panel2.TabIndex = 24;
             // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(950, 11);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(59, 13);
+            this.label7.TabIndex = 25;
+            this.label7.Text = "Осталось:";
+            this.toolTip1.SetToolTip(this.label7, "Расчётное время до окончания нагрева");
+            // 
             // label_temp_reconnect
             // 
             this.label_temp_reconnect.AutoSize = true;
             this.label_temp_reconnect.Location = new System.Drawing.Point(5, 38);
             this.label_temp_reconnect.Name = "label_temp_reconnect";
-            this.label_temp_reconnect.Size = new System.Drawing.Size(101, 13);
+            this.label_temp_reconnect.Size = new System.Drawing.Size(150, 13);
             this.label_temp_reconnect.TabIndex = 24;
-            this.label_temp_reconnect.Text = "Reconnect count: 0";
+            this.label_temp_reconnect.Text = "Повторных подключений: 0";
             // 
             // button_temp_stop
             // 
-            this.button_temp_stop.Location = new System.Drawing.Point(86, 6);
+            this.button_temp_stop.Location = new System.Drawing.Point(123, 6);
             this.button_temp_stop.Name = "button_temp_stop";
             this.button_temp_stop.Size = new System.Drawing.Size(75, 23);
             this.button_temp_stop.TabIndex = 15;
-            this.button_temp_stop.Text = "Stop";
+            this.button_temp_stop.Text = "Стоп";
             this.button_temp_stop.UseVisualStyleBackColor = true;
             this.button_temp_stop.Click += new System.EventHandler(this.Button_TemperatureStop_Click);
             // 
             // trackBar1
             // 
-            this.trackBar1.Location = new System.Drawing.Point(491, 6);
+            this.trackBar1.Location = new System.Drawing.Point(642, 6);
             this.trackBar1.Maximum = 23;
             this.trackBar1.Minimum = 3;
             this.trackBar1.Name = "trackBar1";
@@ -261,28 +258,28 @@
             this.trackBar1.Value = 3;
             this.trackBar1.Scroll += new System.EventHandler(this.TrackBar1_Scroll);
             // 
-            // label_time_left
+            // labelTimeLeft
             // 
-            this.label_time_left.AutoSize = true;
-            this.label_time_left.Location = new System.Drawing.Point(842, 11);
-            this.label_time_left.Name = "label_time_left";
-            this.label_time_left.Size = new System.Drawing.Size(35, 13);
-            this.label_time_left.TabIndex = 23;
-            this.label_time_left.Text = "label2";
+            this.labelTimeLeft.AutoSize = true;
+            this.labelTimeLeft.Location = new System.Drawing.Point(1015, 11);
+            this.labelTimeLeft.Name = "labelTimeLeft";
+            this.labelTimeLeft.Size = new System.Drawing.Size(51, 13);
+            this.labelTimeLeft.TabIndex = 23;
+            this.labelTimeLeft.Text = "__:__:__";
             // 
-            // button_temp_start
+            // buttonTempStartRecord
             // 
-            this.button_temp_start.Location = new System.Drawing.Point(5, 6);
-            this.button_temp_start.Name = "button_temp_start";
-            this.button_temp_start.Size = new System.Drawing.Size(75, 23);
-            this.button_temp_start.TabIndex = 14;
-            this.button_temp_start.Text = "Запись";
-            this.button_temp_start.UseVisualStyleBackColor = true;
-            this.button_temp_start.Click += new System.EventHandler(this.Button_TempRecord_Click);
+            this.buttonTempStartRecord.Location = new System.Drawing.Point(5, 6);
+            this.buttonTempStartRecord.Name = "buttonTempStartRecord";
+            this.buttonTempStartRecord.Size = new System.Drawing.Size(75, 23);
+            this.buttonTempStartRecord.TabIndex = 14;
+            this.buttonTempStartRecord.Text = "Запись";
+            this.buttonTempStartRecord.UseVisualStyleBackColor = true;
+            this.buttonTempStartRecord.Click += new System.EventHandler(this.Button_TempRecord_Click);
             // 
             // button4
             // 
-            this.button4.Location = new System.Drawing.Point(410, 6);
+            this.button4.Location = new System.Drawing.Point(495, 6);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(75, 23);
             this.button4.TabIndex = 17;
@@ -290,59 +287,33 @@
             this.button4.UseVisualStyleBackColor = true;
             this.button4.Click += new System.EventHandler(this.Button_Simulation_Click);
             // 
-            // checkBox2
-            // 
-            this.checkBox2.AutoSize = true;
-            this.checkBox2.Checked = true;
-            this.checkBox2.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox2.Location = new System.Drawing.Point(934, 10);
-            this.checkBox2.Name = "checkBox2";
-            this.checkBox2.Size = new System.Drawing.Size(89, 17);
-            this.checkBox2.TabIndex = 19;
-            this.checkBox2.Text = "Абсолютная";
-            this.checkBox2.UseVisualStyleBackColor = true;
-            this.checkBox2.CheckedChanged += new System.EventHandler(this.CheckBox1_CheckedChanged);
-            // 
             // button6
             // 
-            this.button6.Location = new System.Drawing.Point(329, 6);
+            this.button6.Location = new System.Drawing.Point(390, 6);
             this.button6.Name = "button6";
-            this.button6.Size = new System.Drawing.Size(75, 23);
+            this.button6.Size = new System.Drawing.Size(99, 23);
             this.button6.TabIndex = 21;
-            this.button6.Text = "Load";
+            this.button6.Text = "Загрузить из...";
             this.button6.UseVisualStyleBackColor = true;
             this.button6.Click += new System.EventHandler(this.Button_Load_Click);
             // 
-            // checkBox1
-            // 
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Checked = true;
-            this.checkBox1.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox1.Location = new System.Drawing.Point(1028, 10);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(93, 17);
-            this.checkBox1.TabIndex = 18;
-            this.checkBox1.Text = "Усредненная";
-            this.checkBox1.UseVisualStyleBackColor = true;
-            this.checkBox1.CheckedChanged += new System.EventHandler(this.CheckBox2_CheckedChanged);
-            // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(167, 6);
+            this.button3.Location = new System.Drawing.Point(285, 6);
             this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(75, 23);
+            this.button3.Size = new System.Drawing.Size(99, 23);
             this.button3.TabIndex = 16;
-            this.button3.Text = "Save";
+            this.button3.Text = "Сохранить в...";
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new System.EventHandler(this.Button_Save_Click);
             // 
             // button5
             // 
-            this.button5.Location = new System.Drawing.Point(248, 6);
+            this.button5.Location = new System.Drawing.Point(204, 6);
             this.button5.Name = "button5";
             this.button5.Size = new System.Drawing.Size(75, 23);
             this.button5.TabIndex = 20;
-            this.button5.Text = "Clear";
+            this.button5.Text = "Очистить";
             this.button5.UseVisualStyleBackColor = true;
             this.button5.Click += new System.EventHandler(this.Button_Clear_Click);
             // 
@@ -352,6 +323,9 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.chartControl_temperature.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            swiftPlotDiagram1.AxisX.Label.Visible = false;
+            swiftPlotDiagram1.AxisX.MinorCount = 1;
+            swiftPlotDiagram1.AxisX.Tickmarks.MinorVisible = false;
             swiftPlotDiagram1.AxisX.Visibility = DevExpress.Utils.DefaultBoolean.True;
             swiftPlotDiagram1.AxisX.VisibleInPanesSerializable = "-1";
             swiftPlotDiagram1.AxisY.MinorCount = 1;
@@ -359,46 +333,38 @@
             swiftPlotDiagram1.AxisY.VisibleInPanesSerializable = "-1";
             swiftPlotDiagram1.AxisY.VisualRange.Auto = false;
             swiftPlotDiagram1.AxisY.VisualRange.MaxValueSerializable = "39";
-            swiftPlotDiagram1.AxisY.VisualRange.MinValueSerializable = "21";
+            swiftPlotDiagram1.AxisY.VisualRange.MinValueSerializable = "15";
             swiftPlotDiagram1.AxisY.WholeRange.Auto = false;
             swiftPlotDiagram1.AxisY.WholeRange.MaxValueSerializable = "39";
-            swiftPlotDiagram1.AxisY.WholeRange.MinValueSerializable = "21";
+            swiftPlotDiagram1.AxisY.WholeRange.MinValueSerializable = "15";
             this.chartControl_temperature.Diagram = swiftPlotDiagram1;
             this.chartControl_temperature.Legend.Name = "Default Legend";
             this.chartControl_temperature.Legend.Visibility = DevExpress.Utils.DefaultBoolean.False;
             this.chartControl_temperature.Location = new System.Drawing.Point(0, 0);
             this.chartControl_temperature.Name = "chartControl_temperature";
             series1.ArgumentScaleType = DevExpress.XtraCharts.ScaleType.Numerical;
-            series1.Name = "Temp";
-            swiftPlotSeriesView1.Color = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(64)))), ((int)(((byte)(0)))));
+            series1.CrosshairTextOptions.EnableAntialiasing = DevExpress.Utils.DefaultBoolean.False;
+            series1.CrosshairTextOptions.Tag = "Температура в баке";
+            series1.Name = "TempOn";
+            swiftPlotSeriesView1.Color = System.Drawing.Color.Red;
             series1.View = swiftPlotSeriesView1;
-            series2.ArgumentScaleType = DevExpress.XtraCharts.ScaleType.Numerical;
-            series2.Name = "AvgTemp";
-            swiftPlotSeriesView2.Color = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            series2.CrosshairTextOptions.EnableAntialiasing = DevExpress.Utils.DefaultBoolean.False;
+            series2.CrosshairTextOptions.Tag = "Температура в баке";
+            series2.LegendName = "Default Legend";
+            series2.Name = "TempOff";
+            swiftPlotSeriesView2.Color = System.Drawing.Color.Blue;
             series2.View = swiftPlotSeriesView2;
-            series3.Name = "TempOff";
-            swiftPlotSeriesView3.Color = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(255)))), ((int)(((byte)(0)))));
+            series3.ArgumentScaleType = DevExpress.XtraCharts.ScaleType.Numerical;
+            series3.Name = "CalculatedTemp";
+            series3.ShowInLegend = false;
+            swiftPlotSeriesView3.Color = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
             series3.View = swiftPlotSeriesView3;
-            series4.Name = "AvgTempOff";
-            swiftPlotSeriesView4.Color = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(255)))));
-            series4.View = swiftPlotSeriesView4;
-            series5.ArgumentScaleType = DevExpress.XtraCharts.ScaleType.Numerical;
-            series5.Name = "Calc";
-            series5.ShowInLegend = false;
-            swiftPlotSeriesView5.Color = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            series5.View = swiftPlotSeriesView5;
-            series6.Name = "PID";
-            swiftPlotSeriesView6.Color = System.Drawing.Color.FromArgb(((int)(((byte)(84)))), ((int)(((byte)(141)))), ((int)(((byte)(212)))));
-            series6.View = swiftPlotSeriesView6;
             this.chartControl_temperature.SeriesSerializable = new DevExpress.XtraCharts.Series[] {
         series1,
         series2,
-        series3,
-        series4,
-        series5,
-        series6};
-            swiftPlotSeriesView7.LineStyle.Thickness = 2;
-            this.chartControl_temperature.SeriesTemplate.View = swiftPlotSeriesView7;
+        series3};
+            swiftPlotSeriesView4.LineStyle.Thickness = 2;
+            this.chartControl_temperature.SeriesTemplate.View = swiftPlotSeriesView4;
             this.chartControl_temperature.Size = new System.Drawing.Size(1210, 524);
             this.chartControl_temperature.TabIndex = 2;
             // 
@@ -446,13 +412,13 @@
             this.chartControl_water_level.Legend.Name = "Default Legend";
             this.chartControl_water_level.Location = new System.Drawing.Point(0, 0);
             this.chartControl_water_level.Name = "chartControl_water_level";
-            series7.ArgumentScaleType = DevExpress.XtraCharts.ScaleType.Numerical;
-            series7.LabelsVisibility = DevExpress.Utils.DefaultBoolean.False;
-            series7.Name = "usec";
-            swiftPlotSeriesView8.Color = System.Drawing.Color.Fuchsia;
-            series7.View = swiftPlotSeriesView8;
+            series4.ArgumentScaleType = DevExpress.XtraCharts.ScaleType.Numerical;
+            series4.LabelsVisibility = DevExpress.Utils.DefaultBoolean.False;
+            series4.Name = "usec";
+            swiftPlotSeriesView5.Color = System.Drawing.Color.Fuchsia;
+            series4.View = swiftPlotSeriesView5;
             this.chartControl_water_level.SeriesSerializable = new DevExpress.XtraCharts.Series[] {
-        series7};
+        series4};
             this.chartControl_water_level.Size = new System.Drawing.Size(1204, 473);
             this.chartControl_water_level.TabIndex = 0;
             // 
@@ -649,16 +615,16 @@
             this.button_wl_stop.UseVisualStyleBackColor = true;
             this.button_wl_stop.Click += new System.EventHandler(this.Button_WaterLevelStop_Click);
             // 
-            // tabPage3
+            // tabPageSettings
             // 
-            this.tabPage3.BackColor = System.Drawing.SystemColors.Control;
-            this.tabPage3.Controls.Add(this.groupBox_properties);
-            this.tabPage3.Location = new System.Drawing.Point(4, 22);
-            this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(1210, 592);
-            this.tabPage3.TabIndex = 2;
-            this.tabPage3.Text = "Настройки";
+            this.tabPageSettings.BackColor = System.Drawing.SystemColors.Control;
+            this.tabPageSettings.Controls.Add(this.groupBox_properties);
+            this.tabPageSettings.Location = new System.Drawing.Point(4, 22);
+            this.tabPageSettings.Name = "tabPageSettings";
+            this.tabPageSettings.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPageSettings.Size = new System.Drawing.Size(1210, 592);
+            this.tabPageSettings.TabIndex = 2;
+            this.tabPageSettings.Text = "Настройки";
             // 
             // groupBox_properties
             // 
@@ -833,11 +799,11 @@
             this.button_save_properties.UseVisualStyleBackColor = true;
             this.button_save_properties.Click += new System.EventHandler(this.Button_Save_Properties_Click);
             // 
-            // button_load_props
+            // buttonLoadProps
             // 
             this.buttonLoadProps.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonLoadProps.Location = new System.Drawing.Point(6, 454);
-            this.buttonLoadProps.Name = "button_load_props";
+            this.buttonLoadProps.Name = "buttonLoadProps";
             this.buttonLoadProps.Size = new System.Drawing.Size(75, 23);
             this.buttonLoadProps.TabIndex = 45;
             this.buttonLoadProps.Text = "Загрузить";
@@ -931,18 +897,18 @@
             this.editText_wl_usec_per_deg.TabIndex = 42;
             this.editText_wl_usec_per_deg.Value = null;
             // 
-            // tabPage4
+            // tabPageDebug
             // 
-            this.tabPage4.Controls.Add(this.groupBox2);
-            this.tabPage4.Controls.Add(this.button10);
-            this.tabPage4.Controls.Add(this.button7);
-            this.tabPage4.Location = new System.Drawing.Point(4, 22);
-            this.tabPage4.Name = "tabPage4";
-            this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage4.Size = new System.Drawing.Size(1210, 592);
-            this.tabPage4.TabIndex = 3;
-            this.tabPage4.Text = "Отладка";
-            this.tabPage4.UseVisualStyleBackColor = true;
+            this.tabPageDebug.Controls.Add(this.groupBox2);
+            this.tabPageDebug.Controls.Add(this.button10);
+            this.tabPageDebug.Controls.Add(this.button7);
+            this.tabPageDebug.Location = new System.Drawing.Point(4, 22);
+            this.tabPageDebug.Name = "tabPageDebug";
+            this.tabPageDebug.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPageDebug.Size = new System.Drawing.Size(1210, 592);
+            this.tabPageDebug.TabIndex = 3;
+            this.tabPageDebug.Text = "Отладка";
+            this.tabPageDebug.UseVisualStyleBackColor = true;
             // 
             // groupBox2
             // 
@@ -1048,17 +1014,17 @@
             this.button7.UseVisualStyleBackColor = true;
             this.button7.Click += new System.EventHandler(this.Button7_Click);
             // 
-            // tabPage5
+            // tabPageCalibration
             // 
-            this.tabPage5.BackColor = System.Drawing.SystemColors.Control;
-            this.tabPage5.Controls.Add(this.panel1);
-            this.tabPage5.Controls.Add(this.chartControl_wl_calibration);
-            this.tabPage5.Location = new System.Drawing.Point(4, 22);
-            this.tabPage5.Name = "tabPage5";
-            this.tabPage5.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage5.Size = new System.Drawing.Size(1210, 592);
-            this.tabPage5.TabIndex = 4;
-            this.tabPage5.Text = "Калибровка уровня";
+            this.tabPageCalibration.BackColor = System.Drawing.SystemColors.Control;
+            this.tabPageCalibration.Controls.Add(this.panel1);
+            this.tabPageCalibration.Controls.Add(this.chartControl_wl_calibration);
+            this.tabPageCalibration.Location = new System.Drawing.Point(4, 22);
+            this.tabPageCalibration.Name = "tabPageCalibration";
+            this.tabPageCalibration.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPageCalibration.Size = new System.Drawing.Size(1210, 592);
+            this.tabPageCalibration.TabIndex = 4;
+            this.tabPageCalibration.Text = "Калибровка уровня";
             // 
             // panel1
             // 
@@ -1139,18 +1105,24 @@
             swiftPlotDiagram3.AxisX.Tickmarks.Visible = false;
             swiftPlotDiagram3.AxisX.Visibility = DevExpress.Utils.DefaultBoolean.True;
             swiftPlotDiagram3.AxisX.VisibleInPanesSerializable = "-1";
+            swiftPlotDiagram3.AxisX.VisualRange.Auto = false;
+            swiftPlotDiagram3.AxisX.VisualRange.MaxValueSerializable = "10";
+            swiftPlotDiagram3.AxisX.VisualRange.MinValueSerializable = "0";
+            swiftPlotDiagram3.AxisX.WholeRange.Auto = false;
+            swiftPlotDiagram3.AxisX.WholeRange.MaxValueSerializable = "10";
+            swiftPlotDiagram3.AxisX.WholeRange.MinValueSerializable = "0";
             swiftPlotDiagram3.AxisY.VisibleInPanesSerializable = "-1";
             this.chartControl_wl_calibration.Diagram = swiftPlotDiagram3;
             this.chartControl_wl_calibration.Legend.Name = "Default Legend";
             this.chartControl_wl_calibration.Legend.Visibility = DevExpress.Utils.DefaultBoolean.False;
             this.chartControl_wl_calibration.Location = new System.Drawing.Point(8, 6);
             this.chartControl_wl_calibration.Name = "chartControl_wl_calibration";
-            series8.Name = "usec";
-            swiftPlotSeriesView9.Color = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            swiftPlotSeriesView9.LineStyle.Thickness = 2;
-            series8.View = swiftPlotSeriesView9;
+            series5.Name = "usec";
+            swiftPlotSeriesView6.Color = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            swiftPlotSeriesView6.LineStyle.Thickness = 2;
+            series5.View = swiftPlotSeriesView6;
             this.chartControl_wl_calibration.SeriesSerializable = new DevExpress.XtraCharts.Series[] {
-        series8};
+        series5};
             this.chartControl_wl_calibration.Size = new System.Drawing.Size(1194, 545);
             this.chartControl_wl_calibration.TabIndex = 0;
             // 
@@ -1230,7 +1202,7 @@
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
             this.tabControl1.ResumeLayout(false);
-            this.tabPage1.ResumeLayout(false);
+            this.tabPageTemp.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).EndInit();
@@ -1242,24 +1214,18 @@
             ((System.ComponentModel.ISupportInitialize)(swiftPlotSeriesView3)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(series3)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(swiftPlotSeriesView4)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(series4)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(swiftPlotSeriesView5)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(series5)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(swiftPlotSeriesView6)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(series6)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(swiftPlotSeriesView7)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.chartControl_temperature)).EndInit();
             this.tabPage_wl.ResumeLayout(false);
             this.panel4.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(swiftPlotDiagram2)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(swiftPlotSeriesView8)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(series7)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(swiftPlotSeriesView5)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(series4)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.chartControl_water_level)).EndInit();
             this.panel3.ResumeLayout(false);
             this.panel3.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar_avg)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar_median)).EndInit();
-            this.tabPage3.ResumeLayout(false);
+            this.tabPageSettings.ResumeLayout(false);
             this.groupBox_properties.ResumeLayout(false);
             this.groupBox_properties.PerformLayout();
             this.panel_properties.ResumeLayout(false);
@@ -1268,16 +1234,16 @@
             this.groupBox1.PerformLayout();
             this.panel_properties_custom.ResumeLayout(false);
             this.panel_properties_custom.PerformLayout();
-            this.tabPage4.ResumeLayout(false);
+            this.tabPageDebug.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
-            this.tabPage5.ResumeLayout(false);
+            this.tabPageCalibration.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numeric_wl_interval)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(swiftPlotDiagram3)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(swiftPlotSeriesView9)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(series8)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(swiftPlotSeriesView6)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(series5)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.chartControl_wl_calibration)).EndInit();
             this.Температуры.ResumeLayout(false);
             this.menuStrip1.ResumeLayout(false);
@@ -1291,20 +1257,18 @@
         #endregion
 
         private System.Windows.Forms.TabControl tabControl1;
-        private System.Windows.Forms.TabPage tabPage1;
-        private System.Windows.Forms.Label label_time_left;
+        private System.Windows.Forms.TabPage tabPageTemp;
+        private System.Windows.Forms.Label labelTimeLeft;
         private System.Windows.Forms.TrackBar trackBar1;
         private System.Windows.Forms.Button button6;
         private System.Windows.Forms.Button button5;
-        private System.Windows.Forms.CheckBox checkBox2;
-        private System.Windows.Forms.CheckBox checkBox1;
         private System.Windows.Forms.Button button4;
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Button button_temp_stop;
-        private System.Windows.Forms.Button button_temp_start;
+        private System.Windows.Forms.Button buttonTempStartRecord;
         private DevExpress.XtraCharts.ChartControl chartControl_temperature;
         private System.Windows.Forms.TabPage tabPage_wl;
-        private System.Windows.Forms.TabPage tabPage3;
+        private System.Windows.Forms.TabPage tabPageSettings;
         private System.Windows.Forms.GroupBox groupBox_properties;
         private System.Windows.Forms.Button button_save_properties;
         private System.Windows.Forms.Button buttonLoadProps;
@@ -1340,7 +1304,7 @@
         private System.Windows.Forms.Label label_reconnect_count;
         private System.Windows.Forms.Label label_temp_reconnect;
         private System.Windows.Forms.ToolStripMenuItem pnigToolStripMenuItem;
-        private System.Windows.Forms.TabPage tabPage4;
+        private System.Windows.Forms.TabPage tabPageDebug;
         private System.Windows.Forms.Button button10;
         private System.Windows.Forms.Button button7;
         private System.Windows.Forms.Button button_load_props_canc;
@@ -1354,7 +1318,7 @@
         private System.Windows.Forms.TextBox textBox3;
         private System.Windows.Forms.TextBox textBox2;
         private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.TabPage tabPage5;
+        private System.Windows.Forms.TabPage tabPageCalibration;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Button button_start;
         private DevExpress.XtraCharts.ChartControl chartControl_wl_calibration;
@@ -1374,5 +1338,7 @@
         private System.Windows.Forms.TrackBar trackBar_avg;
         private System.Windows.Forms.CheckBox checkBox_avg;
         private System.Windows.Forms.Button button9;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.ToolTip toolTip1;
     }
 }

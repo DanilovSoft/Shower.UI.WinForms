@@ -12,16 +12,16 @@ namespace ShowerUI
     public class FixedNetworkStream : Stream
     {
         private readonly NetworkStream _nstream;
-        private int _ReadTimeout;
-        private int _WriteTimeout;
+        private int _readTimeout;
+        private int _writeTimeout;
 
         public FixedNetworkStream(NetworkStream nstream)
         {
             _nstream = nstream;
         }
 
-        public override int ReadTimeout { get => _ReadTimeout; set => _ReadTimeout = value; }
-        public override int WriteTimeout { get => _WriteTimeout; set => _WriteTimeout = value; }
+        public override int ReadTimeout { get => _readTimeout; set => _readTimeout = value; }
+        public override int WriteTimeout { get => _writeTimeout; set => _writeTimeout = value; }
 
         public override bool CanRead => _nstream.CanRead;
 

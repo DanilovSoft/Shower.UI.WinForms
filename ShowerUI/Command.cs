@@ -29,7 +29,10 @@ namespace ShowerUI
         SetHeatingTimeLimit = 19,
         GetLightBrightness = 20,
         SetLightBrightness = 21,
-        GetTimeLeft = 22,
+        /// <summary>
+        /// Примерное время до окончания нагрева.
+        /// </summary>
+        GetMinutesLeft = 22,
         GetHeatingProgress = 23,
         GetWaterHeated = 24,
         GetHeatingTimeoutState = 25,
