@@ -1,8 +1,8 @@
 ﻿using System.Diagnostics;
 
-namespace ShowerUI
+namespace ShowerTcpClient
 {
-    [DebuggerDisplay("{ExternalTemp} => {InternalTemp}")]
+    [DebuggerDisplay("{" + nameof(ExternalTemp) + "} => {" + nameof(InternalTemp) + "}")]
     public struct TemperatureStep
     {
         public int InternalTemp { get; set; }

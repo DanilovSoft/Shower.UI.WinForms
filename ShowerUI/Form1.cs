@@ -13,7 +13,7 @@ using DevExpress.XtraCharts;
 using Filters;
 using Newtonsoft.Json;
 using ShowerUI.Dto;
-using ShowerUI.ShowerClient;
+using ShowerTcpClient;
 
 namespace ShowerUI
 {
@@ -25,20 +25,20 @@ namespace ShowerUI
         private readonly List<ushort> _usecList = new(30000); // 20 минут
         private readonly Action<InternalTempModel> _addTemperatureRecordHandler;
         private readonly List<InternalTempModel> _temperatureList = new(600);
+        private readonly SwiftPlotDiagramSecondaryAxisY _median = new("Медиана");
+        private readonly SwiftPlotDiagramSecondaryAxisY _avg = new("Среднее");
+        private readonly Series _usecSeries;
+        private readonly Series _percentSeries;
+        private readonly Series _medianSeries;
+        private readonly Series _averageSeries;
         private CancellationTokenSource? _tempRecorderCts;
         private CancellationTokenSource? _wl_cts;
         /// <summary>
         /// Доступ только через основной поток.
         /// </summary>
         private CancellationTokenSource? _pingCts;
-        private CancellationTokenSource? _cts_waterLevelCalibration;
+        private CancellationTokenSource? _ctsWwaterLevelCalibration;
         private CancellationTokenSource? _cts_loadProperties;
-        private Series? _usecSeries;
-        private Series? _percentSeries;
-        private Series? _medianSeries;
-        private Series? _averageSeries;
-        private SwiftPlotDiagramSecondaryAxisY? _median;
-        private SwiftPlotDiagramSecondaryAxisY? _avg;
         private ushort _waterLevelEmpty;
         private ushort _waterLevelFull;
 
@@ -50,6 +50,12 @@ namespace ShowerUI
 
             UpdateMedianCheckBox();
             UpdateAverageCheckBox();
+
+            chartControl_water_level.Series.Clear();
+            _usecSeries = chartControl_water_level.Series[chartControl_water_level.Series.Add("Usec", ViewType.SwiftPlot)];
+            _medianSeries = chartControl_water_level.Series[chartControl_water_level.Series.Add("Median", ViewType.SwiftPlot)];
+            _percentSeries = chartControl_water_level.Series[chartControl_water_level.Series.Add("%", ViewType.SwiftPlot)];
+            _averageSeries = chartControl_water_level.Series[chartControl_water_level.Series.Add("Avg", ViewType.SwiftPlot)];
         }
 
         private void UpdateMedianCheckBox()
@@ -60,12 +66,12 @@ namespace ShowerUI
         // инициализация
         private void InitWaterLevelChart()
         {
-            chartControl_water_level.Series.Clear();
+            //chartControl_water_level.Series.Clear();
 
-            _usecSeries = chartControl_water_level.Series[chartControl_water_level.Series.Add("Usec", ViewType.SwiftPlot)];
-            _medianSeries = chartControl_water_level.Series[chartControl_water_level.Series.Add("Median", ViewType.SwiftPlot)];
-            _percentSeries = chartControl_water_level.Series[chartControl_water_level.Series.Add("%", ViewType.SwiftPlot)];
-            _averageSeries = chartControl_water_level.Series[chartControl_water_level.Series.Add("Avg", ViewType.SwiftPlot)];
+            //_usecSeries = chartControl_water_level.Series[chartControl_water_level.Series.Add("Usec", ViewType.SwiftPlot)];
+            //_medianSeries = chartControl_water_level.Series[chartControl_water_level.Series.Add("Median", ViewType.SwiftPlot)];
+            //_percentSeries = chartControl_water_level.Series[chartControl_water_level.Series.Add("%", ViewType.SwiftPlot)];
+            //_averageSeries = chartControl_water_level.Series[chartControl_water_level.Series.Add("Avg", ViewType.SwiftPlot)];
 
             _percentSeries.LegendText = "%";
             _usecSeries.LabelsVisibility = DevExpress.Utils.DefaultBoolean.False;
@@ -84,9 +90,6 @@ namespace ShowerUI
             percentAxisY.NumericScaleOptions.GridOffset = 2;
             percentAxisY.Tickmarks.MinorVisible = false;
             percentAxisY.Tickmarks.Visible = false;
-
-            _median = new SwiftPlotDiagramSecondaryAxisY("Медиана");
-            _avg = new SwiftPlotDiagramSecondaryAxisY("Среднее");
 
             if (_usecSeries.View is SwiftPlotSeriesView usecView)
             {
@@ -217,7 +220,7 @@ namespace ShowerUI
                 catch (Exception ex)
                 {
                     errorProvider1.SetError(buttonTempStartRecord, ex.Message);
-                    label_temp_reconnect.Text = $"Reconnect count: {reconnectCount}";
+                    labelTempReconnectCount.Text = $"{reconnectCount}";
 
                     try
                     {
@@ -332,13 +335,10 @@ namespace ShowerUI
             }
 
             var collection = JsonConvert.DeserializeObject<InternalTempModel[]>(File.ReadAllText(filePath));
-
-            //var pid = new PidController.PidController(0.2, 0.001, 1, 39, 22)
-            //{
-
-            //    // Уставка.
-            //    SetPoint = 38
-            //};
+            if (collection == null)
+            {
+                return;
+            }
 
             TimeSpan interval = TimeSpan.Zero;
             for (int i = 0; i < collection.Length; i++)
@@ -347,13 +347,9 @@ namespace ShowerUI
 
                 await Task.Delay(interval);
                 if (IsDisposed)
+                {
                     return;
-
-                // Сколько получили на самом деле.
-                //pid.ProcessVariable = measure.InternalTemp;
-
-                // Сколько времени ушло на измерение.
-                //double pidVal = pid.ControlVariable(interval);
+                }
 
                 chartControl_temperature.Series[1].Points.Add(new SeriesPoint(measure.Number, measure.InternalTemp) { IsEmpty = !measure.HeaterEnabled });
                 chartControl_temperature.Series[3].Points.Add(new SeriesPoint(measure.Number, measure.InternalTemp) { IsEmpty = measure.HeaterEnabled });
@@ -505,39 +501,6 @@ namespace ShowerUI
             foreach (Series series in chartControl_water_level.Series)
             {
                 series.Points.Clear();
-            }
-        }
-
-        private async Task GetWaterLevelLoopAsync(ShowerConnection con, CancellationToken cancellationToken)
-        {
-            //int time = 0;
-            //TimeSpan interval = TimeSpan.FromMinutes(60);
-            const int intervalMsec = 300;
-
-            async Task<(ushort usec, byte percent)> LoadAsync()
-            {
-                await Task.Delay(intervalMsec, _wl_cts.Token);
-                var value = await con.GetWaterLevelAsync(cancellationToken);
-                var percent = await con.GetWaterPercent(cancellationToken);
-                //time++;
-
-                return (value, percent);
-            }
-
-            while (true)
-            {
-                var (usec, percent) = await Task.Run(() => LoadAsync());
-
-                var series1 = chartControl_water_level.Series[0];
-                var series2 = chartControl_water_level.Series[1];
-
-                //series1.Points.Add(new SeriesPoint(DateTime.Now, usec));
-                series2.Points.Add(new SeriesPoint(DateTime.Now, percent));
-
-                //if(series1.Points.Count > 500)
-                //{
-
-                //}
             }
         }
 
@@ -1183,6 +1146,7 @@ namespace ShowerUI
             }
             finally
             {
+                cts.Cancel();
                 me.Enabled = true;
             }
         }
@@ -1192,66 +1156,66 @@ namespace ShowerUI
             _pingCts?.Cancel();
         }
 
-        private void Button_wifi_cur_Click(object sender, EventArgs e)
+        private async void ButtonStartCalibrationClick(object sender, EventArgs e)
         {
-
-        }
-
-        private async void Button_start_Click(object sender, EventArgs e)
-        {
-            var cts = _cts_waterLevelCalibration = new CancellationTokenSource();
+            var cts = _ctsWwaterLevelCalibration = new CancellationTokenSource();
             button_stop.Enabled = true;
-            button_start.Enabled = false;
+            buttonStartCalib.Enabled = false;
 
-            TimeSpan interval;// = TimeSpan.FromMilliseconds(100);
             var sw = new Stopwatch();
-
-            while (true)
+            try
             {
-                try
+                while (true)
                 {
-                    using (var con = await ShowerConnection.CreateConnectionAsync(cts.Token))
+                    try
                     {
-                        ushort waterLevelEmpty = await con.RequestAsync<ushort>(ShowerCodes.GetWaterLevelEmpty, cts.Token);
-                        ushort waterLevelFull = await con.RequestAsync<ushort>(ShowerCodes.GetWaterLevelFull, cts.Token);
-
-                        SetWLCalibration(waterLevelEmpty, waterLevelFull);
-
-                        while (true)
+                        using (var con = await ShowerConnection.CreateConnectionAsync(cts.Token))
                         {
-                            interval = TimeSpan.FromMilliseconds((int)numeric_wl_interval.Value);
+                            ushort waterLevelEmpty = await con.RequestAsync<ushort>(ShowerCodes.GetWaterLevelEmpty, cts.Token);
+                            ushort waterLevelFull = await con.RequestAsync<ushort>(ShowerCodes.GetWaterLevelFull, cts.Token);
 
-                            sw.Restart();
-                            short usec = await con.GetWaterLevelRawAsync(cts.Token);
+                            SetWLCalibration(waterLevelEmpty, waterLevelFull);
+                            errorProvider1.SetError(buttonStartCalib, null);
 
-                            AddUsec(usec);
-
-                            var pause = interval - sw.Elapsed;
-                            if (pause > TimeSpan.Zero)
+                            while (!cts.IsCancellationRequested)
                             {
-                                await Task.Delay(pause);
+                                var interval = TimeSpan.FromMilliseconds((int)numericWaterLevelCalibInterval.Value);
+
+                                sw.Restart();
+                                short usec = await con.GetWaterLevelRawAsync(cts.Token);
+
+                                AddUsec(usec);
+
+                                var pause = interval - sw.Elapsed;
+                                if (pause > TimeSpan.Zero)
+                                {
+                                    await Task.Delay(pause);
+                                }
                             }
                         }
                     }
-                }
-                catch when (cts.IsCancellationRequested)
-                {
-                    return;
-                }
-                catch
-                {
-                    Debug.WriteLine("Error");
-
-                    try
-                    {
-                        await Task.Delay(3000, cts.Token);
-                        continue;
-                    }
-                    catch
+                    catch when (cts.IsCancellationRequested)
                     {
                         return;
                     }
+                    catch (Exception ex)
+                    {
+                        errorProvider1.SetError(buttonStartCalib, ex.Message);
+                        try
+                        {
+                            await Task.Delay(3000, cts.Token);
+                            continue;
+                        }
+                        catch (OperationCanceledException)
+                        {
+                            return;
+                        }
+                    }
                 }
+            }
+            finally
+            {
+                cts.Cancel();
             }
         }
 
@@ -1280,9 +1244,8 @@ namespace ShowerUI
             const int dataIntervalSec = 10;
             int maxPoints = (dataIntervalSec * 1000 / 100);
 
-            decimal cm = usec / 58m;
-
-            cm = Math.Round(cm, 3);
+            //decimal cm = usec / 58m;
+            //cm = Math.Round(cm, 3);
 
             Series ser = chartControl_wl_calibration.Series[0];
 
@@ -1304,10 +1267,10 @@ namespace ShowerUI
         private void Button_stop_Click(object sender, EventArgs e)
         {
             button_stop.Enabled = false;
-            button_start.Enabled = true;
+            buttonStartCalib.Enabled = true;
 
-            _cts_waterLevelCalibration?.Cancel();
-            _cts_waterLevelCalibration = null;
+            _ctsWwaterLevelCalibration?.Cancel();
+            _ctsWwaterLevelCalibration = null;
         }
 
         private void Button1_Click(object sender, EventArgs e)
@@ -1394,21 +1357,15 @@ namespace ShowerUI
                 }
             }
         }
-    }
 
-    internal static class ExtensionMethods
-    {
-        public static void BoldText(this Label label)
+        private void Button_wifi_SetCurrent_Click(object sender, EventArgs e)
         {
-            label.Font = new Font(label.Font, FontStyle.Bold);
+
         }
 
-        public static void RegularText(this Label label)
+        private void Button_wifi_SetDefault_Click(object sender, EventArgs e)
         {
-            if (label.Font.Bold)
-            {
-                label.Font = new Font(label.Font, FontStyle.Regular);
-            }
+
         }
     }
 }

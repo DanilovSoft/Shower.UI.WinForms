@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using DevExpress.Data.Helpers;
+using ShowerUI.Common;
 
-namespace ShowerUI.ShowerClient
+namespace ShowerTcpClient
 {
     public sealed class ShowerConnection : IDisposable
     {
@@ -212,7 +212,7 @@ namespace ShowerUI.ShowerClient
             private FixedNetworkStream _nstream;
             private ShowerConnection _con;
 
-            public RequestBuilder(ShowerConnection con, MyBinaryWriter writer, ShowerBinaryReader reader, FixedNetworkStream nstream)
+            internal RequestBuilder(ShowerConnection con, MyBinaryWriter writer, ShowerBinaryReader reader, FixedNetworkStream nstream)
             {
                 _con = con;
                 _writer = writer;

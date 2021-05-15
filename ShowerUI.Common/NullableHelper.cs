@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ShowerUI
+namespace ShowerUI.Common
 {
     public static class NullableHelper
     {

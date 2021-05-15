@@ -47,8 +47,9 @@
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPageTemp = new System.Windows.Forms.TabPage();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.labelTempReconnectCount = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
-            this.label_temp_reconnect = new System.Windows.Forms.Label();
+            this.labelTempReconnect = new System.Windows.Forms.Label();
             this.button_temp_stop = new System.Windows.Forms.Button();
             this.trackBar1 = new System.Windows.Forms.TrackBar();
             this.labelTimeLeft = new System.Windows.Forms.Label();
@@ -78,6 +79,13 @@
             this.button_clear_wl = new System.Windows.Forms.Button();
             this.checkBox3 = new System.Windows.Forms.CheckBox();
             this.button_wl_stop = new System.Windows.Forms.Button();
+            this.tabPageCalibration = new System.Windows.Forms.TabPage();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.label6 = new System.Windows.Forms.Label();
+            this.numericWaterLevelCalibInterval = new System.Windows.Forms.NumericUpDown();
+            this.button_stop = new System.Windows.Forms.Button();
+            this.buttonStartCalib = new System.Windows.Forms.Button();
+            this.chartControl_wl_calibration = new DevExpress.XtraCharts.ChartControl();
             this.tabPageSettings = new System.Windows.Forms.TabPage();
             this.groupBox_properties = new System.Windows.Forms.GroupBox();
             this.button1 = new System.Windows.Forms.Button();
@@ -113,13 +121,6 @@
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.button10 = new System.Windows.Forms.Button();
             this.button7 = new System.Windows.Forms.Button();
-            this.tabPageCalibration = new System.Windows.Forms.TabPage();
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.label6 = new System.Windows.Forms.Label();
-            this.numeric_wl_interval = new System.Windows.Forms.NumericUpDown();
-            this.button_stop = new System.Windows.Forms.Button();
-            this.button_start = new System.Windows.Forms.Button();
-            this.chartControl_wl_calibration = new DevExpress.XtraCharts.ChartControl();
             this.Температуры = new System.Windows.Forms.TabPage();
             this.button2 = new System.Windows.Forms.Button();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
@@ -150,6 +151,13 @@
             this.panel3.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar_avg)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar_median)).BeginInit();
+            this.tabPageCalibration.SuspendLayout();
+            this.panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericWaterLevelCalibInterval)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.chartControl_wl_calibration)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(swiftPlotDiagram3)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(series5)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(swiftPlotSeriesView6)).BeginInit();
             this.tabPageSettings.SuspendLayout();
             this.groupBox_properties.SuspendLayout();
             this.panel_properties.SuspendLayout();
@@ -157,13 +165,6 @@
             this.panel_properties_custom.SuspendLayout();
             this.tabPageDebug.SuspendLayout();
             this.groupBox2.SuspendLayout();
-            this.tabPageCalibration.SuspendLayout();
-            this.panel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numeric_wl_interval)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.chartControl_wl_calibration)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(swiftPlotDiagram3)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(series5)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(swiftPlotSeriesView6)).BeginInit();
             this.Температуры.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).BeginInit();
@@ -200,8 +201,9 @@
             // 
             // panel2
             // 
+            this.panel2.Controls.Add(this.labelTempReconnectCount);
             this.panel2.Controls.Add(this.label7);
-            this.panel2.Controls.Add(this.label_temp_reconnect);
+            this.panel2.Controls.Add(this.labelTempReconnect);
             this.panel2.Controls.Add(this.button_temp_stop);
             this.panel2.Controls.Add(this.trackBar1);
             this.panel2.Controls.Add(this.labelTimeLeft);
@@ -216,6 +218,15 @@
             this.panel2.Size = new System.Drawing.Size(1204, 59);
             this.panel2.TabIndex = 24;
             // 
+            // labelTempReconnectCount
+            // 
+            this.labelTempReconnectCount.AutoSize = true;
+            this.labelTempReconnectCount.Location = new System.Drawing.Point(152, 38);
+            this.labelTempReconnectCount.Name = "labelTempReconnectCount";
+            this.labelTempReconnectCount.Size = new System.Drawing.Size(13, 13);
+            this.labelTempReconnectCount.TabIndex = 26;
+            this.labelTempReconnectCount.Text = "0";
+            // 
             // label7
             // 
             this.label7.AutoSize = true;
@@ -226,14 +237,14 @@
             this.label7.Text = "Осталось:";
             this.toolTip1.SetToolTip(this.label7, "Расчётное время до окончания нагрева");
             // 
-            // label_temp_reconnect
+            // labelTempReconnect
             // 
-            this.label_temp_reconnect.AutoSize = true;
-            this.label_temp_reconnect.Location = new System.Drawing.Point(5, 38);
-            this.label_temp_reconnect.Name = "label_temp_reconnect";
-            this.label_temp_reconnect.Size = new System.Drawing.Size(150, 13);
-            this.label_temp_reconnect.TabIndex = 24;
-            this.label_temp_reconnect.Text = "Повторных подключений: 0";
+            this.labelTempReconnect.AutoSize = true;
+            this.labelTempReconnect.Location = new System.Drawing.Point(5, 38);
+            this.labelTempReconnect.Name = "labelTempReconnect";
+            this.labelTempReconnect.Size = new System.Drawing.Size(141, 13);
+            this.labelTempReconnect.TabIndex = 24;
+            this.labelTempReconnect.Text = "Повторных подключений:";
             // 
             // button_temp_stop
             // 
@@ -414,7 +425,7 @@
             this.chartControl_water_level.Name = "chartControl_water_level";
             series4.ArgumentScaleType = DevExpress.XtraCharts.ScaleType.Numerical;
             series4.LabelsVisibility = DevExpress.Utils.DefaultBoolean.False;
-            series4.Name = "usec";
+            series4.Name = "RAW (μs)";
             swiftPlotSeriesView5.Color = System.Drawing.Color.Fuchsia;
             series4.View = swiftPlotSeriesView5;
             this.chartControl_water_level.SeriesSerializable = new DevExpress.XtraCharts.Series[] {
@@ -448,11 +459,11 @@
             // 
             // button9
             // 
-            this.button9.Location = new System.Drawing.Point(86, 43);
+            this.button9.Location = new System.Drawing.Point(110, 35);
             this.button9.Name = "button9";
-            this.button9.Size = new System.Drawing.Size(75, 23);
+            this.button9.Size = new System.Drawing.Size(100, 23);
             this.button9.TabIndex = 15;
-            this.button9.Text = "Load";
+            this.button9.Text = "Загрузить из...";
             this.button9.UseVisualStyleBackColor = true;
             this.button9.Click += new System.EventHandler(this.Button9_Click_1);
             // 
@@ -463,9 +474,9 @@
             this.checkBox_avg.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBox_avg.Location = new System.Drawing.Point(610, 63);
             this.checkBox_avg.Name = "checkBox_avg";
-            this.checkBox_avg.Size = new System.Drawing.Size(70, 17);
+            this.checkBox_avg.Size = new System.Drawing.Size(92, 17);
             this.checkBox_avg.TabIndex = 14;
-            this.checkBox_avg.Text = "Среднее";
+            this.checkBox_avg.Text = "Среднее (μs)";
             this.checkBox_avg.UseVisualStyleBackColor = true;
             this.checkBox_avg.CheckedChanged += new System.EventHandler(this.CheckBox_avg_CheckedChanged);
             // 
@@ -494,11 +505,11 @@
             // 
             // button8
             // 
-            this.button8.Location = new System.Drawing.Point(5, 43);
+            this.button8.Location = new System.Drawing.Point(5, 35);
             this.button8.Name = "button8";
-            this.button8.Size = new System.Drawing.Size(75, 23);
+            this.button8.Size = new System.Drawing.Size(99, 23);
             this.button8.TabIndex = 11;
-            this.button8.Text = "SAVE";
+            this.button8.Text = "Сохранить в...";
             this.button8.UseVisualStyleBackColor = true;
             this.button8.Click += new System.EventHandler(this.Button8_Click);
             // 
@@ -507,11 +518,11 @@
             this.checkBox_median.AutoSize = true;
             this.checkBox_median.Checked = true;
             this.checkBox_median.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox_median.Location = new System.Drawing.Point(610, 9);
+            this.checkBox_median.Location = new System.Drawing.Point(609, 9);
             this.checkBox_median.Name = "checkBox_median";
-            this.checkBox_median.Size = new System.Drawing.Size(71, 17);
+            this.checkBox_median.Size = new System.Drawing.Size(93, 17);
             this.checkBox_median.TabIndex = 9;
-            this.checkBox_median.Text = "Медиана";
+            this.checkBox_median.Text = "Медиана (μs)";
             this.checkBox_median.UseVisualStyleBackColor = true;
             this.checkBox_median.CheckedChanged += new System.EventHandler(this.CheckBox_WL_Median_CheckedChanged);
             // 
@@ -520,9 +531,9 @@
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(1094, 8);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(88, 13);
+            this.label2.Size = new System.Drawing.Size(49, 13);
             this.label2.TabIndex = 6;
-            this.label2.Text = "Max Water Level";
+            this.label2.Text = "Max (μs)";
             // 
             // label_reconnect_count
             // 
@@ -546,9 +557,9 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(968, 8);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(84, 13);
+            this.label1.Size = new System.Drawing.Size(45, 13);
             this.label1.TabIndex = 5;
-            this.label1.Text = "Min Water Level";
+            this.label1.Text = "Min (μs)";
             // 
             // checkBox4
             // 
@@ -557,9 +568,9 @@
             this.checkBox4.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBox4.Location = new System.Drawing.Point(722, 63);
             this.checkBox4.Name = "checkBox4";
-            this.checkBox4.Size = new System.Drawing.Size(37, 17);
+            this.checkBox4.Size = new System.Drawing.Size(70, 17);
             this.checkBox4.TabIndex = 4;
-            this.checkBox4.Text = "%";
+            this.checkBox4.Text = "0-99 (%)";
             this.checkBox4.UseVisualStyleBackColor = true;
             this.checkBox4.CheckedChanged += new System.EventHandler(this.CheckBox_percent_CheckedChanged);
             // 
@@ -573,21 +584,21 @@
             // 
             // button_wl
             // 
-            this.button_wl.Location = new System.Drawing.Point(3, 3);
+            this.button_wl.Location = new System.Drawing.Point(5, 6);
             this.button_wl.Name = "button_wl";
             this.button_wl.Size = new System.Drawing.Size(75, 23);
             this.button_wl.TabIndex = 0;
-            this.button_wl.Text = "СТАРТ";
+            this.button_wl.Text = "Старт";
             this.button_wl.UseVisualStyleBackColor = true;
             this.button_wl.Click += new System.EventHandler(this.Button_WaterLevelStart_Click);
             // 
             // button_clear_wl
             // 
-            this.button_clear_wl.Location = new System.Drawing.Point(165, 3);
+            this.button_clear_wl.Location = new System.Drawing.Point(167, 6);
             this.button_clear_wl.Name = "button_clear_wl";
             this.button_clear_wl.Size = new System.Drawing.Size(75, 23);
             this.button_clear_wl.TabIndex = 2;
-            this.button_clear_wl.Text = "ОЧИСТИТЬ";
+            this.button_clear_wl.Text = "Очистить";
             this.button_clear_wl.UseVisualStyleBackColor = true;
             this.button_clear_wl.Click += new System.EventHandler(this.Button_clear_wl_Click);
             // 
@@ -598,22 +609,134 @@
             this.checkBox3.CheckState = System.Windows.Forms.CheckState.Checked;
             this.checkBox3.Location = new System.Drawing.Point(722, 9);
             this.checkBox3.Name = "checkBox3";
-            this.checkBox3.Size = new System.Drawing.Size(49, 17);
+            this.checkBox3.Size = new System.Drawing.Size(72, 17);
             this.checkBox3.TabIndex = 3;
-            this.checkBox3.Text = "uSec";
+            this.checkBox3.Text = "RAW (μs)";
             this.checkBox3.UseVisualStyleBackColor = true;
             this.checkBox3.CheckedChanged += new System.EventHandler(this.CheckBox_uSec_CheckedChanged);
             // 
             // button_wl_stop
             // 
             this.button_wl_stop.Enabled = false;
-            this.button_wl_stop.Location = new System.Drawing.Point(84, 3);
+            this.button_wl_stop.Location = new System.Drawing.Point(86, 6);
             this.button_wl_stop.Name = "button_wl_stop";
             this.button_wl_stop.Size = new System.Drawing.Size(75, 23);
             this.button_wl_stop.TabIndex = 1;
-            this.button_wl_stop.Text = "СТОП";
+            this.button_wl_stop.Text = "Стоп";
             this.button_wl_stop.UseVisualStyleBackColor = true;
             this.button_wl_stop.Click += new System.EventHandler(this.Button_WaterLevelStop_Click);
+            // 
+            // tabPageCalibration
+            // 
+            this.tabPageCalibration.BackColor = System.Drawing.SystemColors.Control;
+            this.tabPageCalibration.Controls.Add(this.panel1);
+            this.tabPageCalibration.Controls.Add(this.chartControl_wl_calibration);
+            this.tabPageCalibration.Location = new System.Drawing.Point(4, 22);
+            this.tabPageCalibration.Name = "tabPageCalibration";
+            this.tabPageCalibration.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPageCalibration.Size = new System.Drawing.Size(1210, 592);
+            this.tabPageCalibration.TabIndex = 4;
+            this.tabPageCalibration.Text = "Калибровка уровня";
+            // 
+            // panel1
+            // 
+            this.panel1.Controls.Add(this.label6);
+            this.panel1.Controls.Add(this.numericWaterLevelCalibInterval);
+            this.panel1.Controls.Add(this.button_stop);
+            this.panel1.Controls.Add(this.buttonStartCalib);
+            this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.panel1.Location = new System.Drawing.Point(3, 557);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(1204, 32);
+            this.panel1.TabIndex = 1;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(243, 8);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(95, 13);
+            this.label6.TabIndex = 3;
+            this.label6.Text = "Интервал (msec):";
+            // 
+            // numericWaterLevelCalibInterval
+            // 
+            this.numericWaterLevelCalibInterval.Increment = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.numericWaterLevelCalibInterval.Location = new System.Drawing.Point(344, 6);
+            this.numericWaterLevelCalibInterval.Maximum = new decimal(new int[] {
+            200,
+            0,
+            0,
+            0});
+            this.numericWaterLevelCalibInterval.Minimum = new decimal(new int[] {
+            30,
+            0,
+            0,
+            0});
+            this.numericWaterLevelCalibInterval.Name = "numericWaterLevelCalibInterval";
+            this.numericWaterLevelCalibInterval.Size = new System.Drawing.Size(66, 21);
+            this.numericWaterLevelCalibInterval.TabIndex = 2;
+            this.numericWaterLevelCalibInterval.Value = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            // 
+            // button_stop
+            // 
+            this.button_stop.Enabled = false;
+            this.button_stop.Location = new System.Drawing.Point(119, 3);
+            this.button_stop.Name = "button_stop";
+            this.button_stop.Size = new System.Drawing.Size(75, 23);
+            this.button_stop.TabIndex = 1;
+            this.button_stop.Text = "Стоп";
+            this.button_stop.UseVisualStyleBackColor = true;
+            this.button_stop.Click += new System.EventHandler(this.Button_stop_Click);
+            // 
+            // buttonStartCalib
+            // 
+            this.buttonStartCalib.Location = new System.Drawing.Point(5, 3);
+            this.buttonStartCalib.Name = "buttonStartCalib";
+            this.buttonStartCalib.Size = new System.Drawing.Size(75, 23);
+            this.buttonStartCalib.TabIndex = 0;
+            this.buttonStartCalib.Text = "Старт";
+            this.buttonStartCalib.UseVisualStyleBackColor = true;
+            this.buttonStartCalib.Click += new System.EventHandler(this.ButtonStartCalibrationClick);
+            // 
+            // chartControl_wl_calibration
+            // 
+            this.chartControl_wl_calibration.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            swiftPlotDiagram3.AxisX.Label.Visible = false;
+            swiftPlotDiagram3.AxisX.Tickmarks.MinorVisible = false;
+            swiftPlotDiagram3.AxisX.Tickmarks.Visible = false;
+            swiftPlotDiagram3.AxisX.Visibility = DevExpress.Utils.DefaultBoolean.True;
+            swiftPlotDiagram3.AxisX.VisibleInPanesSerializable = "-1";
+            swiftPlotDiagram3.AxisX.VisualRange.Auto = false;
+            swiftPlotDiagram3.AxisX.VisualRange.MaxValueSerializable = "10";
+            swiftPlotDiagram3.AxisX.VisualRange.MinValueSerializable = "0";
+            swiftPlotDiagram3.AxisX.WholeRange.Auto = false;
+            swiftPlotDiagram3.AxisX.WholeRange.MaxValueSerializable = "10";
+            swiftPlotDiagram3.AxisX.WholeRange.MinValueSerializable = "0";
+            swiftPlotDiagram3.AxisY.VisibleInPanesSerializable = "-1";
+            this.chartControl_wl_calibration.Diagram = swiftPlotDiagram3;
+            this.chartControl_wl_calibration.Legend.Name = "Default Legend";
+            this.chartControl_wl_calibration.Legend.Visibility = DevExpress.Utils.DefaultBoolean.False;
+            this.chartControl_wl_calibration.Location = new System.Drawing.Point(8, 6);
+            this.chartControl_wl_calibration.Name = "chartControl_wl_calibration";
+            series5.Name = "usec";
+            swiftPlotSeriesView6.Color = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            swiftPlotSeriesView6.LineStyle.Thickness = 2;
+            series5.View = swiftPlotSeriesView6;
+            this.chartControl_wl_calibration.SeriesSerializable = new DevExpress.XtraCharts.Series[] {
+        series5};
+            this.chartControl_wl_calibration.Size = new System.Drawing.Size(1194, 545);
+            this.chartControl_wl_calibration.TabIndex = 0;
             // 
             // tabPageSettings
             // 
@@ -962,6 +1085,7 @@
             this.button_wifi_def.TabIndex = 4;
             this.button_wifi_def.Text = "Def";
             this.button_wifi_def.UseVisualStyleBackColor = true;
+            this.button_wifi_def.Click += new System.EventHandler(this.Button_wifi_SetDefault_Click);
             // 
             // button_wifi_cur
             // 
@@ -971,7 +1095,7 @@
             this.button_wifi_cur.TabIndex = 3;
             this.button_wifi_cur.Text = "Cur";
             this.button_wifi_cur.UseVisualStyleBackColor = true;
-            this.button_wifi_cur.Click += new System.EventHandler(this.Button_wifi_cur_Click);
+            this.button_wifi_cur.Click += new System.EventHandler(this.Button_wifi_SetCurrent_Click);
             // 
             // textBox3
             // 
@@ -1014,118 +1138,6 @@
             this.button7.UseVisualStyleBackColor = true;
             this.button7.Click += new System.EventHandler(this.Button7_Click);
             // 
-            // tabPageCalibration
-            // 
-            this.tabPageCalibration.BackColor = System.Drawing.SystemColors.Control;
-            this.tabPageCalibration.Controls.Add(this.panel1);
-            this.tabPageCalibration.Controls.Add(this.chartControl_wl_calibration);
-            this.tabPageCalibration.Location = new System.Drawing.Point(4, 22);
-            this.tabPageCalibration.Name = "tabPageCalibration";
-            this.tabPageCalibration.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageCalibration.Size = new System.Drawing.Size(1210, 592);
-            this.tabPageCalibration.TabIndex = 4;
-            this.tabPageCalibration.Text = "Калибровка уровня";
-            // 
-            // panel1
-            // 
-            this.panel1.Controls.Add(this.label6);
-            this.panel1.Controls.Add(this.numeric_wl_interval);
-            this.panel1.Controls.Add(this.button_stop);
-            this.panel1.Controls.Add(this.button_start);
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel1.Location = new System.Drawing.Point(3, 557);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(1204, 32);
-            this.panel1.TabIndex = 1;
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(201, 8);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(56, 13);
-            this.label6.TabIndex = 3;
-            this.label6.Text = "Интервал";
-            // 
-            // numeric_wl_interval
-            // 
-            this.numeric_wl_interval.Increment = new decimal(new int[] {
-            10,
-            0,
-            0,
-            0});
-            this.numeric_wl_interval.Location = new System.Drawing.Point(266, 6);
-            this.numeric_wl_interval.Maximum = new decimal(new int[] {
-            200,
-            0,
-            0,
-            0});
-            this.numeric_wl_interval.Minimum = new decimal(new int[] {
-            30,
-            0,
-            0,
-            0});
-            this.numeric_wl_interval.Name = "numeric_wl_interval";
-            this.numeric_wl_interval.Size = new System.Drawing.Size(66, 21);
-            this.numeric_wl_interval.TabIndex = 2;
-            this.numeric_wl_interval.Value = new decimal(new int[] {
-            100,
-            0,
-            0,
-            0});
-            // 
-            // button_stop
-            // 
-            this.button_stop.Enabled = false;
-            this.button_stop.Location = new System.Drawing.Point(84, 3);
-            this.button_stop.Name = "button_stop";
-            this.button_stop.Size = new System.Drawing.Size(75, 23);
-            this.button_stop.TabIndex = 1;
-            this.button_stop.Text = "Стоп";
-            this.button_stop.UseVisualStyleBackColor = true;
-            this.button_stop.Click += new System.EventHandler(this.Button_stop_Click);
-            // 
-            // button_start
-            // 
-            this.button_start.Location = new System.Drawing.Point(3, 3);
-            this.button_start.Name = "button_start";
-            this.button_start.Size = new System.Drawing.Size(75, 23);
-            this.button_start.TabIndex = 0;
-            this.button_start.Text = "Старт";
-            this.button_start.UseVisualStyleBackColor = true;
-            this.button_start.Click += new System.EventHandler(this.Button_start_Click);
-            // 
-            // chartControl_wl_calibration
-            // 
-            this.chartControl_wl_calibration.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            swiftPlotDiagram3.AxisX.Label.Visible = false;
-            swiftPlotDiagram3.AxisX.Tickmarks.MinorVisible = false;
-            swiftPlotDiagram3.AxisX.Tickmarks.Visible = false;
-            swiftPlotDiagram3.AxisX.Visibility = DevExpress.Utils.DefaultBoolean.True;
-            swiftPlotDiagram3.AxisX.VisibleInPanesSerializable = "-1";
-            swiftPlotDiagram3.AxisX.VisualRange.Auto = false;
-            swiftPlotDiagram3.AxisX.VisualRange.MaxValueSerializable = "10";
-            swiftPlotDiagram3.AxisX.VisualRange.MinValueSerializable = "0";
-            swiftPlotDiagram3.AxisX.WholeRange.Auto = false;
-            swiftPlotDiagram3.AxisX.WholeRange.MaxValueSerializable = "10";
-            swiftPlotDiagram3.AxisX.WholeRange.MinValueSerializable = "0";
-            swiftPlotDiagram3.AxisY.VisibleInPanesSerializable = "-1";
-            this.chartControl_wl_calibration.Diagram = swiftPlotDiagram3;
-            this.chartControl_wl_calibration.Legend.Name = "Default Legend";
-            this.chartControl_wl_calibration.Legend.Visibility = DevExpress.Utils.DefaultBoolean.False;
-            this.chartControl_wl_calibration.Location = new System.Drawing.Point(8, 6);
-            this.chartControl_wl_calibration.Name = "chartControl_wl_calibration";
-            series5.Name = "usec";
-            swiftPlotSeriesView6.Color = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            swiftPlotSeriesView6.LineStyle.Thickness = 2;
-            series5.View = swiftPlotSeriesView6;
-            this.chartControl_wl_calibration.SeriesSerializable = new DevExpress.XtraCharts.Series[] {
-        series5};
-            this.chartControl_wl_calibration.Size = new System.Drawing.Size(1194, 545);
-            this.chartControl_wl_calibration.TabIndex = 0;
-            // 
             // Температуры
             // 
             this.Температуры.Controls.Add(this.button2);
@@ -1139,7 +1151,7 @@
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(866, 435);
+            this.button2.Location = new System.Drawing.Point(408, 191);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(75, 23);
             this.button2.TabIndex = 0;
@@ -1225,6 +1237,14 @@
             this.panel3.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar_avg)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar_median)).EndInit();
+            this.tabPageCalibration.ResumeLayout(false);
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numericWaterLevelCalibInterval)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(swiftPlotDiagram3)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(swiftPlotSeriesView6)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(series5)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.chartControl_wl_calibration)).EndInit();
             this.tabPageSettings.ResumeLayout(false);
             this.groupBox_properties.ResumeLayout(false);
             this.groupBox_properties.PerformLayout();
@@ -1237,14 +1257,6 @@
             this.tabPageDebug.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
-            this.tabPageCalibration.ResumeLayout(false);
-            this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numeric_wl_interval)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(swiftPlotDiagram3)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(swiftPlotSeriesView6)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(series5)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.chartControl_wl_calibration)).EndInit();
             this.Температуры.ResumeLayout(false);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
@@ -1302,7 +1314,7 @@
         private System.Windows.Forms.TextBox textBox_min_water_level;
         private System.Windows.Forms.Button button_clear_wl;
         private System.Windows.Forms.Label label_reconnect_count;
-        private System.Windows.Forms.Label label_temp_reconnect;
+        private System.Windows.Forms.Label labelTempReconnect;
         private System.Windows.Forms.ToolStripMenuItem pnigToolStripMenuItem;
         private System.Windows.Forms.TabPage tabPageDebug;
         private System.Windows.Forms.Button button10;
@@ -1320,11 +1332,11 @@
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.TabPage tabPageCalibration;
         private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.Button button_start;
+        private System.Windows.Forms.Button buttonStartCalib;
         private DevExpress.XtraCharts.ChartControl chartControl_wl_calibration;
         private System.Windows.Forms.Button button_stop;
         private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.NumericUpDown numeric_wl_interval;
+        private System.Windows.Forms.NumericUpDown numericWaterLevelCalibInterval;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Panel panel3;
         private EditText editText_button_time;
@@ -1340,5 +1352,6 @@
         private System.Windows.Forms.Button button9;
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.ToolTip toolTip1;
+        private System.Windows.Forms.Label labelTempReconnectCount;
     }
 }

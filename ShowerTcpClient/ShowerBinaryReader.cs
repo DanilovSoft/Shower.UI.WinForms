@@ -6,9 +6,9 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace ShowerUI.ShowerClient
+namespace ShowerTcpClient
 {
-    public class ShowerBinaryReader : BinaryReader
+    internal sealed class ShowerBinaryReader : BinaryReader
     {
         public ShowerBinaryReader(Stream input, Encoding encoding, bool leaveOpen) : base(input, encoding, leaveOpen)
         {
@@ -17,20 +17,20 @@ namespace ShowerUI.ShowerClient
 
         public void ReadOK()
         {
-            byte code = base.ReadByte();
+            byte code = ReadByte();
             if (code != (byte)ShowerCodes.OK)
                 throw new InvalidDataException();
         }
 
         public ShowerCodes ReadCode()
         {
-            ShowerCodes code = (ShowerCodes)base.ReadByte();
+            ShowerCodes code = (ShowerCodes)ReadByte();
             return code;
         }
 
         public async Task<ShowerCodes> ReadCodeAsync()
         {
-            ShowerCodes code = await Task.Run(() => (ShowerCodes)base.ReadByte()).ConfigureAwait(false);
+            ShowerCodes code = await Task.Run(() => (ShowerCodes)ReadByte()).ConfigureAwait(false);
             return code;
         }
     }

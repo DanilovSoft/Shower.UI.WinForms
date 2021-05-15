@@ -23,6 +23,7 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\Filters\Filters.csproj" />
+	  <ProjectReference Include="..\ShowerTcpClient\ShowerTcpClient.csproj" />
 	</ItemGroup>
 
   <ItemGroup>
@@ -140,6 +141,10 @@
     <EmbeddedResource Update="Forms\WaterLevelSettings.resx">
       <DependentUpon>WaterLevelSettings.cs</DependentUpon>
     </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="ShowerClient\" />
   </ItemGroup>
 
 </Project>

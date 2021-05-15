@@ -7,9 +7,9 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace ShowerUI
+namespace ShowerTcpClient
 {
-    public class FixedNetworkStream : Stream
+    internal sealed class FixedNetworkStream : Stream
     {
         private readonly NetworkStream _nstream;
         private int _readTimeout;

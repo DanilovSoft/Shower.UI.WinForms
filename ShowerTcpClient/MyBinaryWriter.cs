@@ -6,17 +6,17 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace ShowerUI.ShowerClient
+namespace ShowerTcpClient
 {
-    public class MyBinaryWriter : BinaryWriter
+    internal sealed class MyBinaryWriter : BinaryWriter
     {
-        long _lastPosition;
-        Stream baseStream;
-        const byte MaxLength = 200;
+        private const byte MaxLength = 200;
+        private readonly Stream _baseStream;
+        private long _lastPosition;
 
         public MyBinaryWriter(Stream output) : base(new MemoryStream(), Encoding.ASCII, true)
         {
-            baseStream = output;
+            _baseStream = output;
             OutStream.Position = 1;
         }
 
@@ -28,7 +28,9 @@ namespace ShowerUI.ShowerClient
         public void End()
         {
             if (OutStream.Length > MaxLength)
+            {
                 throw new InvalidOperationException("Maximum buffer length reached");
+            }
 
             var curPos = OutStream.Position;
             byte length = (byte)(curPos - _lastPosition);
@@ -44,20 +46,21 @@ namespace ShowerUI.ShowerClient
         public void Send()
         {
             OutStream.Position = 0;
-            OutStream.CopyTo(baseStream);
-            baseStream.Flush();
+            OutStream.CopyTo(_baseStream);
+            _baseStream.Flush();
             OutStream.SetLength(1);
             OutStream.Position = 1;
             _lastPosition = 0;
         }
 
-        public Task SendAsync() => SendAsync(CancellationToken.None);
-
-        public async Task SendAsync(CancellationToken cancellationToken)
+        /// <exception cref="OperationCanceledException"/>
+        public async Task SendAsync(CancellationToken cancellationToken = default)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             OutStream.Position = 0;
-            await OutStream.CopyToAsync(baseStream).ConfigureAwait(false);
-            await baseStream.FlushAsync().ConfigureAwait(false);
+            await OutStream.CopyToAsync(_baseStream, bufferSize: 81920, cancellationToken).ConfigureAwait(false);
+            await _baseStream.FlushAsync(cancellationToken).ConfigureAwait(false);
             OutStream.SetLength(1);
             OutStream.Position = 1;
             _lastPosition = 0;

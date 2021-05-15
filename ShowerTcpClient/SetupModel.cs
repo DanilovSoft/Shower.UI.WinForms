@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ShowerUI
+namespace ShowerTcpClient
 {
     public class SetupModel
     {
@@ -17,6 +17,12 @@ namespace ShowerUI
             Steps = new TemperatureStep[STEP_COUNT];
         }
 
+        public TemperatureStep this[int index]
+        {
+            get => Steps[index];
+            set => Steps[index] = value;
+        }
+
         public TemperatureStep[] Steps { get; }
 
         public void ParseTemp(byte[] data)
@@ -26,18 +32,6 @@ namespace ShowerUI
                 int index = STEP_COUNT - i - 1;
                 Steps[index].ExternalTemp = i + LOWER_BOUND;
                 Steps[index].InternalTemp = data[i];
-            }
-        }
-
-        public TemperatureStep this[int index]
-        {
-            get
-            {
-                return Steps[index];
-            }
-            set
-            {
-                Steps[index] = value;
             }
         }
     }
