@@ -14,7 +14,7 @@ namespace ShowerTcpClient
         private readonly Stream _baseStream;
         private long _lastPosition;
 
-        public MyBinaryWriter(Stream output) : base(new MemoryStream(), Encoding.ASCII, true)
+        public MyBinaryWriter(Stream output) : base(new MemoryStream(), Encoding.ASCII, leaveOpen: true)
         {
             _baseStream = output;
             OutStream.Position = 1;

@@ -143,8 +143,4 @@
     </EmbeddedResource>
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="ShowerClient\" />
-  </ItemGroup>
-
 </Project>

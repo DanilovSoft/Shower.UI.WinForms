@@ -6,11 +6,10 @@ using System.Threading.Tasks;
 
 namespace ShowerUI
 {
-    internal class AverageFilter
+    internal sealed class AverageFilter
     {
         private readonly ushort[] _buffer;
         private readonly int _windowSize;
-        public bool IsInitialized;
         private int _head;
         private int _sum;
         private int _initC;
@@ -21,22 +20,22 @@ namespace ShowerUI
             _buffer = new ushort[windowSize];
         }
 
+        public bool IsInitialized { get; private set; }
+
         public ushort AddNextValue(ushort value)
         {
             _sum += (value - _buffer[_head]);
             _buffer[_head] = value;
             _head = (_head + 1) % _windowSize;
 
-
-            if(!IsInitialized)
+            if (!IsInitialized)
             {
                 _initC++;
-                if(_initC >= _windowSize)
+                if (_initC >= _windowSize)
                 {
                     IsInitialized = true;
                 }
             }
-
             return (ushort)(_sum / _windowSize);
         }
     }

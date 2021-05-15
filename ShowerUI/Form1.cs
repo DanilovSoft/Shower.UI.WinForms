@@ -206,7 +206,7 @@ namespace ShowerUI
             Retry:
                 try
                 {
-                    using (var connection = await ShowerConnection.CreateConnectionAsync(cts.Token))
+                    using (var connection = await ConnectionHelper.CreateConnectionAsync(cts.Token))
                     {
                         reconnectCount++;
                         errorProvider1.SetError(buttonTempStartRecord, null);
@@ -365,7 +365,7 @@ namespace ShowerUI
             _ = Encoding.ASCII.GetBytes(ap);
             int length = ap.Length;  // 38
 
-            using (var connection = await ShowerConnection.CreateConnectionAsync(CancellationToken.None).ConfigureAwait(false))
+            using (var connection = await ConnectionHelper.CreateConnectionAsync(CancellationToken.None).ConfigureAwait(false))
             {
                 //connection.Writer.Write(ShowerCodes.SetDefAP);
                 //connection.Writer.Write(buf);
@@ -464,7 +464,7 @@ namespace ShowerUI
             {
                 try
                 {
-                    using (var con = await ShowerConnection.CreateConnectionAsync(cts.Token))
+                    using (var con = await ConnectionHelper.CreateConnectionAsync(cts.Token))
                     {
                         label_reconnect_count.Text = $"Reconnect count: {reconnect_count}";
                         reconnect_count++;
@@ -853,7 +853,7 @@ namespace ShowerUI
 
             try
             {
-                using (var con = await ShowerConnection.CreateConnectionAsync(cts.Token))
+                using (var con = await ConnectionHelper.CreateConnectionAsync(cts.Token))
                 {
                     await LoadPropertiesAsync(con, cts.Token);
                 }
@@ -1047,7 +1047,7 @@ namespace ShowerUI
             try
             {
                 Enabled = false;
-                using (var connection = await ShowerConnection.CreateConnectionAsync(CancellationToken.None))
+                using (var connection = await ConnectionHelper.CreateConnectionAsync(CancellationToken.None))
                 {
                     connection.BuildRequest()
                         .Write(ShowerCodes.Reset)
@@ -1070,7 +1070,7 @@ namespace ShowerUI
 
             try
             {
-                using (var con = await ShowerConnection.CreateConnectionAsync(CancellationToken.None))
+                using (var con = await ConnectionHelper.CreateConnectionAsync(CancellationToken.None))
                 {
                     SaveProperties(con);
                 }
@@ -1117,7 +1117,7 @@ namespace ShowerUI
 
         private void PingToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            using (var connection = ShowerConnection.CreateConnectionAsync(CancellationToken.None).Result)
+            using (var connection = ConnectionHelper.CreateConnectionAsync(CancellationToken.None).Result)
             {
                 var code = connection.BuildRequest()
                     .Write(ShowerCodes.Ping)
@@ -1133,7 +1133,7 @@ namespace ShowerUI
 
             try
             {
-                using (var connection = await ShowerConnection.CreateConnectionAsync(cts.Token))
+                using (var connection = await ConnectionHelper.CreateConnectionAsync(cts.Token))
                 {
                     var code = await connection.BuildRequest()
                         .Write(ShowerCodes.Ping)
@@ -1165,11 +1165,11 @@ namespace ShowerUI
             var sw = new Stopwatch();
             try
             {
-                while (true)
+                while (!cts.IsCancellationRequested)
                 {
                     try
                     {
-                        using (var con = await ShowerConnection.CreateConnectionAsync(cts.Token))
+                        using (var con = await ConnectionHelper.CreateConnectionAsync(cts.Token))
                         {
                             ushort waterLevelEmpty = await con.RequestAsync<ushort>(ShowerCodes.GetWaterLevelEmpty, cts.Token);
                             ushort waterLevelFull = await con.RequestAsync<ushort>(ShowerCodes.GetWaterLevelFull, cts.Token);
@@ -1292,7 +1292,7 @@ namespace ShowerUI
 
             try
             {
-                using (var con = await ShowerConnection.CreateConnectionAsync(cts.Token))
+                using (var con = await ConnectionHelper.CreateConnectionAsync(cts.Token))
                 {
                     var chart = con.GetTempChart();
                 }
@@ -1335,7 +1335,7 @@ namespace ShowerUI
                     _usecList.Clear();
                     _usecList.AddRange(usecList);
 
-                    using (var con = ShowerConnection.CreateConnectionAsync(CancellationToken.None).Result)
+                    using (var con = ConnectionHelper.CreateConnectionAsync(CancellationToken.None).Result)
                     {
                         _waterLevelEmpty = con.GetWaterLevelEmptyAsync(CancellationToken.None).Result;
                         _waterLevelFull = con.GetWaterLevelFullAsync(CancellationToken.None).Result;
