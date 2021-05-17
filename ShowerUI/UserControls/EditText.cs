@@ -12,26 +12,38 @@ namespace ShowerUI
 {
     public partial class EditText : UserControl
     {
-        private readonly static Color _hasChangedColor = Color.FromArgb(0, 0, 255);
+        private readonly static Color HasChangedColor = Color.FromArgb(255, 0, 0);
         private readonly Color _labelColor;
-        private Type _valueType;
+        private Type? _valueType;
         /// <summary>
         /// Измененное значение
         /// </summary>
-        private object _changedValue;
+        private object? _changedValue;
         /// <summary>
         /// Изначальное значение
         /// </summary>
-        private object _origValue;
+        private object? _origValue;
         /// <summary>
         /// Изначальное текстовое значение
         /// </summary>
-        private string _origTextValue;
+        private string? _origTextValue;
 
         public EditText()
         {
             InitializeComponent();
             _labelColor = label.ForeColor;
+        }
+
+        public bool HasChanges { get; private set; }
+
+        public string TextBoxHint
+        {
+            get => toolTip1.GetToolTip(textBox1);
+            set
+            {
+                toolTip1.SetToolTip(textBox1, value);
+                toolTip1.SetToolTip(label, value);
+            }
         }
 
         public string Caption
@@ -40,7 +52,7 @@ namespace ShowerUI
             set => label.Text = value;
         }
 
-        public object Value
+        public object? Value
         {
             get => GetValue();
             set
@@ -48,23 +60,21 @@ namespace ShowerUI
                 _changedValue = _origValue = value;
                 _valueType = value?.GetType();
                 _origTextValue = value?.ToString();
-                textBox.Text = _origTextValue;
+                textBox1.Text = _origTextValue;
                 ResetHasChanges();
             }
         }
 
-        public bool HasChanges { get; private set; }
-
-        private object GetValue()
+        private object? GetValue()
         {
             return _changedValue;
         }
 
         public T GetValue<T>()
         {
-            if (_changedValue is T)
+            if (_changedValue is T t)
             {
-                return (T)_changedValue;
+                return t;
             }
             else
             {
@@ -89,20 +99,20 @@ namespace ShowerUI
         private void InnerHasChanges()
         {
             HasChanges = true;
-            label.ForeColor = _hasChangedColor;
+            label.ForeColor = HasChangedColor;
         }
 
-        private void textBox1_Validating(object sender, CancelEventArgs e)
+        private void TextBox1_Validating(object sender, CancelEventArgs e)
         {
-            if(_origValue != null)
+            if (_origValue != null)
             {
                 try
                 {
-                    _changedValue = Convert.ChangeType(textBox.Text, _valueType);
+                    _changedValue = Convert.ChangeType(textBox1.Text, _valueType);
                 }
                 catch
                 {
-                    errorProvider1.SetError(textBox, $"Значение не соответствует типу {_valueType.Name}");
+                    errorProvider1.SetError(textBox1, $"Значение не соответствует типу {_valueType.Name}");
                     e.Cancel = true;
                     return;
                 }
@@ -120,9 +130,9 @@ namespace ShowerUI
             }
         }
 
-        private void textBox_TextChanged(object sender, EventArgs e)
+        private void TextBox_TextChanged(object sender, EventArgs e)
         {
-            if (textBox.Text == _origTextValue)
+            if (textBox1.Text == _origTextValue)
             {
                 InnerResetChanges();
             }

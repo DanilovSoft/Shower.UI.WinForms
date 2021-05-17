@@ -49,7 +49,7 @@ namespace ShowerTcpClient
             return this;
         }
 
-        public RequestBuilder Write<T>(ShowerCodes code, Action<T> callback)
+        public RequestBuilder Write<T>(ShowerCodes code, Action<T> callback) where T : struct
         {
             _writer.Write(code);
             _writer.End();
@@ -57,7 +57,7 @@ namespace ShowerTcpClient
             return this;
         }
 
-        public RequestBuilder Result<T>(Action<T> callback)
+        public RequestBuilder Result<T>(Action<T> callback) where T : struct
         {
             _writer.End();
             _callbacks.Add(CallbackInfo.Create(callback));
@@ -152,13 +152,13 @@ namespace ShowerTcpClient
                 ReadPrimitiveCallback = callback;
             }
 
-            public static CallbackInfo Create<T>(Action<T> callback)
+            public static CallbackInfo Create<T>(Action<T> callback) where T : struct
             {
                 int unmanagedSize = Marshal.SizeOf<T>();
 
                 return new CallbackInfo(unmanagedSize, delegate (byte[] buf, ref int startIndex)
                 {
-                    T obj = MySerializer.Read<T>(buf, startIndex, unmanagedSize);
+                    T obj = MySerializer.Read<T>(buf.AsSpan(startIndex, unmanagedSize));
                     startIndex += unmanagedSize;
                     callback(obj);
                 });

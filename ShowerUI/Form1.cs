@@ -14,6 +14,7 @@ using Filters;
 using Newtonsoft.Json;
 using ShowerUI.Dto;
 using ShowerTcpClient;
+using DevExpress.XtraCharts.Native;
 
 namespace ShowerUI
 {
@@ -25,12 +26,6 @@ namespace ShowerUI
         private readonly List<ushort> _usecList = new(30000); // 20 минут
         private readonly Action<InternalTempModel> _addTemperatureRecordHandler;
         private readonly List<InternalTempModel> _temperatureList = new(600);
-        private readonly SwiftPlotDiagramSecondaryAxisY _median = new("Медиана");
-        private readonly SwiftPlotDiagramSecondaryAxisY _avg = new("Среднее");
-        private readonly Series _usecSeries;
-        private readonly Series _percentSeries;
-        private readonly Series _medianSeries;
-        private readonly Series _averageSeries;
         private CancellationTokenSource? _tempRecorderCts;
         private CancellationTokenSource? _wl_cts;
         /// <summary>
@@ -46,118 +41,9 @@ namespace ShowerUI
         public Form1()
         {
             InitializeComponent();
+
             _addTemperatureRecordHandler = AddTemperatureRecord;
-
-            UpdateMedianCheckBox();
-            UpdateAverageCheckBox();
-
-            chartControl_water_level.Series.Clear();
-            _usecSeries = chartControl_water_level.Series[chartControl_water_level.Series.Add("Usec", ViewType.SwiftPlot)];
-            _medianSeries = chartControl_water_level.Series[chartControl_water_level.Series.Add("Median", ViewType.SwiftPlot)];
-            _percentSeries = chartControl_water_level.Series[chartControl_water_level.Series.Add("%", ViewType.SwiftPlot)];
-            _averageSeries = chartControl_water_level.Series[chartControl_water_level.Series.Add("Avg", ViewType.SwiftPlot)];
-        }
-
-        private void UpdateMedianCheckBox()
-        {
-            checkBox_median.Text = $"Медиана ({GetMedianWindowSize()})";
-        }
-
-        // инициализация
-        private void InitWaterLevelChart()
-        {
-            //chartControl_water_level.Series.Clear();
-
-            //_usecSeries = chartControl_water_level.Series[chartControl_water_level.Series.Add("Usec", ViewType.SwiftPlot)];
-            //_medianSeries = chartControl_water_level.Series[chartControl_water_level.Series.Add("Median", ViewType.SwiftPlot)];
-            //_percentSeries = chartControl_water_level.Series[chartControl_water_level.Series.Add("%", ViewType.SwiftPlot)];
-            //_averageSeries = chartControl_water_level.Series[chartControl_water_level.Series.Add("Avg", ViewType.SwiftPlot)];
-
-            _percentSeries.LegendText = "%";
-            _usecSeries.LabelsVisibility = DevExpress.Utils.DefaultBoolean.False;
-
-            var percentAxisY = new SwiftPlotDiagramSecondaryAxisY("Уровень в процентах");
-            percentAxisY.WholeRange.Auto = false;
-            percentAxisY.WholeRange.SetMinMaxValues(0, 99);
-            percentAxisY.VisualRange.Auto = false;
-            percentAxisY.VisualRange.SetMinMaxValues(0, 99);
-            percentAxisY.Visibility = DevExpress.Utils.DefaultBoolean.True;
-            percentAxisY.MinorCount = 1;
-            percentAxisY.GridLines.Visible = true;
-            percentAxisY.NumericScaleOptions.AutoGrid = false;
-            percentAxisY.NumericScaleOptions.CustomGridAlignment = 2;
-            percentAxisY.NumericScaleOptions.GridSpacing = 2;
-            percentAxisY.NumericScaleOptions.GridOffset = 2;
-            percentAxisY.Tickmarks.MinorVisible = false;
-            percentAxisY.Tickmarks.Visible = false;
-
-            if (_usecSeries.View is SwiftPlotSeriesView usecView)
-            {
-                usecView.Color = Color.Blue;
-            }
-
-            // быстрая диаграмма, не поддерживает инверсию осей.
-            if (chartControl_water_level.Diagram is SwiftPlotDiagram swiftDiagram)
-            {
-                swiftDiagram.SecondaryAxesY.Add(_median);
-                swiftDiagram.SecondaryAxesY.Add(_avg);
-                swiftDiagram.SecondaryAxesY.Add(percentAxisY);
-
-                // не отображать шкалу микросекунд.
-                swiftDiagram.AxisY.Visibility = DevExpress.Utils.DefaultBoolean.False;
-            }
-
-            if (_percentSeries.View is SwiftPlotSeriesView swiftView)
-            {
-                swiftView.AxisY = percentAxisY;
-                //swiftView.AxisY.Visibility = DevExpress.Utils.DefaultBoolean.False;
-                swiftView.Color = Color.Red;
-            }
-
-            if (_medianSeries.View is SwiftPlotSeriesView swiftMedian)
-            {
-                swiftMedian.AxisY = _median;
-                swiftMedian.AxisY.Visibility = DevExpress.Utils.DefaultBoolean.False;
-                swiftMedian.Color = Color.Violet;
-            }
-
-            if (_averageSeries.View is SwiftPlotSeriesView swiftAvg)
-            {
-                swiftAvg.AxisY = _avg;
-                swiftAvg.AxisY.Visibility = DevExpress.Utils.DefaultBoolean.False;
-                swiftAvg.Color = Color.DarkGreen;
-            }
-
-            // выключить отображение значений микросекунд.
-            _usecSeries.CrosshairLabelVisibility = DevExpress.Utils.DefaultBoolean.False;
-            _medianSeries.CrosshairLabelVisibility = DevExpress.Utils.DefaultBoolean.False;
-            _percentSeries.CrosshairLabelVisibility = DevExpress.Utils.DefaultBoolean.False;
-            _averageSeries.CrosshairLabelVisibility = DevExpress.Utils.DefaultBoolean.False;
-        }
-
-        private void SetMinMaxWaterLevel(ushort waterLevelEmpty, ushort waterLevelFull)
-        {
-            if (chartControl_water_level.Diagram is SwiftPlotDiagram swiftDiagram)
-            {
-                swiftDiagram.AxisY.WholeRange.Auto = false;
-                swiftDiagram.AxisY.WholeRange.SetMinMaxValues(waterLevelFull, waterLevelEmpty);
-
-                swiftDiagram.AxisY.VisualRange.Auto = false;
-                swiftDiagram.AxisY.VisualRange.SetMinMaxValues(waterLevelFull, waterLevelEmpty);
-            }
-
-            _median.WholeRange.Auto = false;
-            _median.VisualRange.Auto = false;
-            _median.WholeRange.SetMinMaxValues(waterLevelFull, waterLevelEmpty);
-            _median.VisualRange.SetMinMaxValues(waterLevelFull, waterLevelEmpty);
-
-            _avg.WholeRange.Auto = false;
-            _avg.VisualRange.Auto = false;
-            _avg.WholeRange.SetMinMaxValues(waterLevelFull, waterLevelEmpty);
-            _avg.VisualRange.SetMinMaxValues(waterLevelFull, waterLevelEmpty);
-
-            textBox_min_water_level.Text = waterLevelFull.ToString();
-            textBox_max_water_level.Text = waterLevelEmpty.ToString();
+            wiFiPower.ResetValue();
         }
 
         private void LoadTempRecord()
@@ -210,7 +96,7 @@ namespace ShowerUI
                     {
                         reconnectCount++;
                         errorProvider1.SetError(buttonTempStartRecord, null);
-                        await Task.Run(() => RecordDataAsync(connection, cts.Token));
+                        await Task.Run(() => RecordTempAsync(connection, cts.Token));
                     }
                 }
                 catch when (cts.IsCancellationRequested)
@@ -239,7 +125,7 @@ namespace ShowerUI
             }
         }
 
-        private async Task RecordDataAsync(ShowerConnection con, CancellationToken cancellationToken)
+        private async Task RecordTempAsync(ShowerConnection con, CancellationToken cancellationToken)
         {
             int number = 0;
             while (!cancellationToken.IsCancellationRequested)
@@ -448,405 +334,13 @@ namespace ShowerUI
 
         }
 
-        private bool _wl_started;
-
-        private async void Button_WaterLevelStart_Click(object sender, EventArgs e)
-        {
-            var cts = _wl_cts = new CancellationTokenSource();
-            int reconnect_count = 0;
-
-            button_wl.Enabled = false;
-            button_wl_stop.Enabled = true;
-
-            _wl_started = true;
-
-            while (true)
-            {
-                try
-                {
-                    using (var con = await ConnectionHelper.CreateConnectionAsync(cts.Token))
-                    {
-                        label_reconnect_count.Text = $"Reconnect count: {reconnect_count}";
-                        reconnect_count++;
-
-                        await RecordWaterLevelAsync(con, cts.Token);
-                    }
-                }
-                catch when (cts.IsCancellationRequested)
-                {
-                    _wl_started = false;
-                    return;
-                }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine(ex);
-                    try
-                    {
-                        await Task.Delay(3000, cts.Token);
-                    }
-                    catch { return; }
-                }
-            }
-        }
-
-        private void Button_WaterLevelStop_Click(object sender, EventArgs e)
-        {
-            _wl_cts?.Cancel();
-            button_wl.Enabled = true;
-            button_wl_stop.Enabled = false;
-        }
-
-        private void ClearChartWL()
-        {
-            foreach (Series series in chartControl_water_level.Series)
-            {
-                series.Points.Clear();
-            }
-        }
-
-        private void TrackBar2_Scroll(object sender, EventArgs e)
-        {
-
-        }
-
-        private async Task RecordWaterLevelAsync(ShowerConnection con, CancellationToken cancellationToken)
-        {
-            _waterLevelEmpty = await con.GetWaterLevelEmptyAsync(cancellationToken);
-            _waterLevelFull = await con.GetWaterLevelFullAsync(cancellationToken);
-
-            _usecList.Clear();
-
-            SetMinMaxWaterLevel(_waterLevelEmpty, _waterLevelFull);
-
-            int medianWindowSize = GetMedianWindowSize();
-            var medianFilter = new FastMedianFilter(medianWindowSize);
-
-            int avgWindowSize = GetAverageTrackBar();
-            var avgFilter = new AverageFilter(avgWindowSize);
-
-            void OnTrackBar(object sender, EventArgs e)
-            {
-                medianWindowSize = GetMedianWindowSize();
-                avgWindowSize = GetAverageTrackBar();
-
-                medianFilter = new FastMedianFilter(medianWindowSize);
-                avgFilter = new AverageFilter(avgWindowSize);
-
-                ClearMedian();
-                ClearAverage();
-                ClearPercent();
-
-                int t = 0;
-
-                _medianSeries.Points.BeginUpdate();
-                _averageSeries.Points.BeginUpdate();
-                _percentSeries.Points.BeginUpdate();
-                for (int i = 0; i < _usecList.Count; i++)
-                {
-                    t++;
-                    ushort medianUsec = medianFilter.Add(_usecList[i]);
-                    if (medianFilter.IsInitialized)
-                    {
-                        AddUsecMedian(t, medianUsec);
-
-                        ushort avg = avgFilter.AddNextValue(medianUsec);
-                        if (avgFilter.IsInitialized)
-                        {
-                            AddAverageUsec(t, avg);
-                            byte percent = GetPercent(avg);
-                            AddPercent(t, percent);
-                        }
-                    }
-                }
-                _medianSeries.Points.EndUpdate();
-                _averageSeries.Points.EndUpdate();
-                _percentSeries.Points.EndUpdate();
-            }
-
-            trackBar_median.ValueChanged += OnTrackBar;
-            trackBar_avg.ValueChanged += OnTrackBar;
-
-            try
-            {
-                int t = 0;
-
-                while (true)
-                {
-                    short usec = 0;
-
-                    await Task.Run(async () =>
-                    {
-                        await Task.Delay(40);
-                        usec = await con.GetWaterLevelRawAsync(cancellationToken);
-                    });
-
-                    t++;
-
-                    if (usec != -1)
-                    {
-                        ushort invertedUsec = (ushort)(_waterLevelEmpty - (usec - _waterLevelFull));
-                        ushort medianUsec = medianFilter.Add(invertedUsec);
-
-                        _usecSeries.Points.Add(new SeriesPoint(t, invertedUsec));
-
-                        _usecList.Add(invertedUsec);
-
-                        if (medianFilter.IsInitialized)
-                        {
-                            AddUsecMedian(t, medianUsec);
-
-                            ushort avg = avgFilter.AddNextValue(medianUsec);
-                            if (avgFilter.IsInitialized)
-                            {
-                                AddAverageUsec(t, avg);
-                                byte percent = GetPercent(avg);
-                                AddPercent(t, percent);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        //_usecSeries.Points.Add(new SeriesPoint(argument: t));
-                        //_percentSeries.Points.Add(new SeriesPoint(t));
-                        //AddUsecMedian(t);
-                    }
-                }
-            }
-            finally
-            {
-                trackBar_median.ValueChanged -= OnTrackBar;
-                trackBar_avg.ValueChanged -= OnTrackBar;
-            }
-        }
-
-        // From 0.0 to 50
-        private float GetPoint(ushort usec)
-        {
-            var usec_range = (ushort)(_waterLevelEmpty - _waterLevelFull);
-
-            /* Поправка на выход из диаппазона */
-            FixRawRange(ref usec);
-
-            /* Смещение */
-            usec -= _waterLevelFull;
-
-            /* Уровень воды в микросекундах */
-            usec = (ushort)(usec_range - usec);
-
-            double tmp = usec * (100 / 2d);
-
-            /* Сколько пунктов из 50 */
-            double point = tmp / usec_range;
-
-            float pointf = (float)point;
-
-            return pointf;
-        }
-
-        private void FixRawRange(ref ushort raw_value)
-        {
-            if (raw_value < _waterLevelFull)
-                raw_value = _waterLevelFull;
-            else
-            if (raw_value > _waterLevelEmpty)
-                raw_value = _waterLevelEmpty;
-        }
-
-        private byte GetPercent(ushort usec)
-        {
-            ushort invertedUsec = (ushort)(_waterLevelEmpty - (usec - _waterLevelFull));
-
-            float pointf = GetPoint(invertedUsec);
-
-            byte point = (byte)pointf;
-            //byte point = (byte)Math.Round(pointf);
-
-            int percent = (point * 2);
-
-            //percent = (100 - percent);
-
-            if (percent > 99)
-                percent = 99;
-
-            return (byte)percent;
-        }
-
-        private void TrackBar_median_Scroll(object sender, EventArgs e)
-        {
-            UpdateMedianCheckBox();
-
-            if (!_wl_started)
-            {
-                ShowWaterLevel();
-            }
-        }
-
-        private void ShowWaterLevel()
-        {
-            var medianWindowSize = GetMedianWindowSize();
-            var avgWindowSize = GetAverageTrackBar();
-
-            //var fastMedianFilter = new FastMedianFilter(medianWindowSize);
-            var medianFilter = new MedianFilter(medianWindowSize);
-            var avgFilter = new AverageFilter(avgWindowSize);
-
-            //chartControl_water_level.BeginInit();
-            _usecSeries.Points.BeginUpdate();
-            _medianSeries.Points.BeginUpdate();
-            _averageSeries.Points.BeginUpdate();
-            _percentSeries.Points.BeginUpdate();
-
-            ClearUsec();
-            ClearMedian();
-            ClearAverage();
-            ClearPercent();
-
-            int t = 0;
-
-
-            for (int i = 0; i < _usecList.Count; i++)
-            {
-                t++;
-
-                ushort usec = _usecList[i];
-                AddUsec(t, usec);
-
-                ushort medianUsec = medianFilter.Add(usec);
-                //var fastMedian = fastMedianFilter.Add(usec);
-                //if(fastMedian != medianUsec)
-                //{
-
-                //}
-
-                if (medianFilter.IsInitialized)
-                {
-                    AddUsecMedian(t, medianUsec);
-
-                    ushort avg = avgFilter.AddNextValue(medianUsec);
-                    if (avgFilter.IsInitialized)
-                    {
-                        AddAverageUsec(t, avg);
-                        byte percent = GetPercent(avg);
-                        AddPercent(t, percent);
-                    }
-                }
-            }
-            _usecSeries.Points.EndUpdate();
-            _medianSeries.Points.EndUpdate();
-            _averageSeries.Points.EndUpdate();
-            _percentSeries.Points.EndUpdate();
-        }
-
-        private int GetMedianWindowSize()
-        {
-            int windowSize = trackBar_median.Value * 2 + 1;
-            return windowSize;
-        }
-
-        private void TrackBar2_Scroll_1(object sender, EventArgs e)
-        {
-            UpdateAverageCheckBox();
-
-            if (!_wl_started)
-            {
-                ShowWaterLevel();
-            }
-        }
-
-        private int GetAverageTrackBar()
-        {
-            int value = trackBar_avg.Value * 8;
-            return value;
-        }
-
-        private void UpdateAverageCheckBox()
-        {
-            checkBox_avg.Text = $"Среднее ({GetAverageTrackBar()})";
-        }
-
-        private void CheckBox_avg_CheckedChanged(object sender, EventArgs e)
-        {
-            _averageSeries.Visible = checkBox_avg.Checked;
-        }
-
-        private void Button8_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                using (var dialog = new SaveFileDialog())
-                {
-                    dialog.AutoUpgradeEnabled = true;
-                    dialog.DefaultExt = "txt";
-                    dialog.Filter = "Json File|*.txt";
-                    if (dialog.ShowDialog() == DialogResult.OK)
-                    {
-                        string json = JsonConvert.SerializeObject(_usecList);
-                        File.WriteAllText(dialog.FileName, json);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(this, ex.Message, "", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-        }
-
-        private void ClearUsec()
-        {
-            _usecSeries.Points.Clear();
-        }
-
-        private void ClearMedian()
-        {
-            _medianSeries.Points.Clear();
-        }
-
-        private void ClearPercent()
-        {
-            _percentSeries.Points.Clear();
-        }
-
-        private void AddPercent(int t, byte percent)
-        {
-            _percentSeries.Points.Add(new SeriesPoint(t, percent));
-        }
-
-        private void AddUsec(int t, ushort value)
-        {
-            _usecSeries.Points.Add(new SeriesPoint(t, value));
-        }
-
-        private void AddUsecMedian(int t, ushort value)
-        {
-            _medianSeries.Points.Add(new SeriesPoint(t, value));
-        }
-
-        private void ClearAverage()
-        {
-            _averageSeries.Points.Clear();
-        }
-
-        private void AddAverageUsec(int t, ushort value)
-        {
-            _averageSeries.Points.Add(new SeriesPoint(t, value));
-        }
-
-        private void AddUsecMedian(int t)
-        {
-            _medianSeries.Points.Add(new SeriesPoint(t));
-        }
-
-        private void Button_clear_wl_Click(object sender, EventArgs e)
-        {
-            ClearChartWL();
-        }
-
         private async void Button_Load_Properties_Click(object sender, EventArgs e)
         {
-            panel_properties.Enabled = false;
+            panelProperties.Enabled = false;
             panel_properties_custom.Enabled = false;
             button_save_properties.Enabled = false;
             buttonLoadProps.Enabled = false;
+            buttonClearProperties.Enabled = false;
             button_load_props_canc.Enabled = true;
 
             var cts = _cts_loadProperties = new CancellationTokenSource();
@@ -866,38 +360,86 @@ namespace ShowerUI
             {
                 MessageBox.Show(this, ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+            finally
+            {
+                cts.Cancel();
+            }
 
             LoadPropsEnable();
         }
 
         private void LoadPropsEnable()
         {
-            panel_properties.Enabled = true;
+            panelProperties.Enabled = true;
             panel_properties_custom.Enabled = true;
             button_save_properties.Enabled = true;
             buttonLoadProps.Enabled = true;
+            buttonClearProperties.Enabled = true;
             button_load_props_canc.Enabled = false;
         }
 
         private async Task LoadPropertiesAsync(ShowerConnection con, CancellationToken cancellationToken)
         {
-            editText_wl_full.Value = await con.RequestAsync<ushort>(ShowerCodes.GetWaterLevelFull, cancellationToken);
-            editText_wl_empty.Value = await con.RequestAsync<ushort>(ShowerCodes.GetWaterLevelEmpty, cancellationToken);
-            editText_min_water_heating_percent.Value = await con.RequestAsync<byte>(ShowerCodes.GetMinimumWaterHeatingLevel, cancellationToken);
-            editText_abs_heating_time_limit.Value = await con.RequestAsync<byte>(ShowerCodes.GetAbsoluteHeatingTimeLimit, cancellationToken);
-            editText_heating_time_limit.Value = await con.RequestAsync<byte>(ShowerCodes.GetHeatingTimeLimit, cancellationToken);
-            editText_light_brightness.Value = await con.RequestAsync<byte>(ShowerCodes.GetLightBrightness, cancellationToken);
-            editText_wifi_power.Value = await con.RequestAsync<byte>(ShowerCodes.GetWiFiPower, cancellationToken);
+            var model = await Task.Run(() => LoadProperties(con), cancellationToken);
 
-            editText_WL_measure_interval.Value = await con.RequestAsync<byte>(ShowerCodes.GetWaterLevelMeasureInterval, cancellationToken);
-            editText_wl_ring_buffer_size.Value = await con.RequestAsync<byte>(ShowerCodes.GetWaterLevelRingBufferSize, cancellationToken);
-            editText_wl_cut_off_percent.Value = await con.RequestAsync<byte>(ShowerCodes.GetWaterValveCutOffPercent, cancellationToken);
-            editText_internal_temp_buf_size.Value = await con.RequestAsync<byte>(ShowerCodes.GetTempSensorInternalTempBufferSize, cancellationToken);
-            editText_wl_usec_per_deg.Value = await con.RequestAsync<ushort>(ShowerCodes.GetWaterLevelUsecPerDeg, cancellationToken) / 100f;
-            editText_button_time.Value = await con.RequestAsync<byte>(ShowerCodes.GetButtonTimeMsec, cancellationToken);
+            ClearProperties();
 
-            byte iwd = await con.RequestAsync<byte>(ShowerCodes.GetWatchDogWasReset, cancellationToken);
-            checkBox_iwd.Checked = Convert.ToBoolean(iwd);
+            editText_wl_full.Value = model.WaterLevelFullUsec;
+            editText_wl_empty.Value = model.WaterLevelEmptyUsec;
+            editText_min_water_heating_percent.Value = model.MinimumWaterHeatingLevel;
+            editText_abs_heating_time_limit.Value = model.AbsoluteHeatingTimeLimit;
+            editText_heating_time_limit.Value = model.HeatingTimeLimit;
+            editText_light_brightness.Value = model.LightBrightness;
+            wiFiPower.Value = model.WiFiPower;
+            editText_WL_measure_interval.Value = model.WaterLevelMeasureInterval;
+            editText_wl_ring_buffer_size.Value = model.WaterLevelRingBufferSize;
+            editText_wl_cut_off_percent.Value = model.WaterValveCutOffPercent;
+            editText_internal_temp_buf_size.Value = model.TempSensorInternalTempBufferSize;
+            editText_wl_usec_per_deg.Value = model.WaterLevelUsecPerDeg;
+            editText_button_time.Value = model.ButtonTimeMsec;
+            checkBox_iwd.Checked = model.WatchDogWasReset;
+        }
+
+        private void ClearProperties()
+        {
+            editText_wl_full.Value = null;
+            editText_wl_empty.Value = null;
+            editText_min_water_heating_percent.Value = null;
+            editText_abs_heating_time_limit.Value = null;
+            editText_heating_time_limit.Value = null;
+            editText_light_brightness.Value = null;
+            wiFiPower.Value = null;
+            editText_WL_measure_interval.Value = null;
+            editText_wl_ring_buffer_size.Value = null;
+            editText_wl_cut_off_percent.Value = null;
+            editText_internal_temp_buf_size.Value = null;
+            editText_wl_usec_per_deg.Value = null;
+            editText_button_time.Value = null;
+            checkBox_iwd.CheckState = CheckState.Indeterminate;
+            //wifiPower.ResetText();
+        }
+
+        private static PropertiesModel LoadProperties(ShowerConnection con)
+        {
+            var model = new PropertiesModel
+            {
+                WaterLevelFullUsec = con.Request<ushort>(ShowerCodes.GetWaterLevelFullUsec),
+                WaterLevelEmptyUsec = con.Request<ushort>(ShowerCodes.GetWaterLevelEmptyUsec),
+                MinimumWaterHeatingLevel = con.Request<byte>(ShowerCodes.GetMinimumWaterHeatingLevel),
+                AbsoluteHeatingTimeLimit = con.Request<byte>(ShowerCodes.GetAbsoluteHeatingTimeLimit),
+                HeatingTimeLimit = con.Request<byte>(ShowerCodes.GetHeatingTimeLimit),
+                LightBrightness = con.Request<byte>(ShowerCodes.GetLightBrightness),
+                WiFiPower = con.Request<byte>(ShowerCodes.GetWiFiPower),
+                WaterLevelMeasureInterval = con.Request<byte>(ShowerCodes.GetWaterLevelMeasureInterval),
+                WaterLevelRingBufferSize = con.Request<byte>(ShowerCodes.GetWaterLevelRingBufferSize),
+                WaterValveCutOffPercent = con.Request<byte>(ShowerCodes.GetWaterValveCutOffPercent),
+                TempSensorInternalTempBufferSize = con.Request<byte>(ShowerCodes.GetTempSensorInternalTempBufferSize),
+                WaterLevelUsecPerDeg = con.Request<ushort>(ShowerCodes.GetWaterLevelUsecPerDeg) / 100f,
+                ButtonTimeMsec = con.Request<byte>(ShowerCodes.GetButtonTimeMsec),
+                WatchDogWasReset = con.GetWatchDogWasReset()
+            };
+
+            return model;
         }
 
         private void SaveProperties(ShowerConnection con)
@@ -905,7 +447,7 @@ namespace ShowerUI
             if (editText_wl_full.HasChanges)
             {
                 con.BuildRequest()
-                   .Write(ShowerCodes.SetWaterLevelFull)
+                   .Write(ShowerCodes.SetWaterLevelFullUsec)
                    .Write(editText_wl_full.GetValue<ushort>())
                    .ReadOK();
 
@@ -915,7 +457,7 @@ namespace ShowerUI
             if (editText_wl_empty.HasChanges)
             {
                 con.BuildRequest()
-                   .Write(ShowerCodes.SetWaterLevelEmpty)
+                   .Write(ShowerCodes.SetWaterLevelEmptyUsec)
                    .Write(editText_wl_empty.GetValue<ushort>())
                    .ReadOK();
 
@@ -962,14 +504,14 @@ namespace ShowerUI
                 editText_light_brightness.ResetHasChanges();
             }
 
-            if (editText_wifi_power.HasChanges)
+            if (wiFiPower.HasChanges)
             {
                 con.BuildRequest()
                    .Write(ShowerCodes.SetWiFiPower)
-                   .Write(editText_wifi_power.GetValue<byte>())
+                   .Write(wiFiPower.Value.Value)
                    .ReadOK();
 
-                editText_wifi_power.ResetHasChanges();
+                wiFiPower.ResetHasChanges();
             }
 
             if (editText_WL_measure_interval.HasChanges)
@@ -1039,10 +581,10 @@ namespace ShowerUI
 
         private void ResetToolStripMenuItem_Reset_Click(object sender, EventArgs e)
         {
-            Restart();
+            RestartDevice();
         }
 
-        private async void Restart()
+        private async void RestartDevice()
         {
             try
             {
@@ -1083,35 +625,6 @@ namespace ShowerUI
             finally
             {
                 groupBox_properties.Enabled = true;
-            }
-        }
-
-        private void CheckBox_uSec_CheckedChanged(object sender, EventArgs e)
-        {
-            if (checkBox3.Checked)
-            {
-                _usecSeries.Visible = true;
-            }
-            else
-            {
-                _usecSeries.Visible = false;
-            }
-        }
-
-        private void CheckBox_WL_Median_CheckedChanged(object sender, EventArgs e)
-        {
-            _medianSeries.Visible = checkBox_median.Checked;
-        }
-
-        private void CheckBox_percent_CheckedChanged(object sender, EventArgs e)
-        {
-            if (checkBox4.Checked)
-            {
-                _percentSeries.Visible = true;
-            }
-            else
-            {
-                _percentSeries.Visible = false;
             }
         }
 
@@ -1171,8 +684,8 @@ namespace ShowerUI
                     {
                         using (var con = await ConnectionHelper.CreateConnectionAsync(cts.Token))
                         {
-                            ushort waterLevelEmpty = await con.RequestAsync<ushort>(ShowerCodes.GetWaterLevelEmpty, cts.Token);
-                            ushort waterLevelFull = await con.RequestAsync<ushort>(ShowerCodes.GetWaterLevelFull, cts.Token);
+                            ushort waterLevelEmpty = await con.RequestAsync<ushort>(ShowerCodes.GetWaterLevelEmptyUsec, cts.Token);
+                            ushort waterLevelFull = await con.RequestAsync<ushort>(ShowerCodes.GetWaterLevelFullUsec, cts.Token);
 
                             SetWLCalibration(waterLevelEmpty, waterLevelFull);
                             errorProvider1.SetError(buttonStartCalib, null);
@@ -1275,14 +788,12 @@ namespace ShowerUI
 
         private void Button1_Click(object sender, EventArgs e)
         {
-            Restart();
+            RestartDevice();
         }
 
         private void Button9_Click(object sender, EventArgs e)
         {
             _cts_loadProperties?.Cancel();
-            _cts_loadProperties = null;
-
             LoadPropsEnable();
         }
 
@@ -1312,50 +823,9 @@ namespace ShowerUI
             _wl_cts?.Cancel();
         }
 
-        private void Form1_Load(object sender, EventArgs e)
-        {
-            InitWaterLevelChart();
-        }
-
         private void TabControl1_Selected(object sender, TabControlEventArgs e)
         {
 
-        }
-
-        private void Button9_Click_1(object sender, EventArgs e)
-        {
-            using (var dialog = new OpenFileDialog())
-            {
-                dialog.Filter = "Json File|*.txt";
-                dialog.Multiselect = false;
-                if (dialog.ShowDialog() == DialogResult.OK)
-                {
-                    string json = File.ReadAllText(dialog.FileName);
-                    var usecList = JsonConvert.DeserializeObject<List<ushort>>(json);
-                    _usecList.Clear();
-                    _usecList.AddRange(usecList);
-
-                    using (var con = ConnectionHelper.CreateConnectionAsync(CancellationToken.None).Result)
-                    {
-                        _waterLevelEmpty = con.GetWaterLevelEmptyAsync(CancellationToken.None).Result;
-                        _waterLevelFull = con.GetWaterLevelFullAsync(CancellationToken.None).Result;
-
-                        SetMinMaxWaterLevel(_waterLevelEmpty, _waterLevelFull);
-                    }
-
-                    ShowWaterLevel();
-
-                    //chartControl_temperature.BeginInit();
-                    //foreach (var item in _dataCollection)
-                    //{
-                    //    //chartControl1.Series[0].Points.Add(new SeriesPoint(item.Time, item.InternalTemp) { IsEmpty = !item.HeaterEnabled });
-                    //    chartControl_temperature.Series[1].Points.Add(new SeriesPoint(item.Time, item.AverageInternalTemp) { IsEmpty = !item.HeaterEnabled });
-                    //    //chartControl1.Series[2].Points.Add(new SeriesPoint(item.Time, item.InternalTemp) { IsEmpty = item.HeaterEnabled });
-                    //    chartControl_temperature.Series[3].Points.Add(new SeriesPoint(item.Time, item.AverageInternalTemp) { IsEmpty = item.HeaterEnabled });
-                    //}
-                    //chartControl_temperature.EndInit();
-                }
-            }
         }
 
         private void Button_wifi_SetCurrent_Click(object sender, EventArgs e)
@@ -1366,6 +836,11 @@ namespace ShowerUI
         private void Button_wifi_SetDefault_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void Button_ClearProperties_Click(object sender, EventArgs e)
+        {
+            ClearProperties();
         }
     }
 }

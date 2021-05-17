@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
@@ -39,11 +40,12 @@ namespace ShowerTcpClient
         {
             _writer.Write(code);
             _writer.End();
-            int unmanagedSize = Marshal.SizeOf<T>();
             _writer.Send();
-            byte[] buf = new byte[unmanagedSize];
-            _nstream.ReadBlock(buf, 0, unmanagedSize);
-            return MySerializer.Read<T>(buf, 0, unmanagedSize);
+
+            int unmanagedSize = Marshal.SizeOf<T>();
+            Span<byte> buf = stackalloc byte[unmanagedSize];
+            _nstream.ReadBlock(buf);
+            return MySerializer.Read<T>(buf);
         }
 
         /// <inheritdoc/>
@@ -52,11 +54,13 @@ namespace ShowerTcpClient
             return this;
         }
 
-        public Task<T> RequestAsync<T>(ShowerCodes code) where T : struct => RequestAsync<T>(code, CancellationToken.None);
+        public Task<T> RequestAsync<T>(ShowerCodes code) where T : struct => 
+            RequestAsync<T>(code, CancellationToken.None);
 
         /// <summary>
-        /// Уровень воды в микросекундах, без всякой фильтрации. -1 если у датчика уровня произошел таймаут.
+        /// Уровень воды в микросекундах, без всякой фильтрации.
         /// </summary>
+        /// <returns>-1 если у датчика уровня произошел таймаут.</returns>
         public Task<short> GetWaterLevelRawAsync(CancellationToken cancellationToken)
         {
             return RequestAsync<short>(ShowerCodes.GetWaterLevelRaw, cancellationToken);
@@ -93,8 +97,9 @@ namespace ShowerTcpClient
             _writer.Write(ShowerCodes.GetTempChart);
             _writer.End();
             _writer.Send();
-            byte[] data = new byte[SetupModel.STEP_COUNT];
-            _nstream.ReadBlock(data, 0, SetupModel.STEP_COUNT);
+
+            Span<byte> data = stackalloc byte[SetupModel.STEP_COUNT];
+            _nstream.ReadBlock(data);
 
             var model = new SetupModel();
             model.ParseTemp(data);
@@ -103,23 +108,30 @@ namespace ShowerTcpClient
 
         public Task<ushort> GetWaterLevelEmptyAsync(CancellationToken cancellationToken)
         {
-            return RequestAsync<ushort>(ShowerCodes.GetWaterLevelEmpty, cancellationToken);
+            return RequestAsync<ushort>(ShowerCodes.GetWaterLevelEmptyUsec, cancellationToken);
         }
 
         public Task<ushort> GetWaterLevelFullAsync(CancellationToken cancellationToken)
         {
-            return RequestAsync<ushort>(ShowerCodes.GetWaterLevelFull, cancellationToken);
+            return RequestAsync<ushort>(ShowerCodes.GetWaterLevelFullUsec, cancellationToken);
         }
 
         public async Task<T> RequestAsync<T>(ShowerCodes code, CancellationToken cancellationToken) where T : struct
         {
             _writer.Write(code);
             _writer.End();
-            int unmanagedSize = Marshal.SizeOf<T>();
             await _writer.SendAsync(cancellationToken).ConfigureAwait(false);
-            byte[] buf = new byte[unmanagedSize];
+            int unmanagedSize = Marshal.SizeOf<T>();
+            var buf = new byte[unmanagedSize];
             await _nstream.ReadBlockAsync(buf, 0, unmanagedSize, cancellationToken).ConfigureAwait(false);
-            return MySerializer.Read<T>(buf, 0, unmanagedSize);
+            return MySerializer.Read<T>(buf);
+        }
+
+        public bool GetWatchDogWasReset()
+        {
+            byte iwd = Request<byte>(ShowerCodes.GetWatchDogWasReset);
+            bool result = Convert.ToBoolean(iwd);
+            return result;
         }
 
         public void Dispose()

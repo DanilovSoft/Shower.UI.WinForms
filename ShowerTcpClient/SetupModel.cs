@@ -25,7 +25,7 @@ namespace ShowerTcpClient
 
         public TemperatureStep[] Steps { get; }
 
-        public void ParseTemp(byte[] data)
+        public void ParseTemp(ReadOnlySpan<byte> data)
         {
             for (int i = 0; i < STEP_COUNT; i++)
             {

@@ -9,10 +9,10 @@ namespace ShowerTcpClient
     public enum ShowerCodes : byte
     {
         None = 0,
-        SetWaterLevelFull = 1,
-        SetWaterLevelEmpty = 2,
-        GetWaterLevelFull = 3,
-        GetWaterLevelEmpty = 4,
+        SetWaterLevelFullUsec = 1,
+        SetWaterLevelEmptyUsec = 2,
+        GetWaterLevelFullUsec = 3,
+        GetWaterLevelEmptyUsec = 4,
         GetTempChart = 5,
         SetTempChart = 6,
         Ping = 7,
@@ -27,6 +27,9 @@ namespace ShowerTcpClient
 
         GetHeatingTimeLimit = 18,
         SetHeatingTimeLimit = 19,
+        /// <summary>
+        /// От 0 до 100%.
+        /// </summary>
         GetLightBrightness = 20,
         SetLightBrightness = 21,
         /// <summary>
@@ -39,7 +42,15 @@ namespace ShowerTcpClient
         GetHeaterEnabled = 26,
         GetAbsoluteHeatingTimeLimit = 27,
         SetAbsoluteHeatingTimeLimit = 28,
+        /// <summary>
+        /// Мощность WiFi в единицах по 0.25 dBm.
+        /// </summary>
+        /// <remarks>От 40 до 82 (10..20.5 dBm).</remarks>
         GetWiFiPower = 29,
+        /// <summary>
+        /// Мощность WiFi в единицах по 0.25 dBm.
+        /// </summary>
+        /// <remarks>От 40 до 82 (10..20.5 dBm).</remarks>
         SetWiFiPower = 30,
         GetAbsoluteTimeoutStatus = 31,
         GetWatchDogWasReset = 32,

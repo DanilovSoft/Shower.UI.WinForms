@@ -75,10 +75,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="EditText.cs">
+    <Compile Update="UserControls\EditText.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Update="EditText.Designer.cs">
+    <Compile Update="UserControls\EditText.Designer.cs">
       <DependentUpon>EditText.cs</DependentUpon>
     </Compile>
     <Compile Update="Form1.cs">
@@ -120,7 +120,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Update="EditText.resx">
+    <EmbeddedResource Update="UserControls\EditText.resx">
       <DependentUpon>EditText.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Update="Form1.resx">

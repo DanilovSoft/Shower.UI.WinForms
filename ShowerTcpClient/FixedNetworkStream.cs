@@ -67,7 +67,9 @@ namespace ShowerTcpClient
             while ((count -= n = await ReadAsync(buf, offset, count, cancellationToken).ConfigureAwait(false)) > 0)
             {
                 if (n == 0)
+                {
                     throw new EndOfStreamException();
+                }
 
                 offset += n;
             }

@@ -14,18 +14,22 @@ namespace Filters
         private readonly int _windowSize;
         private int _tail = 0;
         private int _initCount;
-        public int WindowSize => _windowSize;
-        public bool IsInitialized { get; private set; }
 
-        public FastMedianFilter(int windowSize)
+        public FastMedianFilter(int size)
         {
-            if (windowSize % 2 != 1)
-                throw new ArgumentOutOfRangeException($"Параметр {nameof(windowSize)} должен быть не чётным");
+            if (size % 2 != 1)
+                throw new ArgumentOutOfRangeException($"Параметр {nameof(size)} должен быть не чётным");
 
-            _windowSize = windowSize;
-            _buffer = new ushort[windowSize];
-            _halfSize = (windowSize / 2) + 1;
+            _windowSize = size;
+            _buffer = new ushort[size];
+            _halfSize = (size / 2) + 1;
         }
+
+        public int WindowSize => _windowSize;
+        /// <summary>
+        /// Фильтр считается инициализированным когда его буффер был полностью заполнен.
+        /// </summary>
+        public bool IsInitialized { get; private set; }
 
         public ushort Add(ushort value)
         {
@@ -36,7 +40,9 @@ namespace Filters
             {
                 _initCount++;
                 if (_initCount >= _windowSize)
+                {
                     IsInitialized = true;
+                }
             }
 
             return Sort(_buffer, skip: _halfSize);

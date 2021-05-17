@@ -9,10 +9,16 @@ namespace ShowerTcpClient
 {
     internal static class MySerializer
     {
-        public static T Read<T>(byte[] buf, int startIndex, int unmanagedSize)
+        public static T Read<T>(ReadOnlySpan<byte> buf) where T : struct
+        {
+            var value = MemoryMarshal.Read<T>(buf);
+            return value;
+        }
+
+        [Obsolete]
+        public static T Read<T>(byte[] buf, int startIndex, int unmanagedSize) where T : struct
         {
             IntPtr pnt = Marshal.AllocHGlobal(unmanagedSize);
-            //MemoryMarshal.TryRead<T>()
             try
             {
                 Marshal.Copy(buf, startIndex, pnt, unmanagedSize);
