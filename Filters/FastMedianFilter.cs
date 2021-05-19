@@ -18,7 +18,9 @@ namespace Filters
         public FastMedianFilter(int size)
         {
             if (size % 2 != 1)
+            {
                 throw new ArgumentOutOfRangeException($"Параметр {nameof(size)} должен быть не чётным");
+            }
 
             _windowSize = size;
             _buffer = new ushort[size];
@@ -50,7 +52,7 @@ namespace Filters
 
         private static ushort Sort(ushort[] array, int skip)
         {
-            var list = array.Select(x => (int)x).ToList();
+            int[] list = array.Select(x => (int)x).ToArray();
 
             return (ushort)GetMedian(list);
 
@@ -60,9 +62,6 @@ namespace Filters
             // любое значение на первом этапе.
             ushort successor = array[0];
             ushort minimum = array[0];
-
-            //List<int> data = new List<int>();
-            //data.Average();
 
             while (skip-- > 0)
             {
@@ -110,18 +109,20 @@ namespace Filters
             return successor;
         }
 
-        private static int GetMedian(List<int> data)
+        private static int GetMedian(int[] data)
         {
             var res = data[0];
             double avg = data.Average();
 
-            for (var index = 1; index < data.Count; index++)
+            for (var index = 1; index < data.Length; index++)
             {
                 var k0 = Math.Abs(res - avg);
                 var k1 = Math.Abs(data[index] - avg);
 
                 if (k0 > k1)
+                {
                     res = data[index];
+                }
             }
 
             return res;

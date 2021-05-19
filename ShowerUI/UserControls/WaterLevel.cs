@@ -27,15 +27,14 @@ namespace ShowerUI.UserControls
         private readonly Series _medianSeries;
         private readonly Series _averageSeries;
         private WaterLevelSession? _session;
-        //private bool _wlStarted;
-        //private ushort _waterLevelEmpty;
-        //private ushort _waterLevelFull;
+        private FastMedianFilter? _medianFilter;
+        private AverageFilter? _avgFilter;
 
         public WaterLevel()
         {
             InitializeComponent();
 
-            UpdateMedianCheckBox();
+            UpdateMedianCheckBoxText();
             UpdateAverageCheckBox();
 
             chartControl_water_level.Series.Clear();
@@ -47,21 +46,7 @@ namespace ShowerUI.UserControls
             _percentSeries.LegendText = "%";
             _usecSeries.LabelsVisibility = DevExpress.Utils.DefaultBoolean.False;
 
-            //var percentAxisY = new SwiftPlotDiagramSecondaryAxisY("Уровень в процентах");
-            //percentAxisY.WholeRange.Auto = false;
-            //percentAxisY.WholeRange.SetMinMaxValues(0, 99);
-            //percentAxisY.VisualRange.Auto = false;
-            //percentAxisY.VisualRange.SetMinMaxValues(0, 99);
-            //percentAxisY.Visibility = DevExpress.Utils.DefaultBoolean.True;
-            //percentAxisY.MinorCount = 1;
-            //percentAxisY.GridLines.Visible = true;
-            //percentAxisY.NumericScaleOptions.AutoGrid = false;
-            //percentAxisY.NumericScaleOptions.CustomGridAlignment = 2;
-            //percentAxisY.NumericScaleOptions.GridSpacing = 2;
-            //percentAxisY.NumericScaleOptions.GridOffset = 2;
-            //percentAxisY.Tickmarks.MinorVisible = false;
-            //percentAxisY.Tickmarks.Visible = false;
-
+            
             if (_usecSeries.View is SwiftPlotSeriesView usecView)
             {
                 usecView.Color = Color.Blue;
@@ -102,17 +87,25 @@ namespace ShowerUI.UserControls
             }
 
             // выключить отображение значений микросекунд.
-            _usecSeries.CrosshairLabelVisibility = DevExpress.Utils.DefaultBoolean.False;
-            _medianSeries.CrosshairLabelVisibility = DevExpress.Utils.DefaultBoolean.False;
+            _usecSeries.CrosshairLabelVisibility = DevExpress.Utils.DefaultBoolean.True;
+            _medianSeries.CrosshairLabelVisibility = DevExpress.Utils.DefaultBoolean.True;
             _percentSeries.CrosshairLabelVisibility = DevExpress.Utils.DefaultBoolean.False;
             _averageSeries.CrosshairLabelVisibility = DevExpress.Utils.DefaultBoolean.False;
+
+            _medianSeries.Visible = checkBox_median.Checked;
+            _averageSeries.Visible = checkBox_avg.Checked;
+            _usecSeries.Visible = checkBox_raw.Checked;
+            _percentSeries.Visible = checkBox_percent.Checked;
         }
 
         private async void Button_Start_Click(object sender, EventArgs e)
         {
             button_start.Enabled = false;
             button_stop.Enabled = true;
-            var session = _session = new WaterLevelSession();
+            var session = _session = new WaterLevelSession 
+            {
+                LastPointIndex = _session?.LastPointIndex ?? 0
+            };
             int reconnectCount = 0;
             session.Running = true;
 
@@ -161,6 +154,16 @@ namespace ShowerUI.UserControls
             session.WaterLevelEmpty = await con.GetWaterLevelEmptyAsync(session.Cts.Token);
             session.WaterLevelFull = await con.GetWaterLevelFullAsync(session.Cts.Token);
 
+            // Число должно быть не чётным.
+            byte bufSize = await con.GetWaterLevelBufferSizeAsync();
+            if (bufSize % 2 != 1)
+            {
+                bufSize++;
+            }
+
+            trackBar_medianTrackBar.Value = (bufSize - 1) / 2;
+            UpdateMedianCheckBoxText();
+
             SetMinMaxWaterLevel(session.WaterLevelEmpty, session.WaterLevelFull);
 
             int medianWindowSize = GetMedianWindowSize();
@@ -192,12 +195,13 @@ namespace ShowerUI.UserControls
                     {
                         AddMedianSeriesPoint(i, medianUsec);
 
+                        byte percent = session.CalcPercent(medianUsec);
+                        AddPercentSeriesPoint(i, percent);
+
                         ushort avg = avgFilter.AddNextValue(medianUsec);
                         if (avgFilter.IsInitialized)
                         {
                             AddAverageSeriesPoint(i, avg);
-                            byte percent = session.CalcPercent(avg);
-                            AddPercentSeriesPoint(i, percent);
                         }
                     }
                 }
@@ -206,38 +210,40 @@ namespace ShowerUI.UserControls
                 _percentSeries.Points.EndUpdate();
             }
 
-            trackBar_median.ValueChanged += OnTrackBar;
+            trackBar_medianTrackBar.ValueChanged += OnTrackBar;
             trackBar_avg.ValueChanged += OnTrackBar;
 
             try
             {
                 while (!session.Cts.IsCancellationRequested)
                 {
-                    short usec = await Task.Run(async () =>
+                    short rawUsec = await Task.Run(async () =>
                     {
                         await Task.Delay(40);
                         return await con.GetWaterLevelRawAsync(session.Cts.Token);
                     });
 
-                    if (usec != -1)
+                    if (rawUsec != -1)
                     {
-                        ushort invertedUsec = (ushort)(session.WaterLevelEmpty - (usec - session.WaterLevelFull));
+                        ushort invertedUsec = (ushort)(session.WaterLevelEmpty - (rawUsec - session.WaterLevelFull));
+                        
+                        session.UsecList.Add(invertedUsec);
+
                         ushort medianUsec = medianFilter.Add(invertedUsec);
 
-                        _usecSeries.Points.Add(new SeriesPoint(session.LastPointIndex, invertedUsec));
-
-                        session.UsecList.Add(invertedUsec);
+                        AddRawSeriesPoint(session.LastPointIndex, invertedUsec);
 
                         if (medianFilter.IsInitialized)
                         {
                             AddMedianSeriesPoint(session.LastPointIndex, medianUsec);
 
+                            byte percent = session.CalcPercent(medianUsec);
+                            AddPercentSeriesPoint(session.LastPointIndex, percent);
+
                             ushort avg = avgFilter.AddNextValue(medianUsec);
                             if (avgFilter.IsInitialized)
                             {
                                 AddAverageSeriesPoint(session.LastPointIndex, avg);
-                                byte percent = session.CalcPercent(avg);
-                                AddPercentSeriesPoint(session.LastPointIndex, percent);
                             }
                         }
                     }
@@ -253,7 +259,7 @@ namespace ShowerUI.UserControls
             }
             finally
             {
-                trackBar_median.ValueChanged -= OnTrackBar;
+                trackBar_medianTrackBar.ValueChanged -= OnTrackBar;
                 trackBar_avg.ValueChanged -= OnTrackBar;
             }
         }
@@ -388,21 +394,22 @@ namespace ShowerUI.UserControls
 
             for (int i = 0; i < session.UsecList.Count; i++)
             {
-                ushort usec = session.UsecList[i];
-                AddUsecSeriesPoint(i, usec);
+                ushort rawUsec = session.UsecList[i];
+                AddRawSeriesPoint(i, rawUsec);
 
-                ushort medianUsec = medianFilter.Add(usec);
+                ushort medianUsec = medianFilter.Add(rawUsec);
 
                 if (medianFilter.IsInitialized)
                 {
                     AddMedianSeriesPoint(i, medianUsec);
 
+                    byte percent = session.CalcPercent(medianUsec);
+                    AddPercentSeriesPoint(i, percent);
+
                     ushort avgUsec = avgFilter.AddNextValue(medianUsec);
                     if (avgFilter.IsInitialized)
                     {
                         AddAverageSeriesPoint(i, avgUsec);
-                        byte percent = session.CalcPercent(avgUsec);
-                        AddPercentSeriesPoint(i, percent);
                     }
                 }
             }
@@ -414,7 +421,7 @@ namespace ShowerUI.UserControls
 
         private int GetMedianWindowSize()
         {
-            int windowSize = trackBar_median.Value * 2 + 1;
+            int windowSize = trackBar_medianTrackBar.Value * 2 + 1;
             return windowSize;
         }
 
@@ -444,19 +451,19 @@ namespace ShowerUI.UserControls
             _percentSeries.Points.Clear();
         }
 
-        private void AddPercentSeriesPoint(int t, byte percent)
+        private void AddPercentSeriesPoint(int pointIndex, byte percent)
         {
-            _percentSeries.Points.Add(new SeriesPoint(t, percent));
+            _percentSeries.Points.Add(new SeriesPoint(pointIndex, percent));
         }
 
-        private void AddUsecSeriesPoint(int pointIndex, ushort value)
+        private void AddMedianSeriesPoint(int pointIndex, ushort value)
+        {
+            _medianSeries.Points.Add(new SeriesPoint(pointIndex, value));
+        }
+
+        private void AddRawSeriesPoint(int pointIndex, ushort value)
         {
             _usecSeries.Points.Add(new SeriesPoint(pointIndex, value));
-        }
-
-        private void AddMedianSeriesPoint(int t, ushort value)
-        {
-            _medianSeries.Points.Add(new SeriesPoint(t, value));
         }
 
         private void ClearAverageSeries()
@@ -464,19 +471,14 @@ namespace ShowerUI.UserControls
             _averageSeries.Points.Clear();
         }
 
-        private void AddAverageSeriesPoint(int t, ushort value)
+        private void AddAverageSeriesPoint(int pointIndex, ushort value)
         {
-            _averageSeries.Points.Add(new SeriesPoint(t, value));
-        }
-
-        private void AddUsecMedian(int t)
-        {
-            _medianSeries.Points.Add(new SeriesPoint(t));
+            _averageSeries.Points.Add(new SeriesPoint(pointIndex, value));
         }
 
         private void TrackBar_Median_Scroll(object sender, EventArgs e)
         {
-            UpdateMedianCheckBox();
+            UpdateMedianCheckBoxText();
 
             if (_session is { } session)
             {
@@ -500,7 +502,7 @@ namespace ShowerUI.UserControls
             }
         }
 
-        private void UpdateMedianCheckBox()
+        private void UpdateMedianCheckBoxText()
         {
             checkBox_median.Text = $"Медиана ({GetMedianWindowSize()})";
         }

@@ -134,6 +134,22 @@ namespace ShowerTcpClient
             return result;
         }
 
+        /// <summary>
+        /// Возвращает размер скользящего буфера для медианного фильтра.
+        /// </summary>
+        public byte GetWaterLevelBufferSize()
+        {
+            return Request<byte>(ShowerCodes.GetWaterLevelRingBufferSize);
+        }
+
+        /// <summary>
+        /// Возвращает размер скользящего буфера для медианного фильтра.
+        /// </summary>
+        public Task<byte> GetWaterLevelBufferSizeAsync()
+        {
+            return RequestAsync<byte>(ShowerCodes.GetWaterLevelRingBufferSize);
+        }
+
         public void Dispose()
         {
             if (!_disposed)
