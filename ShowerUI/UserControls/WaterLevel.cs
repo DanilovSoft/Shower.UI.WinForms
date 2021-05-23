@@ -190,7 +190,7 @@ namespace ShowerUI.UserControls
 
                 for (int i = 0; i < session.UsecList.Count; i++)
                 {
-                    ushort medianUsec = medianFilter.Add(session.UsecList[i]);
+                    int medianUsec = medianFilter.Add(session.UsecList[i]);
                     if (medianFilter.IsInitialized)
                     {
                         AddMedianSeriesPoint(i, medianUsec);
@@ -198,7 +198,7 @@ namespace ShowerUI.UserControls
                         byte percent = session.CalcPercent(medianUsec);
                         AddPercentSeriesPoint(i, percent);
 
-                        ushort avg = avgFilter.AddNextValue(medianUsec);
+                        int avg = avgFilter.Add(medianUsec);
                         if (avgFilter.IsInitialized)
                         {
                             AddAverageSeriesPoint(i, avg);
@@ -229,7 +229,7 @@ namespace ShowerUI.UserControls
                         
                         session.UsecList.Add(invertedUsec);
 
-                        ushort medianUsec = medianFilter.Add(invertedUsec);
+                        int medianUsec = medianFilter.Add(invertedUsec);
 
                         AddRawSeriesPoint(session.LastPointIndex, invertedUsec);
 
@@ -240,7 +240,7 @@ namespace ShowerUI.UserControls
                             byte percent = session.CalcPercent(medianUsec);
                             AddPercentSeriesPoint(session.LastPointIndex, percent);
 
-                            ushort avg = avgFilter.AddNextValue(medianUsec);
+                            int avg = avgFilter.Add(medianUsec);
                             if (avgFilter.IsInitialized)
                             {
                                 AddAverageSeriesPoint(session.LastPointIndex, avg);
@@ -406,7 +406,7 @@ namespace ShowerUI.UserControls
                     byte percent = session.CalcPercent(medianUsec);
                     AddPercentSeriesPoint(i, percent);
 
-                    ushort avgUsec = avgFilter.AddNextValue(medianUsec);
+                    int avgUsec = avgFilter.Add(medianUsec);
                     if (avgFilter.IsInitialized)
                     {
                         AddAverageSeriesPoint(i, avgUsec);
@@ -427,7 +427,7 @@ namespace ShowerUI.UserControls
 
         private int GetAverageTrackBar()
         {
-            int value = trackBar_avg.Value * 8;
+            int value = trackBar_avg.Value * 2;
             return value;
         }
 
@@ -456,12 +456,12 @@ namespace ShowerUI.UserControls
             _percentSeries.Points.Add(new SeriesPoint(pointIndex, percent));
         }
 
-        private void AddMedianSeriesPoint(int pointIndex, ushort value)
+        private void AddMedianSeriesPoint(int pointIndex, double value)
         {
             _medianSeries.Points.Add(new SeriesPoint(pointIndex, value));
         }
 
-        private void AddRawSeriesPoint(int pointIndex, ushort value)
+        private void AddRawSeriesPoint(int pointIndex, double value)
         {
             _usecSeries.Points.Add(new SeriesPoint(pointIndex, value));
         }
@@ -471,7 +471,7 @@ namespace ShowerUI.UserControls
             _averageSeries.Points.Clear();
         }
 
-        private void AddAverageSeriesPoint(int pointIndex, ushort value)
+        private void AddAverageSeriesPoint(int pointIndex, double value)
         {
             _averageSeries.Points.Add(new SeriesPoint(pointIndex, value));
         }

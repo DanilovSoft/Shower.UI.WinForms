@@ -53,7 +53,7 @@ namespace ShowerUI
         }
 
         /// <returns>От 0 до 99.</returns>
-        public byte CalcPercent(ushort usec)
+        public byte CalcPercent(int usec)
         {
             ushort invertedUsec = (ushort)(WaterLevelEmpty - (usec - WaterLevelFull));
 

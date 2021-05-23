@@ -66,9 +66,23 @@ namespace ShowerTcpClient
             return RequestAsync<short>(ShowerCodes.GetWaterLevelRaw, cancellationToken);
         }
 
+        /// <summary>
+        /// Уровень воды в микросекундах, без всякой фильтрации.
+        /// </summary>
+        /// <returns>-1 если у датчика уровня произошел таймаут.</returns>
+        public short GetWaterLevelRaw()
+        {
+            return Request<short>(ShowerCodes.GetWaterLevelRaw);
+        }
+
         public Task<float> GetInternalTemperatureAsync(CancellationToken cancellationToken)
         {
             return RequestAsync<float>(ShowerCodes.GetInternalTemp, cancellationToken);
+        }
+
+        public float GetInternalTemperature()
+        {
+            return Request<float>(ShowerCodes.GetInternalTemp);
         }
 
         public async Task<bool> GetHeaterEnabledAsync(CancellationToken cancellationToken)
@@ -77,9 +91,20 @@ namespace ShowerTcpClient
             return Convert.ToBoolean(value);
         }
 
+        public bool GetHeaterEnabled()
+        {
+            byte value = Request<byte>(ShowerCodes.GetHeaterEnabled);
+            return Convert.ToBoolean(value);
+        }
+
         public Task<byte> GetMinutesLeftAsync(CancellationToken cancellationToken)
         {
             return RequestAsync<byte>(ShowerCodes.GetMinutesLeft, cancellationToken);
+        }
+
+        public byte GetMinutesLeft()
+        {
+            return Request<byte>(ShowerCodes.GetMinutesLeft);
         }
 
         public async Task<ushort> GetWaterLevelAsync(CancellationToken cancellationToken)

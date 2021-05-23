@@ -9,7 +9,7 @@ namespace Filters
 {
     public class FastMedianFilter
     {
-        private readonly ushort[] _buffer;
+        private readonly int[] _buffer;
         private readonly int _halfSize; // половина размера буффера
         private readonly int _windowSize;
         private int _tail = 0;
@@ -23,7 +23,7 @@ namespace Filters
             }
 
             _windowSize = size;
-            _buffer = new ushort[size];
+            _buffer = new int[size];
             _halfSize = (size / 2) + 1;
         }
 
@@ -33,7 +33,7 @@ namespace Filters
         /// </summary>
         public bool IsInitialized { get; private set; }
 
-        public ushort Add(ushort value)
+        public int Add(int value)
         {
             _buffer[_tail] = value;
             _tail = (_tail + 1) % _windowSize;
@@ -47,7 +47,7 @@ namespace Filters
                 }
             }
 
-            return Sort(_buffer, skip: _halfSize);
+            return GetMedian(_buffer);
         }
 
         private static ushort Sort(ushort[] array, int skip)
@@ -111,7 +111,7 @@ namespace Filters
 
         private static int GetMedian(int[] data)
         {
-            var res = data[0];
+            int res = data[0];
             double avg = data.Average();
 
             for (var index = 1; index < data.Length; index++)

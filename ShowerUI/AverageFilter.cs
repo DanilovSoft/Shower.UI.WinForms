@@ -8,21 +8,21 @@ namespace ShowerUI
 {
     internal sealed class AverageFilter
     {
-        private readonly ushort[] _buffer;
+        private readonly int[] _buffer;
         private readonly int _windowSize;
         private int _head;
         private int _sum;
-        private int _initC;
+        private int _initCounter;
 
         public AverageFilter(int windowSize)
         {
             _windowSize = windowSize;
-            _buffer = new ushort[windowSize];
+            _buffer = new int[windowSize];
         }
 
         public bool IsInitialized { get; private set; }
 
-        public ushort AddNextValue(ushort value)
+        public int Add(int value)
         {
             _sum += (value - _buffer[_head]);
             _buffer[_head] = value;
@@ -30,13 +30,13 @@ namespace ShowerUI
 
             if (!IsInitialized)
             {
-                _initC++;
-                if (_initC >= _windowSize)
+                _initCounter++;
+                if (_initCounter == _windowSize)
                 {
                     IsInitialized = true;
                 }
             }
-            return (ushort)(_sum / _windowSize);
+            return (int)Math.Round(_sum / (double)_windowSize);
         }
     }
 }

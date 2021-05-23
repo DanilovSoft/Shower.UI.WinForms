@@ -32,41 +32,24 @@
             DevExpress.XtraCharts.SwiftPlotDiagram swiftPlotDiagram1 = new DevExpress.XtraCharts.SwiftPlotDiagram();
             DevExpress.XtraCharts.Series series1 = new DevExpress.XtraCharts.Series();
             DevExpress.XtraCharts.SwiftPlotSeriesView swiftPlotSeriesView1 = new DevExpress.XtraCharts.SwiftPlotSeriesView();
-            DevExpress.XtraCharts.Series series2 = new DevExpress.XtraCharts.Series();
-            DevExpress.XtraCharts.SwiftPlotSeriesView swiftPlotSeriesView2 = new DevExpress.XtraCharts.SwiftPlotSeriesView();
-            DevExpress.XtraCharts.Series series3 = new DevExpress.XtraCharts.Series();
-            DevExpress.XtraCharts.SwiftPlotSeriesView swiftPlotSeriesView3 = new DevExpress.XtraCharts.SwiftPlotSeriesView();
-            DevExpress.XtraCharts.SwiftPlotSeriesView swiftPlotSeriesView4 = new DevExpress.XtraCharts.SwiftPlotSeriesView();
-            DevExpress.XtraCharts.SwiftPlotDiagram swiftPlotDiagram2 = new DevExpress.XtraCharts.SwiftPlotDiagram();
-            DevExpress.XtraCharts.Series series4 = new DevExpress.XtraCharts.Series();
-            DevExpress.XtraCharts.SwiftPlotSeriesView swiftPlotSeriesView5 = new DevExpress.XtraCharts.SwiftPlotSeriesView();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPageTemp = new System.Windows.Forms.TabPage();
-            this.panel2 = new System.Windows.Forms.Panel();
-            this.labelTempReconnectCount = new System.Windows.Forms.Label();
-            this.label7 = new System.Windows.Forms.Label();
-            this.labelTempReconnect = new System.Windows.Forms.Label();
-            this.button_temp_stop = new System.Windows.Forms.Button();
-            this.trackBar1 = new System.Windows.Forms.TrackBar();
-            this.labelTimeLeft = new System.Windows.Forms.Label();
-            this.buttonTempStartRecord = new System.Windows.Forms.Button();
-            this.button4 = new System.Windows.Forms.Button();
-            this.button6 = new System.Windows.Forms.Button();
-            this.button3 = new System.Windows.Forms.Button();
-            this.button5 = new System.Windows.Forms.Button();
-            this.chartControl_temperature = new DevExpress.XtraCharts.ChartControl();
             this.Температуры = new System.Windows.Forms.TabPage();
             this.button2 = new System.Windows.Forms.Button();
             this.tabPage_wl = new System.Windows.Forms.TabPage();
+            this.waterLevel1 = new ShowerUI.UserControls.WaterLevel();
             this.tabPageCalibration = new System.Windows.Forms.TabPage();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.label_elapsedWL = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.numericWaterLevelCalibInterval = new System.Windows.Forms.NumericUpDown();
             this.button_stop = new System.Windows.Forms.Button();
             this.buttonStartCalib = new System.Windows.Forms.Button();
             this.chartControl_wl_calibration = new DevExpress.XtraCharts.ChartControl();
             this.tabPageSettings = new System.Windows.Forms.TabPage();
+            this.parametersControl1 = new ShowerUI.UserControls.ParametersControl();
             this.tabPageDebug = new System.Windows.Forms.TabPage();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.label5 = new System.Windows.Forms.Label();
@@ -85,30 +68,18 @@
             this.pnigToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.errorProvider1 = new System.Windows.Forms.ErrorProvider(this.components);
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.waterLevel1 = new ShowerUI.UserControls.WaterLevel();
-            this.parametersControl1 = new ShowerUI.UserControls.ParametersControl();
+            this.temperatureMonitor1 = new ShowerUI.UserControls.TemperatureMonitor();
             this.tabControl1.SuspendLayout();
             this.tabPageTemp.SuspendLayout();
-            this.panel2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.chartControl_temperature)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(swiftPlotDiagram1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(series1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(swiftPlotSeriesView1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(series2)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(swiftPlotSeriesView2)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(series3)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(swiftPlotSeriesView3)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(swiftPlotSeriesView4)).BeginInit();
             this.Температуры.SuspendLayout();
             this.tabPage_wl.SuspendLayout();
             this.tabPageCalibration.SuspendLayout();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericWaterLevelCalibInterval)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.chartControl_wl_calibration)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(swiftPlotDiagram2)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(series4)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(swiftPlotSeriesView5)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(swiftPlotDiagram1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(series1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(swiftPlotSeriesView1)).BeginInit();
             this.tabPageSettings.SuspendLayout();
             this.tabPageDebug.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -136,194 +107,13 @@
             // tabPageTemp
             // 
             this.tabPageTemp.BackColor = System.Drawing.Color.Transparent;
-            this.tabPageTemp.Controls.Add(this.panel2);
-            this.tabPageTemp.Controls.Add(this.chartControl_temperature);
+            this.tabPageTemp.Controls.Add(this.temperatureMonitor1);
             this.tabPageTemp.Location = new System.Drawing.Point(4, 22);
             this.tabPageTemp.Name = "tabPageTemp";
             this.tabPageTemp.Padding = new System.Windows.Forms.Padding(3);
             this.tabPageTemp.Size = new System.Drawing.Size(1210, 592);
             this.tabPageTemp.TabIndex = 0;
             this.tabPageTemp.Text = "Температура";
-            // 
-            // panel2
-            // 
-            this.panel2.Controls.Add(this.labelTempReconnectCount);
-            this.panel2.Controls.Add(this.label7);
-            this.panel2.Controls.Add(this.labelTempReconnect);
-            this.panel2.Controls.Add(this.button_temp_stop);
-            this.panel2.Controls.Add(this.trackBar1);
-            this.panel2.Controls.Add(this.labelTimeLeft);
-            this.panel2.Controls.Add(this.buttonTempStartRecord);
-            this.panel2.Controls.Add(this.button4);
-            this.panel2.Controls.Add(this.button6);
-            this.panel2.Controls.Add(this.button3);
-            this.panel2.Controls.Add(this.button5);
-            this.panel2.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel2.Location = new System.Drawing.Point(3, 530);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(1204, 59);
-            this.panel2.TabIndex = 24;
-            // 
-            // labelTempReconnectCount
-            // 
-            this.labelTempReconnectCount.AutoSize = true;
-            this.labelTempReconnectCount.Location = new System.Drawing.Point(152, 38);
-            this.labelTempReconnectCount.Name = "labelTempReconnectCount";
-            this.labelTempReconnectCount.Size = new System.Drawing.Size(13, 13);
-            this.labelTempReconnectCount.TabIndex = 26;
-            this.labelTempReconnectCount.Text = "0";
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(950, 11);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(59, 13);
-            this.label7.TabIndex = 25;
-            this.label7.Text = "Осталось:";
-            this.toolTip1.SetToolTip(this.label7, "Расчётное время до окончания нагрева");
-            // 
-            // labelTempReconnect
-            // 
-            this.labelTempReconnect.AutoSize = true;
-            this.labelTempReconnect.Location = new System.Drawing.Point(5, 38);
-            this.labelTempReconnect.Name = "labelTempReconnect";
-            this.labelTempReconnect.Size = new System.Drawing.Size(141, 13);
-            this.labelTempReconnect.TabIndex = 24;
-            this.labelTempReconnect.Text = "Повторных подключений:";
-            // 
-            // button_temp_stop
-            // 
-            this.button_temp_stop.Location = new System.Drawing.Point(123, 6);
-            this.button_temp_stop.Name = "button_temp_stop";
-            this.button_temp_stop.Size = new System.Drawing.Size(75, 23);
-            this.button_temp_stop.TabIndex = 15;
-            this.button_temp_stop.Text = "Стоп";
-            this.button_temp_stop.UseVisualStyleBackColor = true;
-            this.button_temp_stop.Click += new System.EventHandler(this.Button_TemperatureStop_Click);
-            // 
-            // trackBar1
-            // 
-            this.trackBar1.Location = new System.Drawing.Point(642, 6);
-            this.trackBar1.Maximum = 23;
-            this.trackBar1.Minimum = 3;
-            this.trackBar1.Name = "trackBar1";
-            this.trackBar1.Size = new System.Drawing.Size(301, 45);
-            this.trackBar1.SmallChange = 2;
-            this.trackBar1.TabIndex = 22;
-            this.trackBar1.TickFrequency = 2;
-            this.trackBar1.Value = 3;
-            this.trackBar1.Scroll += new System.EventHandler(this.TrackBar1_Scroll);
-            // 
-            // labelTimeLeft
-            // 
-            this.labelTimeLeft.AutoSize = true;
-            this.labelTimeLeft.Location = new System.Drawing.Point(1015, 11);
-            this.labelTimeLeft.Name = "labelTimeLeft";
-            this.labelTimeLeft.Size = new System.Drawing.Size(51, 13);
-            this.labelTimeLeft.TabIndex = 23;
-            this.labelTimeLeft.Text = "__:__:__";
-            // 
-            // buttonTempStartRecord
-            // 
-            this.buttonTempStartRecord.Location = new System.Drawing.Point(5, 6);
-            this.buttonTempStartRecord.Name = "buttonTempStartRecord";
-            this.buttonTempStartRecord.Size = new System.Drawing.Size(75, 23);
-            this.buttonTempStartRecord.TabIndex = 14;
-            this.buttonTempStartRecord.Text = "Запись";
-            this.buttonTempStartRecord.UseVisualStyleBackColor = true;
-            this.buttonTempStartRecord.Click += new System.EventHandler(this.Button_TempRecord_Click);
-            // 
-            // button4
-            // 
-            this.button4.Location = new System.Drawing.Point(495, 6);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(75, 23);
-            this.button4.TabIndex = 17;
-            this.button4.Text = "Симуляция";
-            this.button4.UseVisualStyleBackColor = true;
-            this.button4.Click += new System.EventHandler(this.Button_Simulation_Click);
-            // 
-            // button6
-            // 
-            this.button6.Location = new System.Drawing.Point(390, 6);
-            this.button6.Name = "button6";
-            this.button6.Size = new System.Drawing.Size(99, 23);
-            this.button6.TabIndex = 21;
-            this.button6.Text = "Загрузить из...";
-            this.button6.UseVisualStyleBackColor = true;
-            this.button6.Click += new System.EventHandler(this.Button_Load_Click);
-            // 
-            // button3
-            // 
-            this.button3.Location = new System.Drawing.Point(285, 6);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(99, 23);
-            this.button3.TabIndex = 16;
-            this.button3.Text = "Сохранить в...";
-            this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.Button_Save_Click);
-            // 
-            // button5
-            // 
-            this.button5.Location = new System.Drawing.Point(204, 6);
-            this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(75, 23);
-            this.button5.TabIndex = 20;
-            this.button5.Text = "Очистить";
-            this.button5.UseVisualStyleBackColor = true;
-            this.button5.Click += new System.EventHandler(this.Button_Clear_Click);
-            // 
-            // chartControl_temperature
-            // 
-            this.chartControl_temperature.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.chartControl_temperature.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
-            swiftPlotDiagram1.AxisX.Label.Visible = false;
-            swiftPlotDiagram1.AxisX.MinorCount = 1;
-            swiftPlotDiagram1.AxisX.Tickmarks.MinorVisible = false;
-            swiftPlotDiagram1.AxisX.Visibility = DevExpress.Utils.DefaultBoolean.True;
-            swiftPlotDiagram1.AxisX.VisibleInPanesSerializable = "-1";
-            swiftPlotDiagram1.AxisY.MinorCount = 1;
-            swiftPlotDiagram1.AxisY.Visibility = DevExpress.Utils.DefaultBoolean.True;
-            swiftPlotDiagram1.AxisY.VisibleInPanesSerializable = "-1";
-            swiftPlotDiagram1.AxisY.VisualRange.Auto = false;
-            swiftPlotDiagram1.AxisY.VisualRange.MaxValueSerializable = "39";
-            swiftPlotDiagram1.AxisY.VisualRange.MinValueSerializable = "15";
-            swiftPlotDiagram1.AxisY.WholeRange.Auto = false;
-            swiftPlotDiagram1.AxisY.WholeRange.MaxValueSerializable = "39";
-            swiftPlotDiagram1.AxisY.WholeRange.MinValueSerializable = "15";
-            this.chartControl_temperature.Diagram = swiftPlotDiagram1;
-            this.chartControl_temperature.Legend.Name = "Default Legend";
-            this.chartControl_temperature.Legend.Visibility = DevExpress.Utils.DefaultBoolean.False;
-            this.chartControl_temperature.Location = new System.Drawing.Point(0, 0);
-            this.chartControl_temperature.Name = "chartControl_temperature";
-            series1.ArgumentScaleType = DevExpress.XtraCharts.ScaleType.Numerical;
-            series1.CrosshairTextOptions.EnableAntialiasing = DevExpress.Utils.DefaultBoolean.False;
-            series1.CrosshairTextOptions.Tag = "Температура в баке";
-            series1.Name = "TempOn";
-            swiftPlotSeriesView1.Color = System.Drawing.Color.Red;
-            series1.View = swiftPlotSeriesView1;
-            series2.CrosshairTextOptions.EnableAntialiasing = DevExpress.Utils.DefaultBoolean.False;
-            series2.CrosshairTextOptions.Tag = "Температура в баке";
-            series2.LegendName = "Default Legend";
-            series2.Name = "TempOff";
-            swiftPlotSeriesView2.Color = System.Drawing.Color.Blue;
-            series2.View = swiftPlotSeriesView2;
-            series3.ArgumentScaleType = DevExpress.XtraCharts.ScaleType.Numerical;
-            series3.Name = "CalculatedTemp";
-            series3.ShowInLegend = false;
-            swiftPlotSeriesView3.Color = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            series3.View = swiftPlotSeriesView3;
-            this.chartControl_temperature.SeriesSerializable = new DevExpress.XtraCharts.Series[] {
-        series1,
-        series2,
-        series3};
-            swiftPlotSeriesView4.LineStyle.Thickness = 2;
-            this.chartControl_temperature.SeriesTemplate.View = swiftPlotSeriesView4;
-            this.chartControl_temperature.Size = new System.Drawing.Size(1210, 524);
-            this.chartControl_temperature.TabIndex = 2;
             // 
             // Температуры
             // 
@@ -357,6 +147,14 @@
             this.tabPage_wl.TabIndex = 1;
             this.tabPage_wl.Text = "Уровень воды";
             // 
+            // waterLevel1
+            // 
+            this.waterLevel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.waterLevel1.Location = new System.Drawing.Point(3, 3);
+            this.waterLevel1.Name = "waterLevel1";
+            this.waterLevel1.Size = new System.Drawing.Size(1204, 586);
+            this.waterLevel1.TabIndex = 17;
+            // 
             // tabPageCalibration
             // 
             this.tabPageCalibration.BackColor = System.Drawing.SystemColors.Control;
@@ -371,6 +169,8 @@
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.label_elapsedWL);
+            this.panel1.Controls.Add(this.label1);
             this.panel1.Controls.Add(this.label6);
             this.panel1.Controls.Add(this.numericWaterLevelCalibInterval);
             this.panel1.Controls.Add(this.button_stop);
@@ -380,6 +180,24 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(1204, 32);
             this.panel1.TabIndex = 1;
+            // 
+            // label_elapsedWL
+            // 
+            this.label_elapsedWL.AutoSize = true;
+            this.label_elapsedWL.Location = new System.Drawing.Point(519, 8);
+            this.label_elapsedWL.Name = "label_elapsedWL";
+            this.label_elapsedWL.Size = new System.Drawing.Size(19, 13);
+            this.label_elapsedWL.TabIndex = 5;
+            this.label_elapsedWL.Text = "__";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(425, 8);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(88, 13);
+            this.label1.TabIndex = 4;
+            this.label1.Text = "Среднее время:";
             // 
             // label6
             // 
@@ -400,11 +218,6 @@
             this.numericWaterLevelCalibInterval.Location = new System.Drawing.Point(344, 6);
             this.numericWaterLevelCalibInterval.Maximum = new decimal(new int[] {
             200,
-            0,
-            0,
-            0});
-            this.numericWaterLevelCalibInterval.Minimum = new decimal(new int[] {
-            30,
             0,
             0,
             0});
@@ -443,29 +256,29 @@
             this.chartControl_wl_calibration.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            swiftPlotDiagram2.AxisX.Label.Visible = false;
-            swiftPlotDiagram2.AxisX.Tickmarks.MinorVisible = false;
-            swiftPlotDiagram2.AxisX.Tickmarks.Visible = false;
-            swiftPlotDiagram2.AxisX.Visibility = DevExpress.Utils.DefaultBoolean.True;
-            swiftPlotDiagram2.AxisX.VisibleInPanesSerializable = "-1";
-            swiftPlotDiagram2.AxisX.VisualRange.Auto = false;
-            swiftPlotDiagram2.AxisX.VisualRange.MaxValueSerializable = "10";
-            swiftPlotDiagram2.AxisX.VisualRange.MinValueSerializable = "0";
-            swiftPlotDiagram2.AxisX.WholeRange.Auto = false;
-            swiftPlotDiagram2.AxisX.WholeRange.MaxValueSerializable = "10";
-            swiftPlotDiagram2.AxisX.WholeRange.MinValueSerializable = "0";
-            swiftPlotDiagram2.AxisY.VisibleInPanesSerializable = "-1";
-            this.chartControl_wl_calibration.Diagram = swiftPlotDiagram2;
+            swiftPlotDiagram1.AxisX.Label.Visible = false;
+            swiftPlotDiagram1.AxisX.Tickmarks.MinorVisible = false;
+            swiftPlotDiagram1.AxisX.Tickmarks.Visible = false;
+            swiftPlotDiagram1.AxisX.Visibility = DevExpress.Utils.DefaultBoolean.True;
+            swiftPlotDiagram1.AxisX.VisibleInPanesSerializable = "-1";
+            swiftPlotDiagram1.AxisX.VisualRange.Auto = false;
+            swiftPlotDiagram1.AxisX.VisualRange.MaxValueSerializable = "10";
+            swiftPlotDiagram1.AxisX.VisualRange.MinValueSerializable = "0";
+            swiftPlotDiagram1.AxisX.WholeRange.Auto = false;
+            swiftPlotDiagram1.AxisX.WholeRange.MaxValueSerializable = "10";
+            swiftPlotDiagram1.AxisX.WholeRange.MinValueSerializable = "0";
+            swiftPlotDiagram1.AxisY.VisibleInPanesSerializable = "-1";
+            this.chartControl_wl_calibration.Diagram = swiftPlotDiagram1;
             this.chartControl_wl_calibration.Legend.Name = "Default Legend";
             this.chartControl_wl_calibration.Legend.Visibility = DevExpress.Utils.DefaultBoolean.False;
             this.chartControl_wl_calibration.Location = new System.Drawing.Point(8, 6);
             this.chartControl_wl_calibration.Name = "chartControl_wl_calibration";
-            series4.Name = "usec";
-            swiftPlotSeriesView5.Color = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            swiftPlotSeriesView5.LineStyle.Thickness = 2;
-            series4.View = swiftPlotSeriesView5;
+            series1.Name = "usec";
+            swiftPlotSeriesView1.Color = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            swiftPlotSeriesView1.LineStyle.Thickness = 2;
+            series1.View = swiftPlotSeriesView1;
             this.chartControl_wl_calibration.SeriesSerializable = new DevExpress.XtraCharts.Series[] {
-        series4};
+        series1};
             this.chartControl_wl_calibration.Size = new System.Drawing.Size(1194, 545);
             this.chartControl_wl_calibration.TabIndex = 0;
             // 
@@ -479,6 +292,14 @@
             this.tabPageSettings.Size = new System.Drawing.Size(1210, 592);
             this.tabPageSettings.TabIndex = 2;
             this.tabPageSettings.Text = "Параметры";
+            // 
+            // parametersControl1
+            // 
+            this.parametersControl1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.parametersControl1.Location = new System.Drawing.Point(3, 3);
+            this.parametersControl1.Name = "parametersControl1";
+            this.parametersControl1.Size = new System.Drawing.Size(1204, 586);
+            this.parametersControl1.TabIndex = 0;
             // 
             // tabPageDebug
             // 
@@ -586,7 +407,7 @@
             this.button10.TabIndex = 1;
             this.button10.Text = "Отмена";
             this.button10.UseVisualStyleBackColor = true;
-            this.button10.Click += new System.EventHandler(this.Button10_Click);
+            this.button10.Click += new System.EventHandler(this.Button_PingCancel_Click);
             // 
             // button7
             // 
@@ -642,21 +463,13 @@
             this.toolTip1.ReshowDelay = 100;
             this.toolTip1.ShowAlways = true;
             // 
-            // waterLevel1
+            // temperatureMonitor1
             // 
-            this.waterLevel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.waterLevel1.Location = new System.Drawing.Point(3, 3);
-            this.waterLevel1.Name = "waterLevel1";
-            this.waterLevel1.Size = new System.Drawing.Size(1204, 586);
-            this.waterLevel1.TabIndex = 17;
-            // 
-            // parametersControl1
-            // 
-            this.parametersControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.parametersControl1.Location = new System.Drawing.Point(3, 3);
-            this.parametersControl1.Name = "parametersControl1";
-            this.parametersControl1.Size = new System.Drawing.Size(1204, 586);
-            this.parametersControl1.TabIndex = 0;
+            this.temperatureMonitor1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.temperatureMonitor1.Location = new System.Drawing.Point(3, 3);
+            this.temperatureMonitor1.Name = "temperatureMonitor1";
+            this.temperatureMonitor1.Size = new System.Drawing.Size(1204, 586);
+            this.temperatureMonitor1.TabIndex = 0;
             // 
             // Form1
             // 
@@ -675,27 +488,15 @@
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.tabControl1.ResumeLayout(false);
             this.tabPageTemp.ResumeLayout(false);
-            this.panel2.ResumeLayout(false);
-            this.panel2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBar1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(swiftPlotDiagram1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(swiftPlotSeriesView1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(series1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(swiftPlotSeriesView2)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(series2)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(swiftPlotSeriesView3)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(series3)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(swiftPlotSeriesView4)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.chartControl_temperature)).EndInit();
             this.Температуры.ResumeLayout(false);
             this.tabPage_wl.ResumeLayout(false);
             this.tabPageCalibration.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numericWaterLevelCalibInterval)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(swiftPlotDiagram2)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(swiftPlotSeriesView5)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(series4)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(swiftPlotDiagram1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(swiftPlotSeriesView1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(series1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.chartControl_wl_calibration)).EndInit();
             this.tabPageSettings.ResumeLayout(false);
             this.tabPageDebug.ResumeLayout(false);
@@ -713,23 +514,12 @@
 
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.TabPage tabPageTemp;
-        private System.Windows.Forms.Label labelTimeLeft;
-        private System.Windows.Forms.TrackBar trackBar1;
-        private System.Windows.Forms.Button button6;
-        private System.Windows.Forms.Button button5;
-        private System.Windows.Forms.Button button4;
-        private System.Windows.Forms.Button button3;
-        private System.Windows.Forms.Button button_temp_stop;
-        private System.Windows.Forms.Button buttonTempStartRecord;
-        private DevExpress.XtraCharts.ChartControl chartControl_temperature;
         private System.Windows.Forms.TabPage tabPage_wl;
         private System.Windows.Forms.TabPage tabPageSettings;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem командаToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem resetToolStripMenuItem;
         private System.Windows.Forms.ErrorProvider errorProvider1;
-        private System.Windows.Forms.Panel panel2;
-        private System.Windows.Forms.Label labelTempReconnect;
         private System.Windows.Forms.ToolStripMenuItem pnigToolStripMenuItem;
         private System.Windows.Forms.TabPage tabPageDebug;
         private System.Windows.Forms.Button button10;
@@ -752,10 +542,11 @@
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.TabPage Температуры;
         private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.Label label7;
         private System.Windows.Forms.ToolTip toolTip1;
-        private System.Windows.Forms.Label labelTempReconnectCount;
         private UserControls.WaterLevel waterLevel1;
         private UserControls.ParametersControl parametersControl1;
+        private System.Windows.Forms.Label label_elapsedWL;
+        private System.Windows.Forms.Label label1;
+        private UserControls.TemperatureMonitor temperatureMonitor1;
     }
 }

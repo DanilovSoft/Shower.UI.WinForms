@@ -13,8 +13,6 @@ namespace Filters
         private readonly int _halfSize; // половина размера буффера
         private int _tail = 0;
         private int _initCount;
-        public int WindowSize { get; }
-        public bool IsInitialized { get; private set; }
 
         public MedianFilter(int windowSize)
         {
@@ -27,6 +25,9 @@ namespace Filters
             _halfSize = (windowSize / 2) + 1;
         }
 
+        public int WindowSize { get; }
+        public bool IsInitialized { get; private set; }
+
         public ushort Add(ushort value)
         {
             _buffer[_tail] = value;
@@ -36,7 +37,9 @@ namespace Filters
             {
                 _initCount++;
                 if (_initCount >= WindowSize)
+                {
                     IsInitialized = true;
+                }
             }
 
             Array.Copy(_buffer, _bufferCopy, _buffer.Length);
