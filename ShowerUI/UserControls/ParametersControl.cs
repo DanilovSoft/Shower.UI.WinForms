@@ -328,7 +328,6 @@ namespace ShowerUI.UserControls
             editText_HeaterPowerKWatt.Value = null;
             editText_button_time.Value = null;
             checkBox_iwd.CheckState = CheckState.Indeterminate;
-            //wifiPower.ResetText();
         }
 
         private static PropertiesModel LoadProperties(ShowerConnection con)

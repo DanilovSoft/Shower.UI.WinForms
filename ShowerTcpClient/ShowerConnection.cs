@@ -195,6 +195,14 @@ namespace ShowerTcpClient
         }
 
         /// <summary>
+        /// Возвращает размер фильтра 'скользящее среднее' для медианы уровня воды.
+        /// </summary>
+        public Task<byte> GetWaterLevelAverageSizeAsync()
+        {
+            return RequestAsync<byte>(ShowerCodes.GetWaterLevelAverageBufferSize);
+        }
+
+        /// <summary>
         /// Возвращает размер буфера фильтра 'скользящее среднее'.
         /// </summary>
         public byte GetWaterLevelAverageFilterSize()

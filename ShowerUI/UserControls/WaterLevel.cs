@@ -155,14 +155,17 @@ namespace ShowerUI.UserControls
             session.WaterLevelFull = await con.GetWaterLevelFullAsync(session.Cts.Token);
 
             // Число должно быть не чётным.
-            byte medianSize = con.GetWaterLevelMedianSize();
+            byte medianSize = await con.GetWaterLevelMedianSizeAsync();
             if (medianSize % 2 != 1)
             {
                 medianSize++;
             }
-
             trackBar_medianTrackBar.Value = (medianSize - 1) / 2;
             UpdateMedianCheckBoxText();
+
+            byte averageSize = await con.GetWaterLevelAverageSizeAsync();
+            trackBar_avg.Value = averageSize;
+            UpdateAverageCheckBox();
 
             SetMinMaxWaterLevel(session.WaterLevelEmpty, session.WaterLevelFull);
 
@@ -195,13 +198,13 @@ namespace ShowerUI.UserControls
                     {
                         AddMedianSeriesPoint(i, medianUsec);
 
-                        byte percent = session.CalcPercent(medianUsec);
-                        AddPercentSeriesPoint(i, percent);
-
                         int avg = avgFilter.Add(medianUsec);
                         if (avgFilter.IsInitialized)
                         {
                             AddAverageSeriesPoint(i, avg);
+
+                            byte percent = session.CalcPercent(avg);
+                            AddPercentSeriesPoint(i, percent);
                         }
                     }
                 }
@@ -237,13 +240,13 @@ namespace ShowerUI.UserControls
                         {
                             AddMedianSeriesPoint(session.LastPointIndex, medianUsec);
 
-                            byte percent = session.CalcPercent(medianUsec);
-                            AddPercentSeriesPoint(session.LastPointIndex, percent);
-
                             int avg = avgFilter.Add(medianUsec);
                             if (avgFilter.IsInitialized)
                             {
                                 AddAverageSeriesPoint(session.LastPointIndex, avg);
+
+                                byte percent = session.CalcPercent(avg);
+                                AddPercentSeriesPoint(session.LastPointIndex, percent);
                             }
                         }
                     }
@@ -403,13 +406,13 @@ namespace ShowerUI.UserControls
                 {
                     AddMedianSeriesPoint(i, medianUsec);
 
-                    byte percent = session.CalcPercent(medianUsec);
-                    AddPercentSeriesPoint(i, percent);
-
                     int avgUsec = avgFilter.Add(medianUsec);
                     if (avgFilter.IsInitialized)
                     {
                         AddAverageSeriesPoint(i, avgUsec);
+
+                        byte percent = session.CalcPercent(avgUsec);
+                        AddPercentSeriesPoint(i, percent);
                     }
                 }
             }
@@ -427,7 +430,7 @@ namespace ShowerUI.UserControls
 
         private int GetAverageTrackBar()
         {
-            int value = trackBar_avg.Value * 2;
+            int value = trackBar_avg.Value;
             return value;
         }
 
