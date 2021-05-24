@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Globalization;
 
 namespace ShowerUI
 {
@@ -46,23 +47,58 @@ namespace ShowerUI
             }
         }
 
+        //[Browsable(true), EditorBrowsable(EditorBrowsableState.Always), Bindable(true)]
+        //[DesignerSerializationVisibility(DesignerSerializationVisibility.Visible)]
         public string Caption
         {
             get => label.Text;
             set => label.Text = value;
         }
 
-        public object? Value
+        public virtual object? Value
         {
             get => GetValue();
             set
             {
                 _changedValue = _origValue = value;
                 _valueType = value?.GetType();
-                _origTextValue = value?.ToString();
+                _origTextValue = Convert.ToString(value, CultureInfo.InvariantCulture);
                 textBox1.Text = _origTextValue;
                 ResetHasChanges();
             }
+        }
+
+        protected virtual void ValidatingText(object sender, CancelEventArgs e)
+        {
+            if (_origValue != null && _valueType != null)
+            {
+                try
+                {
+                    _changedValue = Convert.ChangeType(textBox1.Text, _valueType);
+                }
+                catch
+                {
+                    errorProvider1.SetError(textBox1, $"Значение не соответствует типу {_valueType.Name}");
+                    e.Cancel = true;
+                    return;
+                }
+
+                errorProvider1.SetError(textBox1, null);
+
+                if (_origValue.Equals(_changedValue))
+                {
+                    InnerResetChanges();
+                }
+                else
+                {
+                    InnerHasChanges();
+                }
+            }
+        }
+
+        protected virtual void ValidatedText(object sender, EventArgs e)
+        {
+            errorProvider1.SetError(textBox1, null);
         }
 
         private object? GetValue()
@@ -78,7 +114,7 @@ namespace ShowerUI
             }
             else
             {
-                return (T)Convert.ChangeType(_changedValue, typeof(T));
+                return (T)Convert.ChangeType(_changedValue, typeof(T), CultureInfo.InvariantCulture);
             }
         }
 
@@ -104,30 +140,7 @@ namespace ShowerUI
 
         private void TextBox1_Validating(object sender, CancelEventArgs e)
         {
-            if (_origValue != null)
-            {
-                try
-                {
-                    _changedValue = Convert.ChangeType(textBox1.Text, _valueType);
-                }
-                catch
-                {
-                    errorProvider1.SetError(textBox1, $"Значение не соответствует типу {_valueType.Name}");
-                    e.Cancel = true;
-                    return;
-                }
-
-                errorProvider1.Clear();
-
-                if(_origValue.Equals(_changedValue))
-                {
-                    InnerResetChanges();
-                }
-                else
-                {
-                    InnerHasChanges();
-                }
-            }
+            ValidatingText(sender, e);
         }
 
         private void TextBox_TextChanged(object sender, EventArgs e)

@@ -155,13 +155,13 @@ namespace ShowerUI.UserControls
             session.WaterLevelFull = await con.GetWaterLevelFullAsync(session.Cts.Token);
 
             // Число должно быть не чётным.
-            byte bufSize = await con.GetWaterLevelBufferSizeAsync();
-            if (bufSize % 2 != 1)
+            byte medianSize = con.GetWaterLevelMedianSize();
+            if (medianSize % 2 != 1)
             {
-                bufSize++;
+                medianSize++;
             }
 
-            trackBar_medianTrackBar.Value = (bufSize - 1) / 2;
+            trackBar_medianTrackBar.Value = (medianSize - 1) / 2;
             UpdateMedianCheckBoxText();
 
             SetMinMaxWaterLevel(session.WaterLevelEmpty, session.WaterLevelFull);

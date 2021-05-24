@@ -12,16 +12,16 @@ namespace ShowerUI
         private const double Voltage = 228; // По стандарту должно быть 230, по факту замерил — 228.
 
         /// <summary>
-        /// Объём бака в литрах.
+        /// Объём воды полного бака в литрах.
         /// </summary>
         private readonly float _tankVolumeLitre;
 
         /// <summary>
-        /// Электрическая мощность нагревательного элемента — ТЭНа, кВТ.
+        /// Электрическая мощность нагревательного элемента — ТЭНа с учётом его КПД, кВТ.
         /// </summary>
         private readonly float _heaterPowerKWatt;
 
-        /// <param name="tankVolume">Объём бака в литрах.</param>
+        /// <param name="tankVolumeLitre">Объём вобы полного бака в литрах.</param>
         /// <param name="heaterPowerKWatt">Мощность ТЭНа в киловатах с учётом его КПД.</param>
         public HeatingTimeLeft(float tankVolumeLitre, float heaterPowerKWatt)
         {

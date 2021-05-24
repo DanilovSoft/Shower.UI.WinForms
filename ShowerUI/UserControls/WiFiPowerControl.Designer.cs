@@ -29,71 +29,20 @@ namespace ShowerUI.UserControls
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
-            this.label1 = new System.Windows.Forms.Label();
-            this.wifiPower = new MyNumericUpDown();
-            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            ((System.ComponentModel.ISupportInitialize)(this.wifiPower)).BeginInit();
             this.SuspendLayout();
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(3, 0);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(159, 13);
-            this.label1.TabIndex = 54;
-            this.label1.Text = "Мощность Wi-Fi (10..20.5 dBm)";
-            // 
-            // wifiPower
-            // 
-            this.wifiPower.DecimalPlaces = 2;
-            this.wifiPower.Increment = new decimal(new int[] {
-            25,
-            0,
-            0,
-            131072});
-            this.wifiPower.Location = new System.Drawing.Point(3, 19);
-            this.wifiPower.Maximum = new decimal(new int[] {
-            205,
-            0,
-            0,
-            65536});
-            this.wifiPower.Minimum = new decimal(new int[] {
-            10,
-            0,
-            0,
-            0});
-            this.wifiPower.Name = "wifiPower";
-            this.wifiPower.Size = new System.Drawing.Size(79, 20);
-            this.wifiPower.TabIndex = 53;
-            this.wifiPower.Value = new decimal(new int[] {
-            10,
-            0,
-            0,
-            0});
-            this.wifiPower.ValueChanged += new System.EventHandler(this.WifiPower_ValueChanged);
             // 
             // WiFiPowerControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.AutoSize = true;
-            this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.wifiPower);
+            this.Caption = "Мощность Wi-Fi (10..20.5 dBm)";
             this.Name = "WiFiPowerControl";
-            this.Size = new System.Drawing.Size(165, 42);
-            ((System.ComponentModel.ISupportInitialize)(this.wifiPower)).EndInit();
+            this.TextBoxHint = "Мощность Wi-Fi в диаппазоне от 10 до 20.5 dBm с шагом в 0.25";
             this.ResumeLayout(false);
             this.PerformLayout();
 
         }
 
         #endregion
-
-        private System.Windows.Forms.Label label1;
-        private MyNumericUpDown wifiPower;
-        private System.Windows.Forms.ToolTip toolTip1;
     }
 }

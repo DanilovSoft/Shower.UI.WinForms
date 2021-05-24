@@ -45,7 +45,9 @@ namespace ShowerTcpClient
             int unmanagedSize = Marshal.SizeOf<T>();
             Span<byte> buf = stackalloc byte[unmanagedSize];
             _nstream.ReadBlock(buf);
-            return MySerializer.Read<T>(buf);
+            var value = MySerializer.Read<T>(buf);
+            var value2 = MySerializer.UnsafeRead<T>(buf.ToArray(), 0, unmanagedSize);
+            return value;
         }
 
         /// <inheritdoc/>
@@ -149,7 +151,8 @@ namespace ShowerTcpClient
             int unmanagedSize = Marshal.SizeOf<T>();
             var buf = new byte[unmanagedSize];
             await _nstream.ReadBlockAsync(buf, 0, unmanagedSize, cancellationToken).ConfigureAwait(false);
-            return MySerializer.Read<T>(buf);
+            var value = MySerializer.Read<T>(buf);
+            return value;
         }
 
         public bool GetWatchDogWasReset()
@@ -160,19 +163,43 @@ namespace ShowerTcpClient
         }
 
         /// <summary>
-        /// Возвращает размер скользящего буфера для медианного фильтра.
+        /// 
         /// </summary>
-        public byte GetWaterLevelBufferSize()
+        public float GetWaterTankVolumeLitre()
         {
-            return Request<byte>(ShowerCodes.GetWaterLevelRingBufferSize);
+            return Request<float>(ShowerCodes.GetWaterTankVolumeLitre);
+        }
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        public float GetWaterHeaterPowerKWatt()
+        {
+            return Request<float>(ShowerCodes.GetWaterHeaterPowerKWatt);
         }
 
         /// <summary>
-        /// Возвращает размер скользящего буфера для медианного фильтра.
+        /// Возвращает размер буфера медианного фильтра.
         /// </summary>
-        public Task<byte> GetWaterLevelBufferSizeAsync()
+        public byte GetWaterLevelMedianSize()
         {
-            return RequestAsync<byte>(ShowerCodes.GetWaterLevelRingBufferSize);
+            return Request<byte>(ShowerCodes.GetWaterLevelMedianBufferSize);
+        }
+
+        /// <summary>
+        /// Возвращает размер буфера медианного фильтра.
+        /// </summary>
+        public Task<byte> GetWaterLevelMedianSizeAsync()
+        {
+            return RequestAsync<byte>(ShowerCodes.GetWaterLevelMedianBufferSize);
+        }
+
+        /// <summary>
+        /// Возвращает размер буфера фильтра 'скользящее среднее'.
+        /// </summary>
+        public byte GetWaterLevelAverageFilterSize()
+        {
+            return Request<byte>(ShowerCodes.GetWaterLevelAverageBufferSize);
         }
 
         public void Dispose()

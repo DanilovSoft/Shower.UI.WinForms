@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using DevExpress.XtraCharts;
 using ShowerTcpClient;
 using ShowerUI.Dto;
 
@@ -20,21 +23,12 @@ namespace ShowerUI.UserControls
         public ParametersControl()
         {
             InitializeComponent();
-
-            wiFiPower.ResetValue();
         }
 
         private async void Button_load_Click(object sender, EventArgs e)
         {
-            panelProperties.Enabled = false;
-            panel_properties_custom.Enabled = false;
-            button_save.Enabled = false;
-            button_load.Enabled = false;
-            button_clear.Enabled = false;
-            button_cancel.Enabled = true;
-
+            DisableControls();
             var cts = _cts = new CancellationTokenSource();
-
             try
             {
                 using (var con = await ConnectionHelper.CreateConnectionAsync(cts.Token))
@@ -58,6 +52,18 @@ namespace ShowerUI.UserControls
             LoadPropsEnable();
         }
 
+        private void DisableControls()
+        {
+            panelProperties.Enabled = false;
+            panel_properties_custom.Enabled = false;
+            button_save.Enabled = false;
+            button_load.Enabled = false;
+            button_clear.Enabled = false;
+            button_cancel.Enabled = true;
+            button_Export.Enabled = false;
+            button_Import.Enabled = false;
+        }
+
         private void LoadPropsEnable()
         {
             panelProperties.Enabled = true;
@@ -66,6 +72,8 @@ namespace ShowerUI.UserControls
             button_load.Enabled = true;
             button_clear.Enabled = true;
             button_cancel.Enabled = false;
+            button_Export.Enabled = true;
+            button_Import.Enabled = true;
         }
 
         private void Button_clear_Click(object sender, EventArgs e)
@@ -137,12 +145,12 @@ namespace ShowerUI.UserControls
 
             if (wiFiPower.HasChanges)
             {
-                con.BuildRequest()
-                   .Write(ShowerCodes.SetWiFiPower)
-                   .Write(wiFiPower.Value.Value)
-                   .ReadOK();
+                //con.BuildRequest()
+                //   .Write(ShowerCodes.SetWiFiPower)
+                //   .Write(wiFiPower.Value.Value)
+                //   .ReadOK();
 
-                wiFiPower.ResetHasChanges();
+                //wiFiPower.ResetHasChanges();
             }
 
             if (editText_WL_measure_interval.HasChanges)
@@ -155,14 +163,14 @@ namespace ShowerUI.UserControls
                 editText_WL_measure_interval.ResetHasChanges();
             }
 
-            if (editText_wl_ring_buffer_size.HasChanges)
+            if (editText_wl_median_buffer_size.HasChanges)
             {
                 con.BuildRequest()
-                   .Write(ShowerCodes.SetWaterLevelRingBufferSize)
-                   .Write(editText_wl_ring_buffer_size.GetValue<byte>())
+                   .Write(ShowerCodes.SetWaterLevelMedianBufferSize)
+                   .Write(editText_wl_median_buffer_size.GetValue<byte>())
                    .ReadOK();
 
-                editText_wl_ring_buffer_size.ResetHasChanges();
+                editText_wl_median_buffer_size.ResetHasChanges();
             }
 
             if (editText_wl_cut_off_percent.HasChanges)
@@ -175,24 +183,34 @@ namespace ShowerUI.UserControls
                 editText_wl_cut_off_percent.ResetHasChanges();
             }
 
-            if (editText_internal_temp_buf_size.HasChanges)
+            if (editText_internal_temp_avg_size.HasChanges)
             {
                 con.BuildRequest()
-                   .Write(ShowerCodes.SetTempSensorInternalTempBufferSize)
-                   .Write(editText_internal_temp_buf_size.GetValue<byte>())
+                   .Write(ShowerCodes.SetTempSensorInternalTempAverageSize)
+                   .Write(editText_internal_temp_avg_size.GetValue<byte>())
                    .ReadOK();
 
-                editText_internal_temp_buf_size.ResetHasChanges();
+                editText_internal_temp_avg_size.ResetHasChanges();
             }
 
-            if (editText_wl_usec_per_deg.HasChanges)
+            if (editText_WaterVolumeLitre.HasChanges)
             {
                 con.BuildRequest()
-                  .Write(ShowerCodes.SetWaterLevelUsecPerDeg)
-                  .Write((ushort)(editText_wl_usec_per_deg.GetValue<float>() * 100))
+                  .Write(ShowerCodes.SetWaterTankVolumeLitre)
+                  .Write(editText_WaterVolumeLitre.GetValue<float>())
                   .ReadOK();
 
-                editText_wl_usec_per_deg.ResetHasChanges();
+                editText_WaterVolumeLitre.ResetHasChanges();
+            }
+
+            if (editText_HeaterPowerKWatt.HasChanges)
+            {
+                con.BuildRequest()
+                  .Write(ShowerCodes.SetWaterHeaterPowerKWatt)
+                  .Write(editText_HeaterPowerKWatt.GetValue<float>())
+                  .ReadOK();
+
+                editText_HeaterPowerKWatt.ResetHasChanges();
             }
 
             if (editText_button_time.HasChanges)
@@ -270,7 +288,11 @@ namespace ShowerUI.UserControls
             var model = await Task.Run(() => LoadProperties(con), cancellationToken);
 
             ClearProperties();
+            SetControlValues(model);
+        }
 
+        private void SetControlValues(PropertiesModel model)
+        {
             editText_wl_full.Value = model.WaterLevelFullUsec;
             editText_wl_empty.Value = model.WaterLevelEmptyUsec;
             editText_min_water_heating_percent.Value = model.MinimumWaterHeatingLevel;
@@ -279,12 +301,14 @@ namespace ShowerUI.UserControls
             editText_light_brightness.Value = model.LightBrightness;
             wiFiPower.Value = model.WiFiPower;
             editText_WL_measure_interval.Value = model.WaterLevelMeasureInterval;
-            editText_wl_ring_buffer_size.Value = model.WaterLevelRingBufferSize;
+            editText_wl_median_buffer_size.Value = model.WaterLevelMedianBufferSize;
+            editText_wl_avg_buffer_size.Value = model.WaterLevelAverageBufferSize;
             editText_wl_cut_off_percent.Value = model.WaterValveCutOffPercent;
-            editText_internal_temp_buf_size.Value = model.TempSensorInternalTempBufferSize;
-            editText_wl_usec_per_deg.Value = model.WaterLevelUsecPerDeg;
+            editText_internal_temp_avg_size.Value = model.TempSensorInternalTempAverageSize;
             editText_button_time.Value = model.ButtonTimeMsec;
-            checkBox_iwd.Checked = model.WatchDogWasReset;
+            checkBox_iwd.Checked = model.WatchDogWasReset ?? false;
+            editText_WaterVolumeLitre.Value = model.WaterTankVolumeLitre;
+            editText_HeaterPowerKWatt.Value = model.WaterHeaterPowerKWatt;
         }
 
         private void ClearProperties()
@@ -297,10 +321,11 @@ namespace ShowerUI.UserControls
             editText_light_brightness.Value = null;
             wiFiPower.Value = null;
             editText_WL_measure_interval.Value = null;
-            editText_wl_ring_buffer_size.Value = null;
+            editText_wl_median_buffer_size.Value = null;
             editText_wl_cut_off_percent.Value = null;
-            editText_internal_temp_buf_size.Value = null;
-            editText_wl_usec_per_deg.Value = null;
+            editText_internal_temp_avg_size.Value = null;
+            editText_WaterVolumeLitre.Value = null;
+            editText_HeaterPowerKWatt.Value = null;
             editText_button_time.Value = null;
             checkBox_iwd.CheckState = CheckState.Indeterminate;
             //wifiPower.ResetText();
@@ -318,15 +343,79 @@ namespace ShowerUI.UserControls
                 LightBrightness = con.Request<byte>(ShowerCodes.GetLightBrightness),
                 WiFiPower = con.Request<byte>(ShowerCodes.GetWiFiPower),
                 WaterLevelMeasureInterval = con.Request<byte>(ShowerCodes.GetWaterLevelMeasureInterval),
-                WaterLevelRingBufferSize = con.GetWaterLevelBufferSize(),
+                WaterLevelMedianBufferSize = con.GetWaterLevelMedianSize(),
+                WaterLevelAverageBufferSize = con.GetWaterLevelAverageFilterSize(),
                 WaterValveCutOffPercent = con.Request<byte>(ShowerCodes.GetWaterValveCutOffPercent),
-                TempSensorInternalTempBufferSize = con.Request<byte>(ShowerCodes.GetTempSensorInternalTempBufferSize),
-                WaterLevelUsecPerDeg = con.Request<ushort>(ShowerCodes.GetWaterLevelUsecPerDeg) / 100f,
+                TempSensorInternalTempAverageSize = con.Request<byte>(ShowerCodes.GetTempSensorInternalTempAverageSize),
                 ButtonTimeMsec = con.Request<byte>(ShowerCodes.GetButtonTimeMsec),
-                WatchDogWasReset = con.GetWatchDogWasReset()
+                WatchDogWasReset = con.GetWatchDogWasReset(),
+                WaterTankVolumeLitre = con.GetWaterTankVolumeLitre(),
+                WaterHeaterPowerKWatt = con.GetWaterHeaterPowerKWatt(),
             };
 
             return model;
+        }
+
+        private void Button_Export_Click(object sender, EventArgs e)
+        {
+            var model = new PropertiesModel
+            {
+                WaterLevelFullUsec = (ushort?)editText_wl_full.Value,
+                WaterLevelEmptyUsec = (ushort?)editText_wl_empty.Value,
+                MinimumWaterHeatingLevel = (byte?)editText_min_water_heating_percent.Value,
+                AbsoluteHeatingTimeLimit = (byte?)editText_abs_heating_time_limit.Value,
+                HeatingTimeLimit = (byte?)editText_heating_time_limit.Value,
+                LightBrightness = (byte?)editText_light_brightness.Value,
+                WiFiPower = (byte?)wiFiPower.Value,
+                WaterLevelMeasureInterval = (byte?)editText_WL_measure_interval.Value,
+                WaterLevelMedianBufferSize = (byte?)editText_wl_median_buffer_size.Value,
+                WaterLevelAverageBufferSize = (byte?)editText_wl_avg_buffer_size.Value,
+                WaterValveCutOffPercent = (byte?)editText_wl_cut_off_percent.Value,
+                TempSensorInternalTempAverageSize = (byte?)editText_internal_temp_avg_size.Value,
+                ButtonTimeMsec = (byte?)editText_button_time.Value,
+                WaterTankVolumeLitre = (float?)editText_WaterVolumeLitre.Value,
+                WaterHeaterPowerKWatt = (float?)editText_HeaterPowerKWatt.Value,
+            };
+
+            try
+            {
+                using (var dialog = new SaveFileDialog())
+                {
+                    dialog.AutoUpgradeEnabled = true;
+                    dialog.DefaultExt = "shower.txt";
+                    dialog.Filter = "Json File|*.shower.txt";
+                    dialog.FileName = "Parameters";
+                    if (dialog.ShowDialog() == DialogResult.OK)
+                    {
+                        string json = JsonSerializer.Serialize(model, new JsonSerializerOptions { WriteIndented = true });
+                        File.WriteAllText(dialog.FileName, json);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(this, ex.Message, "", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void Button_Import_Click(object sender, EventArgs e)
+        {
+            using (var dialog = new OpenFileDialog())
+            {
+                dialog.Filter = "Json File|*.shower.txt";
+                dialog.FileName = "Parameters";
+                dialog.Multiselect = false;
+                if (dialog.ShowDialog() == DialogResult.OK)
+                {
+                    string json = File.ReadAllText(dialog.FileName);
+                    var model = JsonSerializer.Deserialize<PropertiesModel>(json);
+                    if (model != null)
+                    {
+                        ClearProperties();
+                        SetControlValues(model);
+                    }
+                }
+            }
         }
     }
 }

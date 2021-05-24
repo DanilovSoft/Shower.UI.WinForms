@@ -65,11 +65,11 @@ namespace ShowerTcpClient
         GetWaterValveCutOffPercent = 39,
         SetWaterValveCutOffPercent = 40,
 
-        GetWaterLevelRingBufferSize = 45,
-        SetWaterLevelRingBufferSize = 46,
+        GetWaterLevelAverageBufferSize = 45,
+        SetWaterLevelAverageBufferSize = 46,
 
-        GetTempSensorInternalTempBufferSize = 47,
-        SetTempSensorInternalTempBufferSize = 48,
+        GetTempSensorInternalTempAverageSize = 47,
+        SetTempSensorInternalTempAverageSize = 48,
 
         GetWaterLevelUsecPerDeg = 49,
         SetWaterLevelUsecPerDeg = 50,
@@ -82,7 +82,20 @@ namespace ShowerTcpClient
         GetButtonTimeMsec = 54,
         SetButtonTimeMsec = 55,
 
+        GetTempLowerBound = 56,
+        GetTempUpperBound = 57,
+
+        GetWaterLevelMedianBufferSize = 58,
+        SetWaterLevelMedianBufferSize = 59,
+
+        GetWaterTankVolumeLitre = 60,
+        SetWaterTankVolumeLitre = 61,
+
+        GetWaterHeaterPowerKWatt = 62,
+        SetWaterHeaterPowerKWatt = 63,
+
         OK = 200,
+	    UnknownCode = 253,
         Reset = 254,
         Save = 255,
     }

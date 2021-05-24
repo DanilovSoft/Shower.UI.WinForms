@@ -16,7 +16,7 @@ namespace ShowerTcpClient
         }
 
         [Obsolete]
-        public static T Read<T>(byte[] buf, int startIndex, int unmanagedSize) where T : struct
+        public static T UnsafeRead<T>(byte[] buf, int startIndex, int unmanagedSize) where T : struct
         {
             IntPtr pnt = Marshal.AllocHGlobal(unmanagedSize);
             try
