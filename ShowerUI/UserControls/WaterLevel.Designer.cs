@@ -30,10 +30,10 @@ namespace ShowerUI.UserControls
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            DevExpress.XtraCharts.SwiftPlotDiagram swiftPlotDiagram3 = new DevExpress.XtraCharts.SwiftPlotDiagram();
-            DevExpress.XtraCharts.SwiftPlotDiagramSecondaryAxisY swiftPlotDiagramSecondaryAxisY3 = new DevExpress.XtraCharts.SwiftPlotDiagramSecondaryAxisY();
-            DevExpress.XtraCharts.Series series3 = new DevExpress.XtraCharts.Series();
-            DevExpress.XtraCharts.SwiftPlotSeriesView swiftPlotSeriesView3 = new DevExpress.XtraCharts.SwiftPlotSeriesView();
+            DevExpress.XtraCharts.SwiftPlotDiagram swiftPlotDiagram1 = new DevExpress.XtraCharts.SwiftPlotDiagram();
+            DevExpress.XtraCharts.SwiftPlotDiagramSecondaryAxisY swiftPlotDiagramSecondaryAxisY1 = new DevExpress.XtraCharts.SwiftPlotDiagramSecondaryAxisY();
+            DevExpress.XtraCharts.Series series1 = new DevExpress.XtraCharts.Series();
+            DevExpress.XtraCharts.SwiftPlotSeriesView swiftPlotSeriesView1 = new DevExpress.XtraCharts.SwiftPlotSeriesView();
             this.panel_root = new System.Windows.Forms.Panel();
             this.panel_chart = new System.Windows.Forms.Panel();
             this.chartControl_water_level = new DevExpress.XtraCharts.ChartControl();
@@ -59,10 +59,10 @@ namespace ShowerUI.UserControls
             this.panel_root.SuspendLayout();
             this.panel_chart.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.chartControl_water_level)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(swiftPlotDiagram3)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(swiftPlotDiagramSecondaryAxisY3)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(series3)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(swiftPlotSeriesView3)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(swiftPlotDiagram1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(swiftPlotDiagramSecondaryAxisY1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(series1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(swiftPlotSeriesView1)).BeginInit();
             this.panel_bottom.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar_avg)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar_medianTrackBar)).BeginInit();
@@ -90,55 +90,55 @@ namespace ShowerUI.UserControls
             // 
             // chartControl_water_level
             // 
-            swiftPlotDiagram3.AxisX.Visibility = DevExpress.Utils.DefaultBoolean.False;
-            swiftPlotDiagram3.AxisX.VisibleInPanesSerializable = "-1";
-            swiftPlotDiagram3.AxisY.GridLines.Visible = false;
-            swiftPlotDiagram3.AxisY.Label.Visible = false;
-            swiftPlotDiagram3.AxisY.Tickmarks.MinorVisible = false;
-            swiftPlotDiagram3.AxisY.Tickmarks.Visible = false;
-            swiftPlotDiagram3.AxisY.Visibility = DevExpress.Utils.DefaultBoolean.False;
-            swiftPlotDiagram3.AxisY.VisibleInPanesSerializable = "-1";
-            swiftPlotDiagram3.AxisY.VisualRange.Auto = false;
-            swiftPlotDiagram3.AxisY.VisualRange.MaxValueSerializable = "9.5";
-            swiftPlotDiagram3.AxisY.VisualRange.MinValueSerializable = "0";
-            swiftPlotDiagram3.AxisY.WholeRange.Auto = false;
-            swiftPlotDiagram3.AxisY.WholeRange.MaxValueSerializable = "9.5";
-            swiftPlotDiagram3.AxisY.WholeRange.MinValueSerializable = "0";
-            swiftPlotDiagram3.EnableAxisXScrolling = true;
-            swiftPlotDiagram3.EnableAxisXZooming = true;
-            swiftPlotDiagramSecondaryAxisY3.AxisID = 0;
-            swiftPlotDiagramSecondaryAxisY3.GridLines.Visible = true;
-            swiftPlotDiagramSecondaryAxisY3.MinorCount = 1;
-            swiftPlotDiagramSecondaryAxisY3.Name = "percent";
-            swiftPlotDiagramSecondaryAxisY3.NumericScaleOptions.AutoGrid = false;
-            swiftPlotDiagramSecondaryAxisY3.NumericScaleOptions.CustomGridAlignment = 2D;
-            swiftPlotDiagramSecondaryAxisY3.NumericScaleOptions.GridAlignment = DevExpress.XtraCharts.NumericGridAlignment.Custom;
-            swiftPlotDiagramSecondaryAxisY3.NumericScaleOptions.GridOffset = 2D;
-            swiftPlotDiagramSecondaryAxisY3.NumericScaleOptions.GridSpacing = 2D;
-            swiftPlotDiagramSecondaryAxisY3.Tickmarks.MinorVisible = false;
-            swiftPlotDiagramSecondaryAxisY3.Tickmarks.Visible = false;
-            swiftPlotDiagramSecondaryAxisY3.Visibility = DevExpress.Utils.DefaultBoolean.True;
-            swiftPlotDiagramSecondaryAxisY3.VisibleInPanesSerializable = "-1";
-            swiftPlotDiagramSecondaryAxisY3.VisualRange.Auto = false;
-            swiftPlotDiagramSecondaryAxisY3.VisualRange.MaxValueSerializable = "99";
-            swiftPlotDiagramSecondaryAxisY3.VisualRange.MinValueSerializable = "0";
-            swiftPlotDiagramSecondaryAxisY3.WholeRange.Auto = false;
-            swiftPlotDiagramSecondaryAxisY3.WholeRange.MaxValueSerializable = "99";
-            swiftPlotDiagramSecondaryAxisY3.WholeRange.MinValueSerializable = "0";
-            swiftPlotDiagram3.SecondaryAxesY.AddRange(new DevExpress.XtraCharts.SwiftPlotDiagramSecondaryAxisY[] {
-            swiftPlotDiagramSecondaryAxisY3});
-            this.chartControl_water_level.Diagram = swiftPlotDiagram3;
+            swiftPlotDiagram1.AxisX.Visibility = DevExpress.Utils.DefaultBoolean.False;
+            swiftPlotDiagram1.AxisX.VisibleInPanesSerializable = "-1";
+            swiftPlotDiagram1.AxisY.GridLines.Visible = false;
+            swiftPlotDiagram1.AxisY.Label.Visible = false;
+            swiftPlotDiagram1.AxisY.Tickmarks.MinorVisible = false;
+            swiftPlotDiagram1.AxisY.Tickmarks.Visible = false;
+            swiftPlotDiagram1.AxisY.Visibility = DevExpress.Utils.DefaultBoolean.False;
+            swiftPlotDiagram1.AxisY.VisibleInPanesSerializable = "-1";
+            swiftPlotDiagram1.AxisY.VisualRange.Auto = false;
+            swiftPlotDiagram1.AxisY.VisualRange.MaxValueSerializable = "9.5";
+            swiftPlotDiagram1.AxisY.VisualRange.MinValueSerializable = "0";
+            swiftPlotDiagram1.AxisY.WholeRange.Auto = false;
+            swiftPlotDiagram1.AxisY.WholeRange.MaxValueSerializable = "9.5";
+            swiftPlotDiagram1.AxisY.WholeRange.MinValueSerializable = "0";
+            swiftPlotDiagram1.EnableAxisXScrolling = true;
+            swiftPlotDiagram1.EnableAxisXZooming = true;
+            swiftPlotDiagramSecondaryAxisY1.AxisID = 0;
+            swiftPlotDiagramSecondaryAxisY1.GridLines.Visible = true;
+            swiftPlotDiagramSecondaryAxisY1.MinorCount = 1;
+            swiftPlotDiagramSecondaryAxisY1.Name = "percent";
+            swiftPlotDiagramSecondaryAxisY1.NumericScaleOptions.AutoGrid = false;
+            swiftPlotDiagramSecondaryAxisY1.NumericScaleOptions.CustomGridAlignment = 2D;
+            swiftPlotDiagramSecondaryAxisY1.NumericScaleOptions.GridAlignment = DevExpress.XtraCharts.NumericGridAlignment.Custom;
+            swiftPlotDiagramSecondaryAxisY1.NumericScaleOptions.GridOffset = 2D;
+            swiftPlotDiagramSecondaryAxisY1.NumericScaleOptions.GridSpacing = 2D;
+            swiftPlotDiagramSecondaryAxisY1.Tickmarks.MinorVisible = false;
+            swiftPlotDiagramSecondaryAxisY1.Tickmarks.Visible = false;
+            swiftPlotDiagramSecondaryAxisY1.Visibility = DevExpress.Utils.DefaultBoolean.True;
+            swiftPlotDiagramSecondaryAxisY1.VisibleInPanesSerializable = "-1";
+            swiftPlotDiagramSecondaryAxisY1.VisualRange.Auto = false;
+            swiftPlotDiagramSecondaryAxisY1.VisualRange.MaxValueSerializable = "99";
+            swiftPlotDiagramSecondaryAxisY1.VisualRange.MinValueSerializable = "0";
+            swiftPlotDiagramSecondaryAxisY1.WholeRange.Auto = false;
+            swiftPlotDiagramSecondaryAxisY1.WholeRange.MaxValueSerializable = "99";
+            swiftPlotDiagramSecondaryAxisY1.WholeRange.MinValueSerializable = "0";
+            swiftPlotDiagram1.SecondaryAxesY.AddRange(new DevExpress.XtraCharts.SwiftPlotDiagramSecondaryAxisY[] {
+            swiftPlotDiagramSecondaryAxisY1});
+            this.chartControl_water_level.Diagram = swiftPlotDiagram1;
             this.chartControl_water_level.Dock = System.Windows.Forms.DockStyle.Fill;
             this.chartControl_water_level.Legend.Name = "Default Legend";
             this.chartControl_water_level.Location = new System.Drawing.Point(0, 0);
             this.chartControl_water_level.Name = "chartControl_water_level";
-            series3.ArgumentScaleType = DevExpress.XtraCharts.ScaleType.Numerical;
-            series3.LabelsVisibility = DevExpress.Utils.DefaultBoolean.False;
-            series3.Name = "RAW (μs)";
-            swiftPlotSeriesView3.Color = System.Drawing.Color.Fuchsia;
-            series3.View = swiftPlotSeriesView3;
+            series1.ArgumentScaleType = DevExpress.XtraCharts.ScaleType.Numerical;
+            series1.LabelsVisibility = DevExpress.Utils.DefaultBoolean.False;
+            series1.Name = "RAW";
+            swiftPlotSeriesView1.Color = System.Drawing.Color.Fuchsia;
+            series1.View = swiftPlotSeriesView1;
             this.chartControl_water_level.SeriesSerializable = new DevExpress.XtraCharts.Series[] {
-        series3};
+        series1};
             this.chartControl_water_level.Size = new System.Drawing.Size(1225, 567);
             this.chartControl_water_level.TabIndex = 0;
             // 
@@ -170,7 +170,7 @@ namespace ShowerUI.UserControls
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(917, 75);
+            this.label8.Location = new System.Drawing.Point(1028, 76);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(136, 13);
             this.label8.TabIndex = 16;
@@ -189,32 +189,34 @@ namespace ShowerUI.UserControls
             // checkBox_avg
             // 
             this.checkBox_avg.AutoSize = true;
-            this.checkBox_avg.Location = new System.Drawing.Point(616, 71);
+            this.checkBox_avg.Checked = true;
+            this.checkBox_avg.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBox_avg.Location = new System.Drawing.Point(697, 72);
             this.checkBox_avg.Name = "checkBox_avg";
-            this.checkBox_avg.Size = new System.Drawing.Size(89, 17);
+            this.checkBox_avg.Size = new System.Drawing.Size(110, 17);
             this.checkBox_avg.TabIndex = 14;
-            this.checkBox_avg.Text = "Среднее (μs)";
+            this.checkBox_avg.Text = "М + Среднее (μs)";
             this.checkBox_avg.UseVisualStyleBackColor = true;
             this.checkBox_avg.CheckedChanged += new System.EventHandler(this.CheckBox_avg_CheckedChanged);
             // 
             // trackBar_avg
             // 
-            this.trackBar_avg.Location = new System.Drawing.Point(297, 57);
+            this.trackBar_avg.Location = new System.Drawing.Point(267, 57);
             this.trackBar_avg.Maximum = 129;
             this.trackBar_avg.Minimum = 1;
             this.trackBar_avg.Name = "trackBar_avg";
-            this.trackBar_avg.Size = new System.Drawing.Size(313, 45);
+            this.trackBar_avg.Size = new System.Drawing.Size(415, 45);
             this.trackBar_avg.TabIndex = 13;
             this.trackBar_avg.Value = 1;
             this.trackBar_avg.Scroll += new System.EventHandler(this.TrackBar_avg_Scroll);
             // 
             // trackBar_medianTrackBar
             // 
-            this.trackBar_medianTrackBar.Location = new System.Drawing.Point(297, 11);
+            this.trackBar_medianTrackBar.Location = new System.Drawing.Point(267, 11);
             this.trackBar_medianTrackBar.Maximum = 128;
             this.trackBar_medianTrackBar.Minimum = 1;
             this.trackBar_medianTrackBar.Name = "trackBar_medianTrackBar";
-            this.trackBar_medianTrackBar.Size = new System.Drawing.Size(313, 45);
+            this.trackBar_medianTrackBar.Size = new System.Drawing.Size(415, 45);
             this.trackBar_medianTrackBar.TabIndex = 12;
             this.trackBar_medianTrackBar.TickFrequency = 2;
             this.trackBar_medianTrackBar.Value = 1;
@@ -233,7 +235,7 @@ namespace ShowerUI.UserControls
             // checkBox_median
             // 
             this.checkBox_median.AutoSize = true;
-            this.checkBox_median.Location = new System.Drawing.Point(615, 17);
+            this.checkBox_median.Location = new System.Drawing.Point(813, 20);
             this.checkBox_median.Name = "checkBox_median";
             this.checkBox_median.Size = new System.Drawing.Size(91, 17);
             this.checkBox_median.TabIndex = 9;
@@ -253,7 +255,7 @@ namespace ShowerUI.UserControls
             // label_reconnect_count
             // 
             this.label_reconnect_count.AutoSize = true;
-            this.label_reconnect_count.Location = new System.Drawing.Point(1064, 75);
+            this.label_reconnect_count.Location = new System.Drawing.Point(1175, 76);
             this.label_reconnect_count.Name = "label_reconnect_count";
             this.label_reconnect_count.Size = new System.Drawing.Size(13, 13);
             this.label_reconnect_count.TabIndex = 7;
@@ -279,9 +281,7 @@ namespace ShowerUI.UserControls
             // checkBox_percent
             // 
             this.checkBox_percent.AutoSize = true;
-            this.checkBox_percent.Checked = true;
-            this.checkBox_percent.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox_percent.Location = new System.Drawing.Point(728, 71);
+            this.checkBox_percent.Location = new System.Drawing.Point(813, 72);
             this.checkBox_percent.Name = "checkBox_percent";
             this.checkBox_percent.Size = new System.Drawing.Size(64, 17);
             this.checkBox_percent.TabIndex = 4;
@@ -320,7 +320,9 @@ namespace ShowerUI.UserControls
             // checkBox_raw
             // 
             this.checkBox_raw.AutoSize = true;
-            this.checkBox_raw.Location = new System.Drawing.Point(728, 17);
+            this.checkBox_raw.Checked = true;
+            this.checkBox_raw.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBox_raw.Location = new System.Drawing.Point(697, 20);
             this.checkBox_raw.Name = "checkBox_raw";
             this.checkBox_raw.Size = new System.Drawing.Size(72, 17);
             this.checkBox_raw.TabIndex = 3;
@@ -352,10 +354,10 @@ namespace ShowerUI.UserControls
             this.Size = new System.Drawing.Size(1225, 676);
             this.panel_root.ResumeLayout(false);
             this.panel_chart.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(swiftPlotDiagramSecondaryAxisY3)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(swiftPlotDiagram3)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(swiftPlotSeriesView3)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(series3)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(swiftPlotDiagramSecondaryAxisY1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(swiftPlotDiagram1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(swiftPlotSeriesView1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(series1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.chartControl_water_level)).EndInit();
             this.panel_bottom.ResumeLayout(false);
             this.panel_bottom.PerformLayout();

@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -27,9 +28,11 @@ namespace ShowerUI.UserControls
         private const string TempCalculatedSeries = "CalculatedTemp";
 
         private readonly List<InternalTempModel> _temperatureList = new(600);
-        private readonly HeatingTimeLeft _heatingTimeLeft;
         private readonly Action<InternalTempModel> _addTemperatureRecordHandler;
         private CancellationTokenSource? _tempRecorderCts;
+        private volatile HeatingTimeLeft? _heatingTimeCalc;
+        private float? _heaterPowerKWatt;
+        private float? _tankVolume;
 
         public TemperatureMonitor()
         {
@@ -40,7 +43,7 @@ namespace ShowerUI.UserControls
             heaterPowerWatt *= HeaterEfficiency; // Учтём КПД нагревателя.
 
             float heaterPowerKWatt = (float)(heaterPowerWatt / 1000);
-            _heatingTimeLeft = new HeatingTimeLeft(tankHeightMil: 297, tankDiameterMil: 400, heaterPowerKWatt);
+            //_heatingTimeLeft = new HeatingTimeLeft(tankHeightMil: 297, tankDiameterMil: 400, heaterPowerKWatt);
 
             _addTemperatureRecordHandler = AddTemperatureRecord;
         }
@@ -63,6 +66,7 @@ namespace ShowerUI.UserControls
                     {
                         reconnectCount++;
                         errorProvider1.SetError(button_Start, null);
+                        await InitBeforeStart(connection, cts.Token);
                         await Task.Run(() => RecordTempAsync(connection, cts.Token));
                     }
                 }
@@ -92,6 +96,15 @@ namespace ShowerUI.UserControls
             }
         }
 
+        private async Task InitBeforeStart(ShowerConnection con, CancellationToken cancellationToken)
+        {
+            textBox_heaterPowerKWatt.Text = (await con.GetWaterHeaterPowerKWattAsync(cancellationToken)).ToString(CultureInfo.InvariantCulture);
+            textBox_volumeLitre.Text = (await con.GetWaterTankVolumeLitreAsync(cancellationToken)).ToString(CultureInfo.InvariantCulture);
+
+            ValidateHeaterPower();
+            ValidateVolume();
+        }
+
         private void Button_Stop_Click(object sender, EventArgs e)
         {
             _tempRecorderCts?.Cancel();
@@ -112,7 +125,7 @@ namespace ShowerUI.UserControls
                 {
                     dialog.AutoUpgradeEnabled = true;
                     dialog.DefaultExt = "txt";
-                    dialog.Filter = "Json File|*.txt";
+                    dialog.Filter = "Json File|*.shower.txt";
                     if (dialog.ShowDialog() == DialogResult.OK)
                     {
                         string json = JsonConvert.SerializeObject(_temperatureList);
@@ -227,7 +240,7 @@ namespace ShowerUI.UserControls
         {
             using (var dialog = new OpenFileDialog())
             {
-                dialog.Filter = "Json File|*.txt";
+                dialog.Filter = "Json File|*.shower.txt";
                 dialog.Multiselect = false;
                 if (dialog.ShowDialog() == DialogResult.OK)
                 {
@@ -250,25 +263,30 @@ namespace ShowerUI.UserControls
 
         private void CalcTimeLeft()
         {
-            Debug.Assert(trackBar_TimeLeft.Value != 0);
-
-            int startMinute = trackBar_TimeLeft.Value;
-            int startSec = startMinute * 60;
-
-            if (_temperatureList.FirstOrDefault(x => x.HeaterEnabled) is { } startPoint)
+            if (trackBar_TimeLeft.Value != 0)
             {
-                int time = startPoint.Second + startSec;
-                if (_temperatureList.FirstOrDefault(x => x.HeaterEnabled && x.Second >= time) is { } point)
+                if (_heatingTimeCalc is { } timeCalc)
                 {
-                    TimeSpan timeLeft = _heatingTimeLeft.CalcTimeLeft(point.InternalTemp, CalculationTempLimit);
-                    DisplayTimeLeft(timeLeft);
+                    int startMinute = trackBar_TimeLeft.Value;
+                    int startSec = startMinute * 60;
 
-                    int sec = (int)timeLeft.TotalSeconds;
-                    sec += point.Second;
+                    if (_temperatureList.FirstOrDefault(x => x.HeaterEnabled) is { } startPoint)
+                    {
+                        int time = startPoint.Second + startSec;
+                        if (_temperatureList.FirstOrDefault(x => x.HeaterEnabled && x.Second >= time) is { } point)
+                        {
+                            // TODO Учесть объём воды в баке.
+                            TimeSpan timeLeft = timeCalc.CalcTimeLeft(point.InternalTemp, CalculationTempLimit);
+                            DisplayTimeLeft(timeLeft);
 
-                    chartControl_temperature.Series[TempCalculatedSeries].Points.Clear();
-                    chartControl_temperature.Series[TempCalculatedSeries].Points.Add(new SeriesPoint(point.Second, point.InternalTemp));
-                    chartControl_temperature.Series[TempCalculatedSeries].Points.Add(new SeriesPoint(sec, CalculationTempLimit));
+                            int sec = (int)timeLeft.TotalSeconds;
+                            sec += point.Second;
+
+                            chartControl_temperature.Series[TempCalculatedSeries].Points.Clear();
+                            chartControl_temperature.Series[TempCalculatedSeries].Points.Add(new SeriesPoint(point.Second, point.InternalTemp));
+                            chartControl_temperature.Series[TempCalculatedSeries].Points.Add(new SeriesPoint(sec, CalculationTempLimit));
+                        }
+                    }
                 }
             }
         }
@@ -309,6 +327,54 @@ namespace ShowerUI.UserControls
                 chartControl_temperature.Series[3].Points.Add(new SeriesPoint(measure.Second, measure.InternalTemp) { IsEmpty = measure.HeaterEnabled });
 
                 interval = TimeSpan.FromMilliseconds(10);
+            }
+        }
+
+        private void TextBox_heaterPowerKWatt_Validating(object sender, CancelEventArgs e)
+        {
+            ValidateHeaterPower();
+        }
+
+        private void ValidateHeaterPower()
+        {
+            if (float.TryParse(textBox_heaterPowerKWatt.Text, NumberStyles.Number, CultureInfo.InvariantCulture, out var value) && value > 1 && value < 3)
+            {
+                _heaterPowerKWatt = value;
+                errorProvider1.SetError(textBox_heaterPowerKWatt, null);
+                TryInitTimeCalc();
+            }
+            else
+            {
+                errorProvider1.SetError(textBox_heaterPowerKWatt, "Невалидное число");
+            }
+        }
+
+        private void TextBox_volumeLitre_Validating(object sender, CancelEventArgs e)
+        {
+            ValidateVolume();
+        }
+
+        private void ValidateVolume()
+        {
+            if (float.TryParse(textBox_volumeLitre.Text, NumberStyles.Number, CultureInfo.InvariantCulture, out var value) && value > 1 && value < 100)
+            {
+                _tankVolume = value;
+                errorProvider1.SetError(textBox_volumeLitre, null);
+                TryInitTimeCalc();
+            }
+            else
+            {
+                errorProvider1.SetError(textBox_volumeLitre, "Невалидное число");
+            }
+        }
+
+        private void TryInitTimeCalc()
+        {
+            if (_heaterPowerKWatt != null && _tankVolume != null)
+            {
+                _heatingTimeCalc = new HeatingTimeLeft(_tankVolume.Value, _heaterPowerKWatt.Value);
+
+                CalcTimeLeft();
             }
         }
     }

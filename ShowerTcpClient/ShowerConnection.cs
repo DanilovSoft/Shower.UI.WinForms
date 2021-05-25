@@ -46,7 +46,7 @@ namespace ShowerTcpClient
             Span<byte> buf = stackalloc byte[unmanagedSize];
             _nstream.ReadBlock(buf);
             var value = MySerializer.Read<T>(buf);
-            var value2 = MySerializer.UnsafeRead<T>(buf.ToArray(), 0, unmanagedSize);
+            //var value2 = MySerializer.UnsafeRead<T>(buf.ToArray(), 0, unmanagedSize);
             return value;
         }
 
@@ -55,9 +55,6 @@ namespace ShowerTcpClient
         {
             return this;
         }
-
-        public Task<T> RequestAsync<T>(ShowerCodes code) where T : struct => 
-            RequestAsync<T>(code, CancellationToken.None);
 
         /// <summary>
         /// Уровень воды в микросекундах, без всякой фильтрации.
@@ -143,7 +140,7 @@ namespace ShowerTcpClient
             return RequestAsync<ushort>(ShowerCodes.GetWaterLevelFullUsec, cancellationToken);
         }
 
-        public async Task<T> RequestAsync<T>(ShowerCodes code, CancellationToken cancellationToken) where T : struct
+        public async Task<T> RequestAsync<T>(ShowerCodes code, CancellationToken cancellationToken = default) where T : struct
         {
             _writer.Write(code);
             _writer.End();
@@ -169,13 +166,29 @@ namespace ShowerTcpClient
         {
             return Request<float>(ShowerCodes.GetWaterTankVolumeLitre);
         }
-        
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public Task<float> GetWaterTankVolumeLitreAsync(CancellationToken cancellationToken = default)
+        {
+            return RequestAsync<float>(ShowerCodes.GetWaterTankVolumeLitre, cancellationToken);
+        }
+
         /// <summary>
         /// 
         /// </summary>
         public float GetWaterHeaterPowerKWatt()
         {
             return Request<float>(ShowerCodes.GetWaterHeaterPowerKWatt);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public Task<float> GetWaterHeaterPowerKWattAsync(CancellationToken cancellationToken = default)
+        {
+            return RequestAsync<float>(ShowerCodes.GetWaterHeaterPowerKWatt, cancellationToken);
         }
 
         /// <summary>

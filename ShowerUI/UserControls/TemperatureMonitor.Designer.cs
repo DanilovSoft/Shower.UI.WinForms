@@ -30,15 +30,19 @@ namespace ShowerUI.UserControls
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            DevExpress.XtraCharts.SwiftPlotDiagram swiftPlotDiagram3 = new DevExpress.XtraCharts.SwiftPlotDiagram();
-            DevExpress.XtraCharts.Series series7 = new DevExpress.XtraCharts.Series();
-            DevExpress.XtraCharts.SwiftPlotSeriesView swiftPlotSeriesView9 = new DevExpress.XtraCharts.SwiftPlotSeriesView();
-            DevExpress.XtraCharts.Series series8 = new DevExpress.XtraCharts.Series();
-            DevExpress.XtraCharts.SwiftPlotSeriesView swiftPlotSeriesView10 = new DevExpress.XtraCharts.SwiftPlotSeriesView();
-            DevExpress.XtraCharts.Series series9 = new DevExpress.XtraCharts.Series();
-            DevExpress.XtraCharts.SwiftPlotSeriesView swiftPlotSeriesView11 = new DevExpress.XtraCharts.SwiftPlotSeriesView();
-            DevExpress.XtraCharts.SwiftPlotSeriesView swiftPlotSeriesView12 = new DevExpress.XtraCharts.SwiftPlotSeriesView();
+            DevExpress.XtraCharts.SwiftPlotDiagram swiftPlotDiagram1 = new DevExpress.XtraCharts.SwiftPlotDiagram();
+            DevExpress.XtraCharts.Series series1 = new DevExpress.XtraCharts.Series();
+            DevExpress.XtraCharts.SwiftPlotSeriesView swiftPlotSeriesView1 = new DevExpress.XtraCharts.SwiftPlotSeriesView();
+            DevExpress.XtraCharts.Series series2 = new DevExpress.XtraCharts.Series();
+            DevExpress.XtraCharts.SwiftPlotSeriesView swiftPlotSeriesView2 = new DevExpress.XtraCharts.SwiftPlotSeriesView();
+            DevExpress.XtraCharts.Series series3 = new DevExpress.XtraCharts.Series();
+            DevExpress.XtraCharts.SwiftPlotSeriesView swiftPlotSeriesView3 = new DevExpress.XtraCharts.SwiftPlotSeriesView();
+            DevExpress.XtraCharts.SwiftPlotSeriesView swiftPlotSeriesView4 = new DevExpress.XtraCharts.SwiftPlotSeriesView();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.label2 = new System.Windows.Forms.Label();
+            this.textBox_volumeLitre = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.textBox_heaterPowerKWatt = new System.Windows.Forms.TextBox();
             this.labelTempReconnectCount = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.labelTempReconnect = new System.Windows.Forms.Label();
@@ -55,19 +59,23 @@ namespace ShowerUI.UserControls
             this.panel2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar_TimeLeft)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.chartControl_temperature)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(swiftPlotDiagram3)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(series7)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(swiftPlotSeriesView9)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(series8)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(swiftPlotSeriesView10)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(series9)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(swiftPlotSeriesView11)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(swiftPlotSeriesView12)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(swiftPlotDiagram1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(series1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(swiftPlotSeriesView1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(series2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(swiftPlotSeriesView2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(series3)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(swiftPlotSeriesView3)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(swiftPlotSeriesView4)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).BeginInit();
             this.SuspendLayout();
             // 
             // panel2
             // 
+            this.panel2.Controls.Add(this.label2);
+            this.panel2.Controls.Add(this.textBox_volumeLitre);
+            this.panel2.Controls.Add(this.label1);
+            this.panel2.Controls.Add(this.textBox_heaterPowerKWatt);
             this.panel2.Controls.Add(this.labelTempReconnectCount);
             this.panel2.Controls.Add(this.label7);
             this.panel2.Controls.Add(this.labelTempReconnect);
@@ -80,10 +88,44 @@ namespace ShowerUI.UserControls
             this.panel2.Controls.Add(this.button_SaveAs);
             this.panel2.Controls.Add(this.button_Clear);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel2.Location = new System.Drawing.Point(0, 550);
+            this.panel2.Location = new System.Drawing.Point(0, 529);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(1086, 59);
+            this.panel2.Size = new System.Drawing.Size(1086, 80);
             this.panel2.TabIndex = 25;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(950, 60);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(38, 13);
+            this.label2.TabIndex = 30;
+            this.label2.Text = "Бак, л";
+            // 
+            // textBox_volumeLitre
+            // 
+            this.textBox_volumeLitre.Location = new System.Drawing.Point(1001, 57);
+            this.textBox_volumeLitre.Name = "textBox_volumeLitre";
+            this.textBox_volumeLitre.Size = new System.Drawing.Size(63, 20);
+            this.textBox_volumeLitre.TabIndex = 29;
+            this.textBox_volumeLitre.Validating += new System.ComponentModel.CancelEventHandler(this.TextBox_volumeLitre_Validating);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(942, 38);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(53, 13);
+            this.label1.TabIndex = 28;
+            this.label1.Text = "ТЭН, кВт";
+            // 
+            // textBox_heaterPowerKWatt
+            // 
+            this.textBox_heaterPowerKWatt.Location = new System.Drawing.Point(1001, 35);
+            this.textBox_heaterPowerKWatt.Name = "textBox_heaterPowerKWatt";
+            this.textBox_heaterPowerKWatt.Size = new System.Drawing.Size(63, 20);
+            this.textBox_heaterPowerKWatt.TabIndex = 27;
+            this.textBox_heaterPowerKWatt.Validating += new System.ComponentModel.CancelEventHandler(this.TextBox_heaterPowerKWatt_Validating);
             // 
             // labelTempReconnectCount
             // 
@@ -124,10 +166,10 @@ namespace ShowerUI.UserControls
             // 
             // trackBar_TimeLeft
             // 
-            this.trackBar_TimeLeft.Location = new System.Drawing.Point(642, 6);
+            this.trackBar_TimeLeft.Location = new System.Drawing.Point(599, 6);
             this.trackBar_TimeLeft.Maximum = 50;
             this.trackBar_TimeLeft.Name = "trackBar_TimeLeft";
-            this.trackBar_TimeLeft.Size = new System.Drawing.Size(301, 45);
+            this.trackBar_TimeLeft.Size = new System.Drawing.Size(344, 45);
             this.trackBar_TimeLeft.SmallChange = 2;
             this.trackBar_TimeLeft.TabIndex = 22;
             this.trackBar_TimeLeft.Scroll += new System.EventHandler(this.TrackBar_TimeLeft_Scroll);
@@ -194,50 +236,50 @@ namespace ShowerUI.UserControls
             // chartControl_temperature
             // 
             this.chartControl_temperature.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
-            swiftPlotDiagram3.AxisX.Label.Visible = false;
-            swiftPlotDiagram3.AxisX.MinorCount = 1;
-            swiftPlotDiagram3.AxisX.Tickmarks.MinorVisible = false;
-            swiftPlotDiagram3.AxisX.Visibility = DevExpress.Utils.DefaultBoolean.True;
-            swiftPlotDiagram3.AxisX.VisibleInPanesSerializable = "-1";
-            swiftPlotDiagram3.AxisY.MinorCount = 1;
-            swiftPlotDiagram3.AxisY.Visibility = DevExpress.Utils.DefaultBoolean.True;
-            swiftPlotDiagram3.AxisY.VisibleInPanesSerializable = "-1";
-            swiftPlotDiagram3.AxisY.VisualRange.Auto = false;
-            swiftPlotDiagram3.AxisY.VisualRange.MaxValueSerializable = "39";
-            swiftPlotDiagram3.AxisY.VisualRange.MinValueSerializable = "15";
-            swiftPlotDiagram3.AxisY.WholeRange.Auto = false;
-            swiftPlotDiagram3.AxisY.WholeRange.MaxValueSerializable = "39";
-            swiftPlotDiagram3.AxisY.WholeRange.MinValueSerializable = "15";
-            this.chartControl_temperature.Diagram = swiftPlotDiagram3;
+            swiftPlotDiagram1.AxisX.Label.Visible = false;
+            swiftPlotDiagram1.AxisX.MinorCount = 1;
+            swiftPlotDiagram1.AxisX.Tickmarks.MinorVisible = false;
+            swiftPlotDiagram1.AxisX.Visibility = DevExpress.Utils.DefaultBoolean.True;
+            swiftPlotDiagram1.AxisX.VisibleInPanesSerializable = "-1";
+            swiftPlotDiagram1.AxisY.MinorCount = 1;
+            swiftPlotDiagram1.AxisY.Visibility = DevExpress.Utils.DefaultBoolean.True;
+            swiftPlotDiagram1.AxisY.VisibleInPanesSerializable = "-1";
+            swiftPlotDiagram1.AxisY.VisualRange.Auto = false;
+            swiftPlotDiagram1.AxisY.VisualRange.MaxValueSerializable = "39";
+            swiftPlotDiagram1.AxisY.VisualRange.MinValueSerializable = "15";
+            swiftPlotDiagram1.AxisY.WholeRange.Auto = false;
+            swiftPlotDiagram1.AxisY.WholeRange.MaxValueSerializable = "39";
+            swiftPlotDiagram1.AxisY.WholeRange.MinValueSerializable = "15";
+            this.chartControl_temperature.Diagram = swiftPlotDiagram1;
             this.chartControl_temperature.Dock = System.Windows.Forms.DockStyle.Fill;
             this.chartControl_temperature.Legend.Name = "Default Legend";
             this.chartControl_temperature.Legend.Visibility = DevExpress.Utils.DefaultBoolean.False;
             this.chartControl_temperature.Location = new System.Drawing.Point(0, 0);
             this.chartControl_temperature.Name = "chartControl_temperature";
-            series7.ArgumentScaleType = DevExpress.XtraCharts.ScaleType.Numerical;
-            series7.CrosshairTextOptions.EnableAntialiasing = DevExpress.Utils.DefaultBoolean.False;
-            series7.CrosshairTextOptions.Tag = "Температура в баке";
-            series7.Name = "TempOn";
-            swiftPlotSeriesView9.Color = System.Drawing.Color.Red;
-            series7.View = swiftPlotSeriesView9;
-            series8.CrosshairTextOptions.EnableAntialiasing = DevExpress.Utils.DefaultBoolean.False;
-            series8.CrosshairTextOptions.Tag = "Температура в баке";
-            series8.LegendName = "Default Legend";
-            series8.Name = "TempOff";
-            swiftPlotSeriesView10.Color = System.Drawing.Color.Blue;
-            series8.View = swiftPlotSeriesView10;
-            series9.ArgumentScaleType = DevExpress.XtraCharts.ScaleType.Numerical;
-            series9.Name = "CalculatedTemp";
-            series9.ShowInLegend = false;
-            swiftPlotSeriesView11.Color = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
-            series9.View = swiftPlotSeriesView11;
+            series1.ArgumentScaleType = DevExpress.XtraCharts.ScaleType.Numerical;
+            series1.CrosshairTextOptions.EnableAntialiasing = DevExpress.Utils.DefaultBoolean.False;
+            series1.CrosshairTextOptions.Tag = "Температура в баке";
+            series1.Name = "TempOn";
+            swiftPlotSeriesView1.Color = System.Drawing.Color.Red;
+            series1.View = swiftPlotSeriesView1;
+            series2.CrosshairTextOptions.EnableAntialiasing = DevExpress.Utils.DefaultBoolean.False;
+            series2.CrosshairTextOptions.Tag = "Температура в баке";
+            series2.LegendName = "Default Legend";
+            series2.Name = "TempOff";
+            swiftPlotSeriesView2.Color = System.Drawing.Color.Blue;
+            series2.View = swiftPlotSeriesView2;
+            series3.ArgumentScaleType = DevExpress.XtraCharts.ScaleType.Numerical;
+            series3.Name = "CalculatedTemp";
+            series3.ShowInLegend = false;
+            swiftPlotSeriesView3.Color = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            series3.View = swiftPlotSeriesView3;
             this.chartControl_temperature.SeriesSerializable = new DevExpress.XtraCharts.Series[] {
-        series7,
-        series8,
-        series9};
-            swiftPlotSeriesView12.LineStyle.Thickness = 2;
-            this.chartControl_temperature.SeriesTemplate.View = swiftPlotSeriesView12;
-            this.chartControl_temperature.Size = new System.Drawing.Size(1086, 550);
+        series1,
+        series2,
+        series3};
+            swiftPlotSeriesView4.LineStyle.Thickness = 2;
+            this.chartControl_temperature.SeriesTemplate.View = swiftPlotSeriesView4;
+            this.chartControl_temperature.Size = new System.Drawing.Size(1086, 529);
             this.chartControl_temperature.TabIndex = 26;
             // 
             // errorProvider1
@@ -255,14 +297,14 @@ namespace ShowerUI.UserControls
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar_TimeLeft)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(swiftPlotDiagram3)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(swiftPlotSeriesView9)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(series7)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(swiftPlotSeriesView10)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(series8)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(swiftPlotSeriesView11)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(series9)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(swiftPlotSeriesView12)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(swiftPlotDiagram1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(swiftPlotSeriesView1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(series1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(swiftPlotSeriesView2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(series2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(swiftPlotSeriesView3)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(series3)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(swiftPlotSeriesView4)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.chartControl_temperature)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).EndInit();
             this.ResumeLayout(false);
@@ -285,5 +327,9 @@ namespace ShowerUI.UserControls
         private System.Windows.Forms.Button button_Clear;
         private DevExpress.XtraCharts.ChartControl chartControl_temperature;
         private System.Windows.Forms.ErrorProvider errorProvider1;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.TextBox textBox_heaterPowerKWatt;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.TextBox textBox_volumeLitre;
     }
 }
