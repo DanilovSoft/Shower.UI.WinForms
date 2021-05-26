@@ -90,13 +90,13 @@ namespace ShowerUI.UserControls
             this.panel2.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.panel2.Location = new System.Drawing.Point(0, 529);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(1086, 80);
+            this.panel2.Size = new System.Drawing.Size(1318, 80);
             this.panel2.TabIndex = 25;
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(950, 60);
+            this.label2.Location = new System.Drawing.Point(1156, 60);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(38, 13);
             this.label2.TabIndex = 30;
@@ -104,7 +104,7 @@ namespace ShowerUI.UserControls
             // 
             // textBox_volumeLitre
             // 
-            this.textBox_volumeLitre.Location = new System.Drawing.Point(1001, 57);
+            this.textBox_volumeLitre.Location = new System.Drawing.Point(1207, 57);
             this.textBox_volumeLitre.Name = "textBox_volumeLitre";
             this.textBox_volumeLitre.Size = new System.Drawing.Size(63, 20);
             this.textBox_volumeLitre.TabIndex = 29;
@@ -113,7 +113,7 @@ namespace ShowerUI.UserControls
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(942, 38);
+            this.label1.Location = new System.Drawing.Point(1148, 38);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(53, 13);
             this.label1.TabIndex = 28;
@@ -121,7 +121,7 @@ namespace ShowerUI.UserControls
             // 
             // textBox_heaterPowerKWatt
             // 
-            this.textBox_heaterPowerKWatt.Location = new System.Drawing.Point(1001, 35);
+            this.textBox_heaterPowerKWatt.Location = new System.Drawing.Point(1207, 35);
             this.textBox_heaterPowerKWatt.Name = "textBox_heaterPowerKWatt";
             this.textBox_heaterPowerKWatt.Size = new System.Drawing.Size(63, 20);
             this.textBox_heaterPowerKWatt.TabIndex = 27;
@@ -139,7 +139,7 @@ namespace ShowerUI.UserControls
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(950, 11);
+            this.label7.Location = new System.Drawing.Point(1156, 11);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(59, 13);
             this.label7.TabIndex = 25;
@@ -166,10 +166,10 @@ namespace ShowerUI.UserControls
             // 
             // trackBar_TimeLeft
             // 
-            this.trackBar_TimeLeft.Location = new System.Drawing.Point(599, 6);
+            this.trackBar_TimeLeft.Location = new System.Drawing.Point(598, 11);
             this.trackBar_TimeLeft.Maximum = 50;
             this.trackBar_TimeLeft.Name = "trackBar_TimeLeft";
-            this.trackBar_TimeLeft.Size = new System.Drawing.Size(344, 45);
+            this.trackBar_TimeLeft.Size = new System.Drawing.Size(529, 45);
             this.trackBar_TimeLeft.SmallChange = 2;
             this.trackBar_TimeLeft.TabIndex = 22;
             this.trackBar_TimeLeft.Scroll += new System.EventHandler(this.TrackBar_TimeLeft_Scroll);
@@ -177,7 +177,7 @@ namespace ShowerUI.UserControls
             // labelTimeLeft
             // 
             this.labelTimeLeft.AutoSize = true;
-            this.labelTimeLeft.Location = new System.Drawing.Point(1015, 11);
+            this.labelTimeLeft.Location = new System.Drawing.Point(1221, 11);
             this.labelTimeLeft.Name = "labelTimeLeft";
             this.labelTimeLeft.Size = new System.Drawing.Size(49, 13);
             this.labelTimeLeft.TabIndex = 23;
@@ -279,7 +279,7 @@ namespace ShowerUI.UserControls
         series3};
             swiftPlotSeriesView4.LineStyle.Thickness = 2;
             this.chartControl_temperature.SeriesTemplate.View = swiftPlotSeriesView4;
-            this.chartControl_temperature.Size = new System.Drawing.Size(1086, 529);
+            this.chartControl_temperature.Size = new System.Drawing.Size(1318, 529);
             this.chartControl_temperature.TabIndex = 26;
             // 
             // errorProvider1
@@ -293,7 +293,7 @@ namespace ShowerUI.UserControls
             this.Controls.Add(this.chartControl_temperature);
             this.Controls.Add(this.panel2);
             this.Name = "TemperatureMonitor";
-            this.Size = new System.Drawing.Size(1086, 609);
+            this.Size = new System.Drawing.Size(1318, 609);
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar_TimeLeft)).EndInit();

@@ -105,8 +105,9 @@ namespace ShowerUI
 
         /// <param name="internalTemp">Текущая температура воды в баке.</param>
         /// <param name="limitTemp">Целевая темпаратура.</param>
+        /// <param name="waterLevel">Уровень воды в баке, от 0 до 1.</param>
         /// <returns>Время до окончания нагрева.</returns>
-        public TimeSpan CalcTimeLeft(float internalTemp, float limitTemp)
+        public TimeSpan CalcTimeLeft(float internalTemp, float limitTemp, float waterLevel)
         {
             //  Формула расчета времени нагрева T = 0,00117 * V * (tк - tн) / W
             //  Т – время нагрева воды, час
@@ -115,7 +116,10 @@ namespace ShowerUI
             //  tн – начальная температура воды, °С
             //  W – электрическая мощность нагревательного элемента — ТЭНа, кВТ
 
-            double timeH = Q * _tankVolumeLitre * (limitTemp - internalTemp) / _heaterPowerKWatt;
+            // Учитываем что бак может быть не полным.
+            float tankVolume = _tankVolumeLitre * waterLevel;
+
+            double timeH = Q * tankVolume * (limitTemp - internalTemp) / _heaterPowerKWatt;
             var time = TimeSpan.FromHours(timeH);
             return time;
         }

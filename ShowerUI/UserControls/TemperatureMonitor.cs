@@ -33,6 +33,10 @@ namespace ShowerUI.UserControls
         private volatile HeatingTimeLeft? _heatingTimeCalc;
         private float? _heaterPowerKWatt;
         private float? _tankVolume;
+        /// <summary>
+        /// Может иметь значение -1 когда уровень не определён.
+        /// </summary>
+        private volatile sbyte _waterPercent;
 
         public TemperatureMonitor()
         {
@@ -98,6 +102,8 @@ namespace ShowerUI.UserControls
 
         private async Task InitBeforeStart(ShowerConnection con, CancellationToken cancellationToken)
         {
+            _waterPercent = -1;
+
             textBox_heaterPowerKWatt.Text = (await con.GetWaterHeaterPowerKWattAsync(cancellationToken)).ToString(CultureInfo.InvariantCulture);
             textBox_volumeLitre.Text = (await con.GetWaterTankVolumeLitreAsync(cancellationToken)).ToString(CultureInfo.InvariantCulture);
 
@@ -201,27 +207,55 @@ namespace ShowerUI.UserControls
 
         private async Task RecordTempAsync(ShowerConnection con, CancellationToken cancellationToken)
         {
-            var sw = Stopwatch.StartNew();
-            while (!cancellationToken.IsCancellationRequested)
+            using (var timer = new System.Threading.Timer(s => UpdateWaterVolume(s, con)))
             {
-                var second = (int)sw.Elapsed.TotalSeconds;
+                timer.Change(0, 2000);
 
-                float internalTemp = con.GetInternalTemperature();
-                bool heaterEnabled = con.GetHeaterEnabled();
-                int minutesLeft = con.GetMinutesLeft();
-
-                var model = new InternalTempModel
+                var sw = Stopwatch.StartNew();
+                while (!cancellationToken.IsCancellationRequested)
                 {
-                    Second = second,
-                    InternalTemp = internalTemp,
-                    HeaterEnabled = heaterEnabled,
-                    TimeLeft = TimeSpan.FromMinutes(minutesLeft),
-                };
+                    var second = (int)sw.Elapsed.TotalSeconds;
 
-                BeginInvoke(_addTemperatureRecordHandler, model);
+                    InternalTempModel model;
 
-                await Task.Delay(1000);
+                    lock (con)
+                    {
+                        float internalTemp = con.GetInternalTemperature();
+                        bool heaterEnabled = con.GetHeaterEnabled();
+                        int minutesLeft = con.GetMinutesLeft();
+
+                        model = new InternalTempModel
+                        {
+                            Second = second,
+                            InternalTemp = internalTemp,
+                            HeaterEnabled = heaterEnabled,
+                            TimeLeft = TimeSpan.FromMinutes(minutesLeft),
+                        };
+                    }
+
+                    BeginInvoke(_addTemperatureRecordHandler, model);
+
+                    await Task.Delay(1000);
+                }
             }
+        }
+
+        private void UpdateWaterVolume(object? state, ShowerConnection con)
+        {
+            byte percent;
+            try
+            {
+                lock (con)
+                {
+                    percent = con.GetWaterPercent();
+                }
+            }
+            catch 
+            {
+                (state as IDisposable)?.Dispose();
+                return;
+            }
+            _waterPercent = (sbyte)percent;
         }
 
         private void AddTemperatureRecord(InternalTempModel model)
@@ -263,7 +297,7 @@ namespace ShowerUI.UserControls
 
         private void CalcTimeLeft()
         {
-            if (trackBar_TimeLeft.Value != 0)
+            if (trackBar_TimeLeft.Value != 0 && _waterPercent != -1)
             {
                 if (_heatingTimeCalc is { } timeCalc)
                 {
@@ -275,8 +309,9 @@ namespace ShowerUI.UserControls
                         int time = startPoint.Second + startSec;
                         if (_temperatureList.FirstOrDefault(x => x.HeaterEnabled && x.Second >= time) is { } point)
                         {
-                            // TODO Учесть объём воды в баке.
-                            TimeSpan timeLeft = timeCalc.CalcTimeLeft(point.InternalTemp, CalculationTempLimit);
+                            float waterLevel = _waterPercent / 100f;
+
+                            TimeSpan timeLeft = timeCalc.CalcTimeLeft(point.InternalTemp, CalculationTempLimit, waterLevel);
                             DisplayTimeLeft(timeLeft);
 
                             int sec = (int)timeLeft.TotalSeconds;

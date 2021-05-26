@@ -19,7 +19,6 @@ namespace ShowerUI.UserControls
 {
     public partial class WaterLevel : UserControl
     {
-        //private readonly List<ushort> _usecList = new(30000); // 20 минут
         private readonly SwiftPlotDiagramSecondaryAxisY _median = new("Медиана");
         private readonly SwiftPlotDiagramSecondaryAxisY _avg = new("Среднее");
         private readonly Series _usecSeries;
@@ -27,8 +26,6 @@ namespace ShowerUI.UserControls
         private readonly Series _medianSeries;
         private readonly Series _averageSeries;
         private WaterLevelSession? _session;
-        private FastMedianFilter? _medianFilter;
-        private AverageFilter? _avgFilter;
 
         public WaterLevel()
         {

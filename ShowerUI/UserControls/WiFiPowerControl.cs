@@ -26,6 +26,11 @@ namespace ShowerUI.UserControls
         /// <summary>
         /// Возвращает <see cref="byte"/> от 40 до 82.
         /// </summary>
+        public byte Power => (byte)Value!;
+
+        /// <summary>
+        /// Возвращает <see cref="byte"/> от 40 до 82.
+        /// </summary>
         public override object? Value
         {
             get => base.Value switch

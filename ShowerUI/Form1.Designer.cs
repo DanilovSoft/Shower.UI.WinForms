@@ -35,6 +35,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPageTemp = new System.Windows.Forms.TabPage();
+            this.temperatureMonitor1 = new ShowerUI.UserControls.TemperatureMonitor();
             this.Температуры = new System.Windows.Forms.TabPage();
             this.button2 = new System.Windows.Forms.Button();
             this.tabPage_wl = new System.Windows.Forms.TabPage();
@@ -68,7 +69,6 @@
             this.pnigToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.errorProvider1 = new System.Windows.Forms.ErrorProvider(this.components);
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.temperatureMonitor1 = new ShowerUI.UserControls.TemperatureMonitor();
             this.tabControl1.SuspendLayout();
             this.tabPageTemp.SuspendLayout();
             this.Температуры.SuspendLayout();
@@ -100,7 +100,7 @@
             this.tabControl1.Margin = new System.Windows.Forms.Padding(3, 0, 3, 3);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(1218, 618);
+            this.tabControl1.Size = new System.Drawing.Size(1348, 712);
             this.tabControl1.TabIndex = 14;
             this.tabControl1.Selected += new System.Windows.Forms.TabControlEventHandler(this.TabControl1_Selected);
             // 
@@ -111,9 +111,17 @@
             this.tabPageTemp.Location = new System.Drawing.Point(4, 22);
             this.tabPageTemp.Name = "tabPageTemp";
             this.tabPageTemp.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageTemp.Size = new System.Drawing.Size(1210, 592);
+            this.tabPageTemp.Size = new System.Drawing.Size(1340, 686);
             this.tabPageTemp.TabIndex = 0;
             this.tabPageTemp.Text = "Температура";
+            // 
+            // temperatureMonitor1
+            // 
+            this.temperatureMonitor1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.temperatureMonitor1.Location = new System.Drawing.Point(3, 3);
+            this.temperatureMonitor1.Name = "temperatureMonitor1";
+            this.temperatureMonitor1.Size = new System.Drawing.Size(1334, 680);
+            this.temperatureMonitor1.TabIndex = 0;
             // 
             // Температуры
             // 
@@ -425,7 +433,7 @@
             this.командаToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1218, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(1348, 24);
             this.menuStrip1.TabIndex = 15;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -463,19 +471,11 @@
             this.toolTip1.ReshowDelay = 100;
             this.toolTip1.ShowAlways = true;
             // 
-            // temperatureMonitor1
-            // 
-            this.temperatureMonitor1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.temperatureMonitor1.Location = new System.Drawing.Point(3, 3);
-            this.temperatureMonitor1.Name = "temperatureMonitor1";
-            this.temperatureMonitor1.Size = new System.Drawing.Size(1204, 586);
-            this.temperatureMonitor1.TabIndex = 0;
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1218, 642);
+            this.ClientSize = new System.Drawing.Size(1348, 736);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.menuStrip1);
             this.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));

@@ -60,7 +60,7 @@ namespace ShowerTcpClient
         /// Уровень воды в микросекундах, без всякой фильтрации.
         /// </summary>
         /// <returns>-1 если у датчика уровня произошел таймаут.</returns>
-        public Task<short> GetWaterLevelRawAsync(CancellationToken cancellationToken)
+        public Task<short> GetWaterLevelRawAsync(CancellationToken cancellationToken = default)
         {
             return RequestAsync<short>(ShowerCodes.GetWaterLevelRaw, cancellationToken);
         }
@@ -74,7 +74,7 @@ namespace ShowerTcpClient
             return Request<short>(ShowerCodes.GetWaterLevelRaw);
         }
 
-        public Task<float> GetInternalTemperatureAsync(CancellationToken cancellationToken)
+        public Task<float> GetInternalTemperatureAsync(CancellationToken cancellationToken = default)
         {
             return RequestAsync<float>(ShowerCodes.GetInternalTemp, cancellationToken);
         }
@@ -84,7 +84,7 @@ namespace ShowerTcpClient
             return Request<float>(ShowerCodes.GetInternalTemp);
         }
 
-        public async Task<bool> GetHeaterEnabledAsync(CancellationToken cancellationToken)
+        public async Task<bool> GetHeaterEnabledAsync(CancellationToken cancellationToken = default)
         {
             byte value = await RequestAsync<byte>(ShowerCodes.GetHeaterEnabled, cancellationToken).ConfigureAwait(false);
             return Convert.ToBoolean(value);
@@ -96,7 +96,7 @@ namespace ShowerTcpClient
             return Convert.ToBoolean(value);
         }
 
-        public Task<byte> GetMinutesLeftAsync(CancellationToken cancellationToken)
+        public Task<byte> GetMinutesLeftAsync(CancellationToken cancellationToken = default)
         {
             return RequestAsync<byte>(ShowerCodes.GetMinutesLeft, cancellationToken);
         }
@@ -106,14 +106,19 @@ namespace ShowerTcpClient
             return Request<byte>(ShowerCodes.GetMinutesLeft);
         }
 
-        public async Task<ushort> GetWaterLevelAsync(CancellationToken cancellationToken)
+        public async Task<ushort> GetWaterLevelAsync(CancellationToken cancellationToken = default)
         {
             return await RequestAsync<ushort>(ShowerCodes.GetWaterLevel, cancellationToken).ConfigureAwait(false);
         }
 
-        public async Task<byte> GetWaterPercent(CancellationToken cancellationToken)
+        public byte GetWaterPercent()
         {
-            return await RequestAsync<byte>(ShowerCodes.GetWaterPercent, cancellationToken).ConfigureAwait(false);
+            return Request<byte>(ShowerCodes.GetWaterPercent);
+        }
+
+        public Task<byte> GetWaterPercentAsync(CancellationToken cancellationToken = default)
+        {
+            return RequestAsync<byte>(ShowerCodes.GetWaterPercent, cancellationToken);
         }
 
         public SetupModel GetTempChart()
@@ -130,12 +135,12 @@ namespace ShowerTcpClient
             return model;
         }
 
-        public Task<ushort> GetWaterLevelEmptyAsync(CancellationToken cancellationToken)
+        public Task<ushort> GetWaterLevelEmptyAsync(CancellationToken cancellationToken = default)
         {
             return RequestAsync<ushort>(ShowerCodes.GetWaterLevelEmptyUsec, cancellationToken);
         }
 
-        public Task<ushort> GetWaterLevelFullAsync(CancellationToken cancellationToken)
+        public Task<ushort> GetWaterLevelFullAsync(CancellationToken cancellationToken = default)
         {
             return RequestAsync<ushort>(ShowerCodes.GetWaterLevelFullUsec, cancellationToken);
         }

@@ -145,12 +145,12 @@ namespace ShowerUI.UserControls
 
             if (wiFiPower.HasChanges)
             {
-                //con.BuildRequest()
-                //   .Write(ShowerCodes.SetWiFiPower)
-                //   .Write(wiFiPower.Value.Value)
-                //   .ReadOK();
+                con.BuildRequest()
+                   .Write(ShowerCodes.SetWiFiPower)
+                   .Write(wiFiPower.Power)
+                   .ReadOK();
 
-                //wiFiPower.ResetHasChanges();
+                wiFiPower.ResetHasChanges();
             }
 
             if (editText_WL_measure_interval.HasChanges)
@@ -171,6 +171,16 @@ namespace ShowerUI.UserControls
                    .ReadOK();
 
                 editText_wl_median_buffer_size.ResetHasChanges();
+            }
+            
+            if (editText_wl_avg_buffer_size.HasChanges)
+            {
+                con.BuildRequest()
+                   .Write(ShowerCodes.SetWaterLevelAverageBufferSize)
+                   .Write(editText_wl_avg_buffer_size.GetValue<byte>())
+                   .ReadOK();
+
+                editText_wl_avg_buffer_size.ResetHasChanges();
             }
 
             if (editText_wl_cut_off_percent.HasChanges)
