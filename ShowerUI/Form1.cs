@@ -15,6 +15,7 @@ using Newtonsoft.Json;
 using ShowerUI.Dto;
 using ShowerTcpClient;
 using DevExpress.XtraCharts.Native;
+using System.Net.NetworkInformation;
 
 namespace ShowerUI
 {
@@ -140,6 +141,8 @@ namespace ShowerUI
                             SetWLCalibration(waterLevelEmpty, waterLevelFull);
                             errorProvider1.SetError(buttonStartCalib, null);
 
+                            int index = 0;
+
                             while (!cts.IsCancellationRequested)
                             {
                                 var interval = TimeSpan.FromMilliseconds((int)numericWaterLevelCalibInterval.Value);
@@ -158,7 +161,7 @@ namespace ShowerUI
                                     label_elapsedWL.Text = elapsed + " мсек";
                                 }
 
-                                AddUsec(usec);
+                                AddUsec(usec, index++);
                             }
                         }
                     }
@@ -207,7 +210,7 @@ namespace ShowerUI
             visualRange.SideMarginsValue = 2;
         }
 
-        private void AddUsec(short usec)
+        private void AddUsec(short usec, int index)
         {
             const int dataIntervalSec = 40;
             const int maxPoints = dataIntervalSec * 1000 / 100;
@@ -272,14 +275,64 @@ namespace ShowerUI
 
         }
 
-        private void Button_wifi_SetCurrent_Click(object sender, EventArgs e)
+        private async void Button_wifi_SetCurrent_Click(object sender, EventArgs e)
         {
+            var me = (Button)sender;
+            var cts = _pingCts = new CancellationTokenSource();
+            me.Enabled = false;
 
+            try
+            {
+                string ssid = textBox_ssid.Text;
+                string password = textBox_ap_pass.Text;
+                string bsid = textBox_bsid.Text;
+
+                PhysicalAddress? bsidValue = string.IsNullOrEmpty(bsid) ? null : PhysicalAddress.Parse(bsid.Replace(":", "").Replace("-", ""));
+
+                using (var con = await ConnectionHelper.CreateConnectionAsync(cts.Token))
+                {
+                    con.SetCurAP(ssid, password, bsidValue);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(this, ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                cts.Cancel();
+                me.Enabled = true;
+            }
         }
 
-        private void Button_wifi_SetDefault_Click(object sender, EventArgs e)
+        private async void Button_wifi_SetDefault_Click(object sender, EventArgs e)
         {
+            var me = (Button)sender;
+            var cts = _pingCts = new CancellationTokenSource();
+            me.Enabled = false;
 
+            try
+            {
+                string ssid = textBox_ssid.Text;
+                string password = textBox_ap_pass.Text;
+                string bsid = textBox_bsid.Text;
+
+                PhysicalAddress? bsidValue = string.IsNullOrEmpty(bsid) ? null : PhysicalAddress.Parse(bsid.Replace(":", "").Replace("-", ""));
+
+                using (var con = await ConnectionHelper.CreateConnectionAsync(cts.Token))
+                {
+                    con.SetDefAP(ssid, password, bsidValue);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(this, ex.Message, "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                cts.Cancel();
+                me.Enabled = true;
+            }
         }
     }
 }

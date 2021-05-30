@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -25,21 +27,21 @@ namespace ShowerTcpClient
 
         public RequestBuilder Write<T>(T value) where T : struct
         {
-            int size = Marshal.SizeOf(value);
-            byte[] arr = new byte[size];
-            IntPtr ptr = Marshal.AllocHGlobal(size);
+            int sizeBytes = Marshal.SizeOf(value);
+            byte[] output = new byte[sizeBytes];
+            IntPtr ptr = Marshal.AllocHGlobal(sizeBytes);
 
             try
             {
                 Marshal.StructureToPtr(value, ptr, true);
-                Marshal.Copy(ptr, arr, 0, size);
+                Marshal.Copy(ptr, output, 0, sizeBytes);
             }
             finally
             {
                 Marshal.FreeHGlobal(ptr);
             }
 
-            _writer.Write(arr, 0, size);
+            _writer.Write(output, 0, sizeBytes);
             return this;
         }
 
@@ -57,6 +59,15 @@ namespace ShowerTcpClient
             return this;
         }
 
+        public RequestBuilder Write(string value)
+        {
+            byte[] str = Encoding.ASCII.GetBytes(value);
+            int sizeBytes = str.Length;
+            
+            _writer.Write(str, 0, sizeBytes);
+            return this;
+        }
+
         public RequestBuilder Result<T>(Action<T> callback) where T : struct
         {
             _writer.End();
@@ -69,16 +80,13 @@ namespace ShowerTcpClient
             WriteEndAndSend();
         }
 
+        /// <summary>
+        /// Добавляет заголовок в стрим, отправляет все накопленные данные и читает один байт ответа.
+        /// </summary>
         public void ReadOK()
         {
             WriteEndAndSend();
             _reader.ReadOK();
-        }
-
-        private void WriteEndAndSend()
-        {
-            _writer.End();
-            _writer.Send();
         }
 
         public async Task<ShowerCodes> ReadCodeAsync(CancellationToken cancellationToken)
@@ -128,6 +136,15 @@ namespace ShowerTcpClient
             {
                 _callbacks[i].ReadPrimitiveCallback(buf, ref startIndex);
             }
+        }
+
+        /// <summary>
+        /// Добавляет заголовок в стрим и отправляет весь стрим и сбрасывает его размер.
+        /// </summary>
+        private void WriteEndAndSend()
+        {
+            _writer.End();
+            _writer.Send();
         }
 
         private async Task ReadAsync(byte[] buf, int count, CancellationToken cancellationToken)

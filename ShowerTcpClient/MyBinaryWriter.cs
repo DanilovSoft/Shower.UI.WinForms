@@ -24,7 +24,10 @@ namespace ShowerTcpClient
         {
             Write((byte)code);
         }
-
+        
+        /// <summary>
+        /// Записывает в начало стрима 1 байт: размер последующих данных в стриме (до 200 байт).
+        /// </summary>
         public void End()
         {
             if (OutStream.Length > MaxLength)
@@ -32,7 +35,7 @@ namespace ShowerTcpClient
                 throw new InvalidOperationException("Maximum buffer length reached");
             }
 
-            var curPos = OutStream.Position;
+            long curPos = OutStream.Position;
             byte length = (byte)(curPos - _lastPosition);
             OutStream.Position = _lastPosition;
             Write(length);

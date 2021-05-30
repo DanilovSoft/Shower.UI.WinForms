@@ -35,11 +35,9 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPageTemp = new System.Windows.Forms.TabPage();
-            this.temperatureMonitor1 = new ShowerUI.UserControls.TemperatureMonitor();
             this.Температуры = new System.Windows.Forms.TabPage();
             this.button2 = new System.Windows.Forms.Button();
             this.tabPage_wl = new System.Windows.Forms.TabPage();
-            this.waterLevel1 = new ShowerUI.UserControls.WaterLevel();
             this.tabPageCalibration = new System.Windows.Forms.TabPage();
             this.panel1 = new System.Windows.Forms.Panel();
             this.label_elapsedWL = new System.Windows.Forms.Label();
@@ -50,7 +48,6 @@
             this.buttonStartCalib = new System.Windows.Forms.Button();
             this.chartControl_wl_calibration = new DevExpress.XtraCharts.ChartControl();
             this.tabPageSettings = new System.Windows.Forms.TabPage();
-            this.parametersControl1 = new ShowerUI.UserControls.ParametersControl();
             this.tabPageDebug = new System.Windows.Forms.TabPage();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.label5 = new System.Windows.Forms.Label();
@@ -58,9 +55,9 @@
             this.label3 = new System.Windows.Forms.Label();
             this.button_wifi_def = new System.Windows.Forms.Button();
             this.button_wifi_cur = new System.Windows.Forms.Button();
-            this.textBox3 = new System.Windows.Forms.TextBox();
-            this.textBox2 = new System.Windows.Forms.TextBox();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.textBox_ssid = new System.Windows.Forms.TextBox();
+            this.textBox_bsid = new System.Windows.Forms.TextBox();
+            this.textBox_ap_pass = new System.Windows.Forms.TextBox();
             this.button10 = new System.Windows.Forms.Button();
             this.button7 = new System.Windows.Forms.Button();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
@@ -69,6 +66,10 @@
             this.pnigToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.errorProvider1 = new System.Windows.Forms.ErrorProvider(this.components);
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.temperatureMonitor1 = new ShowerUI.UserControls.TemperatureMonitor();
+            this.waterLevel1 = new ShowerUI.UserControls.WaterLevel();
+            this.parametersControl1 = new ShowerUI.UserControls.ParametersControl();
+            this.panel2 = new System.Windows.Forms.Panel();
             this.tabControl1.SuspendLayout();
             this.tabPageTemp.SuspendLayout();
             this.Температуры.SuspendLayout();
@@ -85,6 +86,7 @@
             this.groupBox2.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).BeginInit();
+            this.panel2.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl1
@@ -115,14 +117,6 @@
             this.tabPageTemp.TabIndex = 0;
             this.tabPageTemp.Text = "Температура";
             // 
-            // temperatureMonitor1
-            // 
-            this.temperatureMonitor1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.temperatureMonitor1.Location = new System.Drawing.Point(3, 3);
-            this.temperatureMonitor1.Name = "temperatureMonitor1";
-            this.temperatureMonitor1.Size = new System.Drawing.Size(1334, 680);
-            this.temperatureMonitor1.TabIndex = 0;
-            // 
             // Температуры
             // 
             this.Температуры.BackColor = System.Drawing.SystemColors.Control;
@@ -130,7 +124,7 @@
             this.Температуры.Location = new System.Drawing.Point(4, 22);
             this.Температуры.Name = "Температуры";
             this.Температуры.Padding = new System.Windows.Forms.Padding(3);
-            this.Температуры.Size = new System.Drawing.Size(1210, 592);
+            this.Температуры.Size = new System.Drawing.Size(1340, 686);
             this.Температуры.TabIndex = 5;
             this.Температуры.Text = "Температуры";
             // 
@@ -151,27 +145,19 @@
             this.tabPage_wl.Location = new System.Drawing.Point(4, 22);
             this.tabPage_wl.Name = "tabPage_wl";
             this.tabPage_wl.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage_wl.Size = new System.Drawing.Size(1210, 592);
+            this.tabPage_wl.Size = new System.Drawing.Size(1340, 686);
             this.tabPage_wl.TabIndex = 1;
             this.tabPage_wl.Text = "Уровень воды";
-            // 
-            // waterLevel1
-            // 
-            this.waterLevel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.waterLevel1.Location = new System.Drawing.Point(3, 3);
-            this.waterLevel1.Name = "waterLevel1";
-            this.waterLevel1.Size = new System.Drawing.Size(1204, 586);
-            this.waterLevel1.TabIndex = 17;
             // 
             // tabPageCalibration
             // 
             this.tabPageCalibration.BackColor = System.Drawing.SystemColors.Control;
+            this.tabPageCalibration.Controls.Add(this.panel2);
             this.tabPageCalibration.Controls.Add(this.panel1);
-            this.tabPageCalibration.Controls.Add(this.chartControl_wl_calibration);
             this.tabPageCalibration.Location = new System.Drawing.Point(4, 22);
             this.tabPageCalibration.Name = "tabPageCalibration";
             this.tabPageCalibration.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageCalibration.Size = new System.Drawing.Size(1210, 592);
+            this.tabPageCalibration.Size = new System.Drawing.Size(1340, 686);
             this.tabPageCalibration.TabIndex = 4;
             this.tabPageCalibration.Text = "Калибровка уровня";
             // 
@@ -184,9 +170,9 @@
             this.panel1.Controls.Add(this.button_stop);
             this.panel1.Controls.Add(this.buttonStartCalib);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel1.Location = new System.Drawing.Point(3, 557);
+            this.panel1.Location = new System.Drawing.Point(3, 651);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(1204, 32);
+            this.panel1.Size = new System.Drawing.Size(1334, 32);
             this.panel1.TabIndex = 1;
             // 
             // label_elapsedWL
@@ -261,9 +247,6 @@
             // 
             // chartControl_wl_calibration
             // 
-            this.chartControl_wl_calibration.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             swiftPlotDiagram1.AxisX.Label.Visible = false;
             swiftPlotDiagram1.AxisX.Tickmarks.MinorVisible = false;
             swiftPlotDiagram1.AxisX.Tickmarks.Visible = false;
@@ -277,9 +260,10 @@
             swiftPlotDiagram1.AxisX.WholeRange.MinValueSerializable = "0";
             swiftPlotDiagram1.AxisY.VisibleInPanesSerializable = "-1";
             this.chartControl_wl_calibration.Diagram = swiftPlotDiagram1;
+            this.chartControl_wl_calibration.Dock = System.Windows.Forms.DockStyle.Fill;
             this.chartControl_wl_calibration.Legend.Name = "Default Legend";
             this.chartControl_wl_calibration.Legend.Visibility = DevExpress.Utils.DefaultBoolean.False;
-            this.chartControl_wl_calibration.Location = new System.Drawing.Point(8, 6);
+            this.chartControl_wl_calibration.Location = new System.Drawing.Point(0, 0);
             this.chartControl_wl_calibration.Name = "chartControl_wl_calibration";
             series1.Name = "usec";
             swiftPlotSeriesView1.Color = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
@@ -287,7 +271,7 @@
             series1.View = swiftPlotSeriesView1;
             this.chartControl_wl_calibration.SeriesSerializable = new DevExpress.XtraCharts.Series[] {
         series1};
-            this.chartControl_wl_calibration.Size = new System.Drawing.Size(1194, 545);
+            this.chartControl_wl_calibration.Size = new System.Drawing.Size(1334, 648);
             this.chartControl_wl_calibration.TabIndex = 0;
             // 
             // tabPageSettings
@@ -297,17 +281,9 @@
             this.tabPageSettings.Location = new System.Drawing.Point(4, 22);
             this.tabPageSettings.Name = "tabPageSettings";
             this.tabPageSettings.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageSettings.Size = new System.Drawing.Size(1210, 592);
+            this.tabPageSettings.Size = new System.Drawing.Size(1340, 686);
             this.tabPageSettings.TabIndex = 2;
             this.tabPageSettings.Text = "Параметры";
-            // 
-            // parametersControl1
-            // 
-            this.parametersControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.parametersControl1.Location = new System.Drawing.Point(3, 3);
-            this.parametersControl1.Name = "parametersControl1";
-            this.parametersControl1.Size = new System.Drawing.Size(1204, 586);
-            this.parametersControl1.TabIndex = 0;
             // 
             // tabPageDebug
             // 
@@ -318,7 +294,7 @@
             this.tabPageDebug.Location = new System.Drawing.Point(4, 22);
             this.tabPageDebug.Name = "tabPageDebug";
             this.tabPageDebug.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageDebug.Size = new System.Drawing.Size(1210, 592);
+            this.tabPageDebug.Size = new System.Drawing.Size(1340, 686);
             this.tabPageDebug.TabIndex = 3;
             this.tabPageDebug.Text = "Отладка";
             // 
@@ -329,9 +305,9 @@
             this.groupBox2.Controls.Add(this.label3);
             this.groupBox2.Controls.Add(this.button_wifi_def);
             this.groupBox2.Controls.Add(this.button_wifi_cur);
-            this.groupBox2.Controls.Add(this.textBox3);
-            this.groupBox2.Controls.Add(this.textBox2);
-            this.groupBox2.Controls.Add(this.textBox1);
+            this.groupBox2.Controls.Add(this.textBox_ssid);
+            this.groupBox2.Controls.Add(this.textBox_bsid);
+            this.groupBox2.Controls.Add(this.textBox_ap_pass);
             this.groupBox2.Location = new System.Drawing.Point(301, 34);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(275, 167);
@@ -371,8 +347,10 @@
             this.button_wifi_def.Location = new System.Drawing.Point(123, 112);
             this.button_wifi_def.Name = "button_wifi_def";
             this.button_wifi_def.Size = new System.Drawing.Size(75, 23);
-            this.button_wifi_def.TabIndex = 4;
+            this.button_wifi_def.TabIndex = 6;
             this.button_wifi_def.Text = "Def";
+            this.toolTip1.SetToolTip(this.button_wifi_def, "Подключение к точке доступа, внесенные данные сохраняются как данные по умолчанию" +
+        ".");
             this.button_wifi_def.UseVisualStyleBackColor = true;
             this.button_wifi_def.Click += new System.EventHandler(this.Button_wifi_SetDefault_Click);
             // 
@@ -381,35 +359,36 @@
             this.button_wifi_cur.Location = new System.Drawing.Point(42, 112);
             this.button_wifi_cur.Name = "button_wifi_cur";
             this.button_wifi_cur.Size = new System.Drawing.Size(75, 23);
-            this.button_wifi_cur.TabIndex = 3;
+            this.button_wifi_cur.TabIndex = 5;
             this.button_wifi_cur.Text = "Cur";
+            this.toolTip1.SetToolTip(this.button_wifi_cur, "Подключение к точке доступа в текущей сессии.");
             this.button_wifi_cur.UseVisualStyleBackColor = true;
             this.button_wifi_cur.Click += new System.EventHandler(this.Button_wifi_SetCurrent_Click);
             // 
-            // textBox3
+            // textBox_ssid
             // 
-            this.textBox3.Location = new System.Drawing.Point(98, 20);
-            this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(121, 21);
-            this.textBox3.TabIndex = 2;
+            this.textBox_ssid.Location = new System.Drawing.Point(98, 20);
+            this.textBox_ssid.Name = "textBox_ssid";
+            this.textBox_ssid.Size = new System.Drawing.Size(121, 21);
+            this.textBox_ssid.TabIndex = 2;
             // 
-            // textBox2
+            // textBox_bsid
             // 
-            this.textBox2.Location = new System.Drawing.Point(98, 72);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(121, 21);
-            this.textBox2.TabIndex = 1;
+            this.textBox_bsid.Location = new System.Drawing.Point(98, 72);
+            this.textBox_bsid.Name = "textBox_bsid";
+            this.textBox_bsid.Size = new System.Drawing.Size(121, 21);
+            this.textBox_bsid.TabIndex = 4;
             // 
-            // textBox1
+            // textBox_ap_pass
             // 
-            this.textBox1.Location = new System.Drawing.Point(98, 46);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(121, 21);
-            this.textBox1.TabIndex = 0;
+            this.textBox_ap_pass.Location = new System.Drawing.Point(98, 46);
+            this.textBox_ap_pass.Name = "textBox_ap_pass";
+            this.textBox_ap_pass.Size = new System.Drawing.Size(121, 21);
+            this.textBox_ap_pass.TabIndex = 3;
             // 
             // button10
             // 
-            this.button10.Location = new System.Drawing.Point(158, 124);
+            this.button10.Location = new System.Drawing.Point(158, 109);
             this.button10.Name = "button10";
             this.button10.Size = new System.Drawing.Size(75, 23);
             this.button10.TabIndex = 1;
@@ -471,6 +450,39 @@
             this.toolTip1.ReshowDelay = 100;
             this.toolTip1.ShowAlways = true;
             // 
+            // temperatureMonitor1
+            // 
+            this.temperatureMonitor1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.temperatureMonitor1.Location = new System.Drawing.Point(3, 3);
+            this.temperatureMonitor1.Name = "temperatureMonitor1";
+            this.temperatureMonitor1.Size = new System.Drawing.Size(1334, 680);
+            this.temperatureMonitor1.TabIndex = 0;
+            // 
+            // waterLevel1
+            // 
+            this.waterLevel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.waterLevel1.Location = new System.Drawing.Point(3, 3);
+            this.waterLevel1.Name = "waterLevel1";
+            this.waterLevel1.Size = new System.Drawing.Size(1334, 680);
+            this.waterLevel1.TabIndex = 17;
+            // 
+            // parametersControl1
+            // 
+            this.parametersControl1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.parametersControl1.Location = new System.Drawing.Point(3, 3);
+            this.parametersControl1.Name = "parametersControl1";
+            this.parametersControl1.Size = new System.Drawing.Size(1334, 680);
+            this.parametersControl1.TabIndex = 0;
+            // 
+            // panel2
+            // 
+            this.panel2.Controls.Add(this.chartControl_wl_calibration);
+            this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panel2.Location = new System.Drawing.Point(3, 3);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(1334, 648);
+            this.panel2.TabIndex = 2;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -505,6 +517,7 @@
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).EndInit();
+            this.panel2.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -530,9 +543,9 @@
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Button button_wifi_def;
         private System.Windows.Forms.Button button_wifi_cur;
-        private System.Windows.Forms.TextBox textBox3;
-        private System.Windows.Forms.TextBox textBox2;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox textBox_ssid;
+        private System.Windows.Forms.TextBox textBox_bsid;
+        private System.Windows.Forms.TextBox textBox_ap_pass;
         private System.Windows.Forms.TabPage tabPageCalibration;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Button buttonStartCalib;
@@ -548,5 +561,6 @@
         private System.Windows.Forms.Label label_elapsedWL;
         private System.Windows.Forms.Label label1;
         private UserControls.TemperatureMonitor temperatureMonitor1;
+        private System.Windows.Forms.Panel panel2;
     }
 }

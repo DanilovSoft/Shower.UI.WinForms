@@ -19,7 +19,9 @@ namespace ShowerTcpClient
         {
             byte code = ReadByte();
             if (code != (byte)ShowerCodes.OK)
+            {
                 throw new InvalidDataException();
+            }
         }
 
         public ShowerCodes ReadCode()

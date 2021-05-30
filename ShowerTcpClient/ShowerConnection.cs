@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
 using System.Runtime.Remoting.Messaging;
@@ -29,6 +30,17 @@ namespace ShowerTcpClient
             };
             _writer = new MyBinaryWriter(_nstream);
             _reader = new ShowerBinaryReader(_nstream, Encoding.ASCII, leaveOpen: true);
+        }
+
+        public void Dispose()
+        {
+            if (!_disposed)
+            {
+                _disposed = true;
+                _reader.Dispose();
+                _writer.Dispose();
+                _nstream.Dispose();
+            }
         }
 
         public RequestBuilder BuildRequest()
@@ -228,15 +240,50 @@ namespace ShowerTcpClient
             return Request<byte>(ShowerCodes.GetWaterLevelAverageBufferSize);
         }
 
-        public void Dispose()
+        public void SetCurAP(string ssid, string password, PhysicalAddress? bsid = null)
         {
-            if (!_disposed)
-            {
-                _disposed = true;
-                _reader.Dispose();
-                _writer.Dispose();
-                _nstream.Dispose();
-            }
+            if (ssid == null)
+                throw new ArgumentNullException(nameof(ssid));
+
+            if (password == null)
+                throw new ArgumentNullException(nameof(password));
+
+            if (ssid.Length == 0)
+                throw new ArgumentOutOfRangeException(nameof(ssid));
+
+            if (password.Length == 0)
+                throw new ArgumentOutOfRangeException(nameof(password));
+
+            // Полная команда на контроллере: AT+CWJAP_CUR="abc","0123456789"
+            string espCommand = ESP8266Helper.CreateSetCurrentAPCommand(ssid, password, bsid);
+
+            BuildRequest()
+                .Write(ShowerCodes.SetCurAP)
+                .Write(espCommand)
+                .ReadOK();
+        }
+
+        public void SetDefAP(string ssid, string password, PhysicalAddress? bsid = null)
+        {
+            if (ssid == null)
+                throw new ArgumentNullException(nameof(ssid));
+
+            if (password == null)
+                throw new ArgumentNullException(nameof(password));
+
+            if (ssid.Length == 0)
+                throw new ArgumentOutOfRangeException(nameof(ssid));
+
+            if (password.Length == 0)
+                throw new ArgumentOutOfRangeException(nameof(password));
+
+            // Полная команда на контроллере: AT+CWJAP_CUR="abc","0123456789"
+            string espCommand = ESP8266Helper.CreateSetCurrentAPCommand(ssid, password, bsid);
+
+            BuildRequest()
+                .Write(ShowerCodes.SetDefAP)
+                .Write(espCommand)
+                .ReadOK();
         }
     }
 }

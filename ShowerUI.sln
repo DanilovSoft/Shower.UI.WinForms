@@ -12,9 +12,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shower-UI", "ShowerUI\Showe
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Filters", "Filters\Filters.csproj", "{F5F95264-A2D9-4580-B655-9B76B9834AF1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShowerTcpClient", "ShowerTcpClient\ShowerTcpClient.csproj", "{919CF1AA-998B-47B8-945E-F72179E467D6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShowerTcpClient", "ShowerTcpClient\ShowerTcpClient.csproj", "{919CF1AA-998B-47B8-945E-F72179E467D6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShowerUI.Common", "ShowerUI.Common\ShowerUI.Common.csproj", "{47F97D92-DE02-48FA-8409-F372D9106E57}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShowerUI.Common", "ShowerUI.Common\ShowerUI.Common.csproj", "{47F97D92-DE02-48FA-8409-F372D9106E57}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{8A47DCB4-D7DC-4F2F-9AE6-8747A4FF8888}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -38,6 +40,10 @@ Global
 		{47F97D92-DE02-48FA-8409-F372D9106E57}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{47F97D92-DE02-48FA-8409-F372D9106E57}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{47F97D92-DE02-48FA-8409-F372D9106E57}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8A47DCB4-D7DC-4F2F-9AE6-8747A4FF8888}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8A47DCB4-D7DC-4F2F-9AE6-8747A4FF8888}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8A47DCB4-D7DC-4F2F-9AE6-8747A4FF8888}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8A47DCB4-D7DC-4F2F-9AE6-8747A4FF8888}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
