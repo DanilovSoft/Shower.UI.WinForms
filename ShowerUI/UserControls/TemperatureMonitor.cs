@@ -50,6 +50,7 @@ namespace ShowerUI.UserControls
             //_heatingTimeLeft = new HeatingTimeLeft(tankHeightMil: 297, tankDiameterMil: 400, heaterPowerKWatt);
 
             _addTemperatureRecordHandler = AddTemperatureRecord;
+            button_Stop.Enabled = false;
         }
 
         private async void Button_Start_Click(object sender, EventArgs e)
@@ -58,7 +59,7 @@ namespace ShowerUI.UserControls
             try
             {
                 ClearChart();
-                int reconnectCount = -1;
+                int reconnectCount = 0;
 
                 button_Start.Enabled = false;
                 button_Stop.Enabled = true;
@@ -68,10 +69,10 @@ namespace ShowerUI.UserControls
                 {
                     using (var connection = await ConnectionHelper.CreateConnectionAsync(cts.Token))
                     {
-                        reconnectCount++;
                         errorProvider1.SetError(button_Start, null);
                         await InitBeforeStart(connection, cts.Token);
                         await Task.Run(() => RecordTempAsync(connection, cts.Token));
+                        reconnectCount++;
                     }
                 }
                 catch when (cts.IsCancellationRequested)
