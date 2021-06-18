@@ -55,7 +55,6 @@ namespace ShowerUI.UserControls
         private void DisableControls()
         {
             panelProperties.Enabled = false;
-            panel_properties_custom.Enabled = false;
             button_save.Enabled = false;
             button_load.Enabled = false;
             button_clear.Enabled = false;
@@ -67,7 +66,6 @@ namespace ShowerUI.UserControls
         private void LoadPropsEnable()
         {
             panelProperties.Enabled = true;
-            panel_properties_custom.Enabled = true;
             button_save.Enabled = true;
             button_load.Enabled = true;
             button_clear.Enabled = true;
@@ -85,157 +83,107 @@ namespace ShowerUI.UserControls
         {
             if (editText_wl_full.HasChanges)
             {
-                con.BuildRequest()
-                   .Write(ShowerCodes.SetWaterLevelFullUsec)
-                   .Write(editText_wl_full.GetValue<ushort>())
-                   .ReadOK();
-
+                con.SetWaterLevelFullUsec(editText_wl_full.GetValue<ushort>());
                 editText_wl_full.ResetHasChanges();
             }
 
             if (editText_wl_empty.HasChanges)
             {
-                con.BuildRequest()
-                   .Write(ShowerCodes.SetWaterLevelEmptyUsec)
-                   .Write(editText_wl_empty.GetValue<ushort>())
-                   .ReadOK();
-
+                con.SetWaterLevelEmptyUsec(editText_wl_empty.GetValue<ushort>());
                 editText_wl_empty.ResetHasChanges();
             }
 
             if (editText_min_water_heating_percent.HasChanges)
             {
-                con.BuildRequest()
-                   .Write(ShowerCodes.SetMinimumWaterHeatingLevel)
-                   .Write(editText_min_water_heating_percent.GetValue<byte>())
-                   .ReadOK();
-
+                con.SetMinimumWaterHeatingLevel(editText_min_water_heating_percent.GetValue<byte>());
                 editText_min_water_heating_percent.ResetHasChanges();
             }
 
             if (editText_abs_heating_time_limit.HasChanges)
             {
-                con.BuildRequest()
-                   .Write(ShowerCodes.SetAbsoluteHeatingTimeLimit)
-                   .Write(editText_abs_heating_time_limit.GetValue<byte>())
-                   .ReadOK();
-
+                con.SetAbsoluteHeatingTimeLimit(editText_abs_heating_time_limit.GetValue<byte>());
                 editText_abs_heating_time_limit.ResetHasChanges();
             }
 
             if (editText_heating_time_limit.HasChanges)
             {
-                con.BuildRequest()
-                   .Write(ShowerCodes.SetHeatingTimeLimit)
-                   .Write(editText_heating_time_limit.GetValue<byte>())
-                   .ReadOK();
-
+                con.SetHeatingTimeLimit(editText_heating_time_limit.GetValue<byte>());
                 editText_heating_time_limit.ResetHasChanges();
             }
 
             if (editText_light_brightness.HasChanges)
             {
-                con.BuildRequest()
-                   .Write(ShowerCodes.SetLightBrightness)
-                   .Write(editText_light_brightness.GetValue<byte>())
-                   .ReadOK();
-
+                con.SetLightBrightness(editText_light_brightness.GetValue<byte>());
                 editText_light_brightness.ResetHasChanges();
             }
 
             if (wiFiPower.HasChanges)
             {
-                con.BuildRequest()
-                   .Write(ShowerCodes.SetWiFiPower)
-                   .Write(wiFiPower.Power)
-                   .ReadOK();
-
+                con.SetWiFiPower(wiFiPower.Power);
                 wiFiPower.ResetHasChanges();
             }
 
             if (editText_WL_measure_interval.HasChanges)
             {
-                con.BuildRequest()
-                   .Write(ShowerCodes.SetWaterLevelMeasureInterval)
-                   .Write(editText_WL_measure_interval.GetValue<byte>())
-                   .ReadOK();
-
+                con.SetWaterLevelMeasureInterval(editText_WL_measure_interval.GetValue<byte>());
                 editText_WL_measure_interval.ResetHasChanges();
             }
 
             if (editText_wl_median_buffer_size.HasChanges)
             {
-                con.BuildRequest()
-                   .Write(ShowerCodes.SetWaterLevelMedianBufferSize)
-                   .Write(editText_wl_median_buffer_size.GetValue<byte>())
-                   .ReadOK();
-
+                con.SetWaterLevelMedianBufferSize(editText_wl_median_buffer_size.GetValue<byte>());
                 editText_wl_median_buffer_size.ResetHasChanges();
             }
             
             if (editText_wl_avg_buffer_size.HasChanges)
             {
-                con.BuildRequest()
-                   .Write(ShowerCodes.SetWaterLevelAverageBufferSize)
-                   .Write(editText_wl_avg_buffer_size.GetValue<byte>())
-                   .ReadOK();
-
+                con.SetWaterLevelAverageBufferSize(editText_wl_avg_buffer_size.GetValue<byte>());
                 editText_wl_avg_buffer_size.ResetHasChanges();
             }
 
             if (editText_wl_cut_off_percent.HasChanges)
             {
-                con.BuildRequest()
-                  .Write(ShowerCodes.SetWaterValveCutOffPercent)
-                  .Write(editText_wl_cut_off_percent.GetValue<byte>())
-                  .ReadOK();
-
+                con.SetWaterValveCutOffPercent(editText_wl_cut_off_percent.GetValue<byte>());
                 editText_wl_cut_off_percent.ResetHasChanges();
             }
 
             if (editText_internal_temp_avg_size.HasChanges)
             {
-                con.BuildRequest()
-                   .Write(ShowerCodes.SetTempSensorInternalTempAverageSize)
-                   .Write(editText_internal_temp_avg_size.GetValue<byte>())
-                   .ReadOK();
-
+                con.SetTempSensorInternalTempAverageSize(editText_internal_temp_avg_size.GetValue<byte>());
                 editText_internal_temp_avg_size.ResetHasChanges();
             }
 
             if (editText_WaterVolumeLitre.HasChanges)
             {
-                con.BuildRequest()
-                  .Write(ShowerCodes.SetWaterTankVolumeLitre)
-                  .Write(editText_WaterVolumeLitre.GetValue<float>())
-                  .ReadOK();
-
+                con.SetWaterTankVolumeLitre(editText_WaterVolumeLitre.GetValue<float>());
                 editText_WaterVolumeLitre.ResetHasChanges();
             }
 
             if (editText_HeaterPowerKWatt.HasChanges)
             {
-                con.BuildRequest()
-                  .Write(ShowerCodes.SetWaterHeaterPowerKWatt)
-                  .Write(editText_HeaterPowerKWatt.GetValue<float>())
-                  .ReadOK();
-
+                con.SetWaterHeaterPowerKWatt(editText_HeaterPowerKWatt.GetValue<float>());
                 editText_HeaterPowerKWatt.ResetHasChanges();
             }
 
             if (editText_button_time.HasChanges)
             {
-                con.BuildRequest()
-                  .Write(ShowerCodes.SetButtonTimeMsec)
-                  .Write(editText_button_time.GetValue<byte>())
-                  .ReadOK();
-
+                con.SetButtonTimeMsec(editText_button_time.GetValue<byte>());
                 editText_button_time.ResetHasChanges();
             }
 
-            con.BuildRequest()
-                .Write(ShowerCodes.Save)
-                .ReadOK();
+            if (editTextButtonLongTime.HasChanges)
+            {
+                con.SetButtonLongPressTimeMsec(editTextButtonLongTime.GetValue<ushort>());
+                editTextButtonLongTime.ResetHasChanges();
+            }
+
+            if (editTextWaterLevelErrorThreshold.HasChanges)
+            {
+                con.SetWaterLevelErrorThreshold(editTextWaterLevelErrorThreshold.GetValue<byte>());
+                editTextWaterLevelErrorThreshold.ResetHasChanges();
+            }
+            
+            con.Save();
         }
 
         private async void Button_save_Click(object sender, EventArgs e)
@@ -272,9 +220,7 @@ namespace ShowerUI.UserControls
                 Parent.Enabled = false;
                 using (var connection = await ConnectionHelper.CreateConnectionAsync(CancellationToken.None))
                 {
-                    connection.BuildRequest()
-                        .Write(ShowerCodes.Reset)
-                        .ReadOK();
+                    connection.Reset();
                 }
             }
             catch (Exception ex)
@@ -315,10 +261,12 @@ namespace ShowerUI.UserControls
             editText_wl_avg_buffer_size.Value = model.WaterLevelAverageBufferSize;
             editText_wl_cut_off_percent.Value = model.WaterValveCutOffPercent;
             editText_internal_temp_avg_size.Value = model.TempSensorInternalTempAverageSize;
-            editText_button_time.Value = model.ButtonTimeMsec;
+            editText_button_time.Value = model.ButtonPressTimeMsec;
+            editTextButtonLongTime.Value = model.ButtonLongTimeMsec;
             checkBox_iwd.Checked = model.WatchDogWasReset ?? false;
             editText_WaterVolumeLitre.Value = model.WaterTankVolumeLitre;
             editText_HeaterPowerKWatt.Value = model.WaterHeaterPowerKWatt;
+            editTextWaterLevelErrorThreshold.Value = model.WaterLevelErrorThreshhold;
         }
 
         private void ClearProperties()
@@ -337,6 +285,8 @@ namespace ShowerUI.UserControls
             editText_WaterVolumeLitre.Value = null;
             editText_HeaterPowerKWatt.Value = null;
             editText_button_time.Value = null;
+            editTextWaterLevelErrorThreshold.Value = null;
+            editTextButtonLongTime.Value = null;
             checkBox_iwd.CheckState = CheckState.Indeterminate;
         }
 
@@ -344,22 +294,24 @@ namespace ShowerUI.UserControls
         {
             var model = new PropertiesModel
             {
-                WaterLevelFullUsec = con.Request<ushort>(ShowerCodes.GetWaterLevelFullUsec),
-                WaterLevelEmptyUsec = con.Request<ushort>(ShowerCodes.GetWaterLevelEmptyUsec),
-                MinimumWaterHeatingLevel = con.Request<byte>(ShowerCodes.GetMinimumWaterHeatingLevel),
-                AbsoluteHeatingTimeLimit = con.Request<byte>(ShowerCodes.GetAbsoluteHeatingTimeLimit),
-                HeatingTimeLimit = con.Request<byte>(ShowerCodes.GetHeatingTimeLimit),
-                LightBrightness = con.Request<byte>(ShowerCodes.GetLightBrightness),
-                WiFiPower = con.Request<byte>(ShowerCodes.GetWiFiPower),
-                WaterLevelMeasureInterval = con.Request<byte>(ShowerCodes.GetWaterLevelMeasureInterval),
+                WaterLevelFullUsec = con.GetWaterLevelFullUsec(),
+                WaterLevelEmptyUsec = con.GetWaterLevelEmptyUsec(),
+                MinimumWaterHeatingLevel = con.GetMinimumWaterHeatingLevel(),
+                AbsoluteHeatingTimeLimit = con.GetAbsoluteHeatingTimeLimit(),
+                HeatingTimeLimit = con.GetHeatingTimeLimit(),
+                LightBrightness = con.GetLightBrightness(),
+                WiFiPower = con.GetWiFiPower(),
+                WaterLevelMeasureInterval = con.GetWaterLevelMeasureInterval(),
                 WaterLevelMedianBufferSize = con.GetWaterLevelMedianSize(),
                 WaterLevelAverageBufferSize = con.GetWaterLevelAverageFilterSize(),
-                WaterValveCutOffPercent = con.Request<byte>(ShowerCodes.GetWaterValveCutOffPercent),
-                TempSensorInternalTempAverageSize = con.Request<byte>(ShowerCodes.GetTempSensorInternalTempAverageSize),
-                ButtonTimeMsec = con.Request<byte>(ShowerCodes.GetButtonTimeMsec),
+                WaterValveCutOffPercent = con.GetWaterValveCutOffPercent(),
+                TempSensorInternalTempAverageSize = con.GetTempSensorInternalTempAverageSize(),
+                ButtonPressTimeMsec = con.GetButtonPressTimeMsec(),
+                ButtonLongTimeMsec = con.GetButtonLongPressTimeMsec(),
                 WatchDogWasReset = con.GetWatchDogWasReset(),
                 WaterTankVolumeLitre = con.GetWaterTankVolumeLitre(),
                 WaterHeaterPowerKWatt = con.GetWaterHeaterPowerKWatt(),
+                WaterLevelErrorThreshhold = con.GetWaterLevelErrorThreshhold(),
             };
 
             return model;
@@ -381,7 +333,7 @@ namespace ShowerUI.UserControls
                 WaterLevelAverageBufferSize = (byte?)editText_wl_avg_buffer_size.Value,
                 WaterValveCutOffPercent = (byte?)editText_wl_cut_off_percent.Value,
                 TempSensorInternalTempAverageSize = (byte?)editText_internal_temp_avg_size.Value,
-                ButtonTimeMsec = (byte?)editText_button_time.Value,
+                ButtonPressTimeMsec = (byte?)editText_button_time.Value,
                 WaterTankVolumeLitre = (float?)editText_WaterVolumeLitre.Value,
                 WaterHeaterPowerKWatt = (float?)editText_HeaterPowerKWatt.Value,
             };

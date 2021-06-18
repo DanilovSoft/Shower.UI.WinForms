@@ -94,6 +94,12 @@ namespace ShowerTcpClient
         GetWaterHeaterPowerKWatt = 62,
         SetWaterHeaterPowerKWatt = 63,
 
+        GetButtonLongPressTimeMsec = 70,
+        SetButtonLongPressTimeMsec = 71,
+
+        GetWaterLevelErrorThreshold = 80,
+        SetWaterLevelErrorThreshold = 81,
+
         OK = 200,
 	    UnknownCode = 253,
         Reset = 254,

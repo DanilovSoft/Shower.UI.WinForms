@@ -34,7 +34,6 @@ namespace ShowerUI.UserControls
             this.button_Import = new System.Windows.Forms.Button();
             this.button_Export = new System.Windows.Forms.Button();
             this.panelProperties = new System.Windows.Forms.Panel();
-            this.panel_properties_custom = new System.Windows.Forms.FlowLayoutPanel();
             this.button_clear = new System.Windows.Forms.Button();
             this.button_restart = new System.Windows.Forms.Button();
             this.checkBox_iwd = new System.Windows.Forms.CheckBox();
@@ -42,24 +41,25 @@ namespace ShowerUI.UserControls
             this.button_save = new System.Windows.Forms.Button();
             this.button_load = new System.Windows.Forms.Button();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.editTextWaterLevelErrorThreshold = new ShowerUI.EditText();
+            this.editTextButtonLongTime = new ShowerUI.EditText();
+            this.editText_WL_measure_interval = new ShowerUI.EditText();
+            this.editText_wl_median_buffer_size = new ShowerUI.EditText();
             this.wiFiPower = new ShowerUI.UserControls.WiFiPowerControl();
+            this.editText_wl_avg_buffer_size = new ShowerUI.EditText();
             this.editText_wl_full = new ShowerUI.EditText();
+            this.editText_wl_cut_off_percent = new ShowerUI.EditText();
             this.editText_button_time = new ShowerUI.EditText();
+            this.editText_internal_temp_avg_size = new ShowerUI.EditText();
             this.editText_light_brightness = new ShowerUI.EditText();
+            this.editText_WaterVolumeLitre = new ShowerUI.EditText();
             this.editText_wl_empty = new ShowerUI.EditText();
+            this.editText_HeaterPowerKWatt = new ShowerUI.EditText();
             this.editText_heating_time_limit = new ShowerUI.EditText();
             this.editText_abs_heating_time_limit = new ShowerUI.EditText();
             this.editText_min_water_heating_percent = new ShowerUI.EditText();
-            this.editText_WL_measure_interval = new ShowerUI.EditText();
-            this.editText_wl_median_buffer_size = new ShowerUI.EditText();
-            this.editText_wl_avg_buffer_size = new ShowerUI.EditText();
-            this.editText_wl_cut_off_percent = new ShowerUI.EditText();
-            this.editText_internal_temp_avg_size = new ShowerUI.EditText();
-            this.editText_WaterVolumeLitre = new ShowerUI.EditText();
-            this.editText_HeaterPowerKWatt = new ShowerUI.EditText();
             this.groupBox_properties.SuspendLayout();
             this.panelProperties.SuspendLayout();
-            this.panel_properties_custom.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox_properties
@@ -67,7 +67,6 @@ namespace ShowerUI.UserControls
             this.groupBox_properties.Controls.Add(this.button_Import);
             this.groupBox_properties.Controls.Add(this.button_Export);
             this.groupBox_properties.Controls.Add(this.panelProperties);
-            this.groupBox_properties.Controls.Add(this.panel_properties_custom);
             this.groupBox_properties.Controls.Add(this.button_clear);
             this.groupBox_properties.Controls.Add(this.button_restart);
             this.groupBox_properties.Controls.Add(this.checkBox_iwd);
@@ -76,13 +75,14 @@ namespace ShowerUI.UserControls
             this.groupBox_properties.Controls.Add(this.button_load);
             this.groupBox_properties.Location = new System.Drawing.Point(15, 12);
             this.groupBox_properties.Name = "groupBox_properties";
-            this.groupBox_properties.Size = new System.Drawing.Size(810, 491);
+            this.groupBox_properties.Size = new System.Drawing.Size(927, 588);
             this.groupBox_properties.TabIndex = 14;
             this.groupBox_properties.TabStop = false;
             // 
             // button_Import
             // 
-            this.button_Import.Location = new System.Drawing.Point(505, 454);
+            this.button_Import.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.button_Import.Location = new System.Drawing.Point(505, 551);
             this.button_Import.Name = "button_Import";
             this.button_Import.Size = new System.Drawing.Size(75, 23);
             this.button_Import.TabIndex = 51;
@@ -92,7 +92,8 @@ namespace ShowerUI.UserControls
             // 
             // button_Export
             // 
-            this.button_Export.Location = new System.Drawing.Point(424, 454);
+            this.button_Export.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.button_Export.Location = new System.Drawing.Point(424, 551);
             this.button_Export.Name = "button_Export";
             this.button_Export.Size = new System.Drawing.Size(75, 23);
             this.button_Export.TabIndex = 50;
@@ -102,37 +103,35 @@ namespace ShowerUI.UserControls
             // 
             // panelProperties
             // 
+            this.panelProperties.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.panelProperties.Controls.Add(this.editTextWaterLevelErrorThreshold);
+            this.panelProperties.Controls.Add(this.editTextButtonLongTime);
+            this.panelProperties.Controls.Add(this.editText_WL_measure_interval);
+            this.panelProperties.Controls.Add(this.editText_wl_median_buffer_size);
             this.panelProperties.Controls.Add(this.wiFiPower);
+            this.panelProperties.Controls.Add(this.editText_wl_avg_buffer_size);
             this.panelProperties.Controls.Add(this.editText_wl_full);
+            this.panelProperties.Controls.Add(this.editText_wl_cut_off_percent);
             this.panelProperties.Controls.Add(this.editText_button_time);
+            this.panelProperties.Controls.Add(this.editText_internal_temp_avg_size);
             this.panelProperties.Controls.Add(this.editText_light_brightness);
+            this.panelProperties.Controls.Add(this.editText_WaterVolumeLitre);
             this.panelProperties.Controls.Add(this.editText_wl_empty);
+            this.panelProperties.Controls.Add(this.editText_HeaterPowerKWatt);
             this.panelProperties.Controls.Add(this.editText_heating_time_limit);
             this.panelProperties.Controls.Add(this.editText_abs_heating_time_limit);
             this.panelProperties.Controls.Add(this.editText_min_water_heating_percent);
             this.panelProperties.Location = new System.Drawing.Point(6, 20);
             this.panelProperties.Name = "panelProperties";
-            this.panelProperties.Size = new System.Drawing.Size(223, 405);
+            this.panelProperties.Size = new System.Drawing.Size(886, 502);
             this.panelProperties.TabIndex = 53;
-            // 
-            // panel_properties_custom
-            // 
-            this.panel_properties_custom.Controls.Add(this.editText_WL_measure_interval);
-            this.panel_properties_custom.Controls.Add(this.editText_wl_median_buffer_size);
-            this.panel_properties_custom.Controls.Add(this.editText_wl_avg_buffer_size);
-            this.panel_properties_custom.Controls.Add(this.editText_wl_cut_off_percent);
-            this.panel_properties_custom.Controls.Add(this.editText_internal_temp_avg_size);
-            this.panel_properties_custom.Controls.Add(this.editText_WaterVolumeLitre);
-            this.panel_properties_custom.Controls.Add(this.editText_HeaterPowerKWatt);
-            this.panel_properties_custom.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.panel_properties_custom.Location = new System.Drawing.Point(235, 20);
-            this.panel_properties_custom.Name = "panel_properties_custom";
-            this.panel_properties_custom.Size = new System.Drawing.Size(357, 365);
-            this.panel_properties_custom.TabIndex = 15;
             // 
             // button_clear
             // 
-            this.button_clear.Location = new System.Drawing.Point(87, 454);
+            this.button_clear.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.button_clear.Location = new System.Drawing.Point(87, 551);
             this.button_clear.Name = "button_clear";
             this.button_clear.Size = new System.Drawing.Size(75, 23);
             this.button_clear.TabIndex = 46;
@@ -142,7 +141,8 @@ namespace ShowerUI.UserControls
             // 
             // button_restart
             // 
-            this.button_restart.Location = new System.Drawing.Point(249, 454);
+            this.button_restart.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.button_restart.Location = new System.Drawing.Point(249, 551);
             this.button_restart.Name = "button_restart";
             this.button_restart.Size = new System.Drawing.Size(88, 23);
             this.button_restart.TabIndex = 48;
@@ -153,11 +153,12 @@ namespace ShowerUI.UserControls
             // 
             // checkBox_iwd
             // 
+            this.checkBox_iwd.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.checkBox_iwd.AutoCheck = false;
             this.checkBox_iwd.AutoSize = true;
             this.checkBox_iwd.Checked = true;
             this.checkBox_iwd.CheckState = System.Windows.Forms.CheckState.Indeterminate;
-            this.checkBox_iwd.Location = new System.Drawing.Point(240, 391);
+            this.checkBox_iwd.Location = new System.Drawing.Point(715, 555);
             this.checkBox_iwd.Name = "checkBox_iwd";
             this.checkBox_iwd.Size = new System.Drawing.Size(76, 17);
             this.checkBox_iwd.TabIndex = 0;
@@ -168,8 +169,9 @@ namespace ShowerUI.UserControls
             // 
             // button_cancel
             // 
+            this.button_cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.button_cancel.Enabled = false;
-            this.button_cancel.Location = new System.Drawing.Point(343, 454);
+            this.button_cancel.Location = new System.Drawing.Point(343, 551);
             this.button_cancel.Name = "button_cancel";
             this.button_cancel.Size = new System.Drawing.Size(75, 23);
             this.button_cancel.TabIndex = 49;
@@ -179,7 +181,8 @@ namespace ShowerUI.UserControls
             // 
             // button_save
             // 
-            this.button_save.Location = new System.Drawing.Point(168, 454);
+            this.button_save.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.button_save.Location = new System.Drawing.Point(168, 551);
             this.button_save.Name = "button_save";
             this.button_save.Size = new System.Drawing.Size(75, 23);
             this.button_save.TabIndex = 47;
@@ -189,7 +192,8 @@ namespace ShowerUI.UserControls
             // 
             // button_load
             // 
-            this.button_load.Location = new System.Drawing.Point(6, 454);
+            this.button_load.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.button_load.Location = new System.Drawing.Point(6, 551);
             this.button_load.Name = "button_load";
             this.button_load.Size = new System.Drawing.Size(75, 23);
             this.button_load.TabIndex = 45;
@@ -203,6 +207,60 @@ namespace ShowerUI.UserControls
             this.toolTip1.InitialDelay = 500;
             this.toolTip1.ReshowDelay = 100;
             // 
+            // editTextWaterLevelErrorThreshold
+            // 
+            this.editTextWaterLevelErrorThreshold.AutoSize = true;
+            this.editTextWaterLevelErrorThreshold.Caption = "Ошибка уровня воды";
+            this.editTextWaterLevelErrorThreshold.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.editTextWaterLevelErrorThreshold.Location = new System.Drawing.Point(224, 152);
+            this.editTextWaterLevelErrorThreshold.Margin = new System.Windows.Forms.Padding(5);
+            this.editTextWaterLevelErrorThreshold.Name = "editTextWaterLevelErrorThreshold";
+            this.editTextWaterLevelErrorThreshold.Size = new System.Drawing.Size(269, 39);
+            this.editTextWaterLevelErrorThreshold.TabIndex = 46;
+            this.editTextWaterLevelErrorThreshold.TextBoxHint = "Число неудачных измерений уровня воды после которого на индикаторе отобразятся пр" +
+    "очерки (от 1 до 255)";
+            this.editTextWaterLevelErrorThreshold.Value = null;
+            // 
+            // editTextButtonLongTime
+            // 
+            this.editTextButtonLongTime.AutoSize = true;
+            this.editTextButtonLongTime.Caption = "Долгое нажатие кнопок (msec)";
+            this.editTextButtonLongTime.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.editTextButtonLongTime.Location = new System.Drawing.Point(17, 398);
+            this.editTextButtonLongTime.Margin = new System.Windows.Forms.Padding(5);
+            this.editTextButtonLongTime.Name = "editTextButtonLongTime";
+            this.editTextButtonLongTime.Size = new System.Drawing.Size(187, 39);
+            this.editTextButtonLongTime.TabIndex = 45;
+            this.editTextButtonLongTime.TextBoxHint = "Время зажатой кнопки для определения длительного нажатия, от 1000 до 10000 мсек.";
+            this.editTextButtonLongTime.Value = null;
+            // 
+            // editText_WL_measure_interval
+            // 
+            this.editText_WL_measure_interval.Caption = "Интервал замера уровня воды (msec)";
+            this.editText_WL_measure_interval.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.editText_WL_measure_interval.Location = new System.Drawing.Point(224, 5);
+            this.editText_WL_measure_interval.Margin = new System.Windows.Forms.Padding(5);
+            this.editText_WL_measure_interval.Name = "editText_WL_measure_interval";
+            this.editText_WL_measure_interval.Size = new System.Drawing.Size(269, 39);
+            this.editText_WL_measure_interval.TabIndex = 37;
+            this.editText_WL_measure_interval.TextBoxHint = "Длительность паузы перед повторным измерением расстояния до воды в баке. Рекоменд" +
+    "уется не меньше 60 мсек";
+            this.editText_WL_measure_interval.Value = null;
+            // 
+            // editText_wl_median_buffer_size
+            // 
+            this.editText_wl_median_buffer_size.AutoSize = true;
+            this.editText_wl_median_buffer_size.Caption = "Медианный фильтр для уровня воды";
+            this.editText_wl_median_buffer_size.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.editText_wl_median_buffer_size.Location = new System.Drawing.Point(224, 54);
+            this.editText_wl_median_buffer_size.Margin = new System.Windows.Forms.Padding(5);
+            this.editText_wl_median_buffer_size.Name = "editText_wl_median_buffer_size";
+            this.editText_wl_median_buffer_size.Size = new System.Drawing.Size(269, 39);
+            this.editText_wl_median_buffer_size.TabIndex = 38;
+            this.editText_wl_median_buffer_size.TextBoxHint = "Размер буфера медианного фильтра для RAW показаний датчика уровня воды (от 1 до 2" +
+    "55)";
+            this.editText_wl_median_buffer_size.Value = null;
+            // 
             // wiFiPower
             // 
             this.wiFiPower.Caption = "Мощность Wi-Fi (10..20.5 dBm)";
@@ -214,6 +272,20 @@ namespace ShowerUI.UserControls
             this.wiFiPower.TabIndex = 35;
             this.wiFiPower.TextBoxHint = "";
             this.wiFiPower.Value = null;
+            // 
+            // editText_wl_avg_buffer_size
+            // 
+            this.editText_wl_avg_buffer_size.AutoSize = true;
+            this.editText_wl_avg_buffer_size.Caption = "Cкользящее среднее для уровня воды";
+            this.editText_wl_avg_buffer_size.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.editText_wl_avg_buffer_size.Location = new System.Drawing.Point(224, 103);
+            this.editText_wl_avg_buffer_size.Margin = new System.Windows.Forms.Padding(5);
+            this.editText_wl_avg_buffer_size.Name = "editText_wl_avg_buffer_size";
+            this.editText_wl_avg_buffer_size.Size = new System.Drawing.Size(269, 39);
+            this.editText_wl_avg_buffer_size.TabIndex = 42;
+            this.editText_wl_avg_buffer_size.TextBoxHint = "Размер буфера фильтра \'скользящее среднее\' для значений медианы датчика уровня во" +
+    "ды (от 1 до 129)";
+            this.editText_wl_avg_buffer_size.Value = null;
             // 
             // editText_wl_full
             // 
@@ -228,6 +300,19 @@ namespace ShowerUI.UserControls
             this.editText_wl_full.TextBoxHint = "Число микросекунд соответствующие расстоянию когда бак полностью заполнен водой";
             this.editText_wl_full.Value = null;
             // 
+            // editText_wl_cut_off_percent
+            // 
+            this.editText_wl_cut_off_percent.AutoSize = true;
+            this.editText_wl_cut_off_percent.Caption = "Порог отключения набора воды (%)";
+            this.editText_wl_cut_off_percent.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.editText_wl_cut_off_percent.Location = new System.Drawing.Point(224, 201);
+            this.editText_wl_cut_off_percent.Margin = new System.Windows.Forms.Padding(5);
+            this.editText_wl_cut_off_percent.Name = "editText_wl_cut_off_percent";
+            this.editText_wl_cut_off_percent.Size = new System.Drawing.Size(269, 39);
+            this.editText_wl_cut_off_percent.TabIndex = 39;
+            this.editText_wl_cut_off_percent.TextBoxHint = "";
+            this.editText_wl_cut_off_percent.Value = null;
+            // 
             // editText_button_time
             // 
             this.editText_button_time.AutoSize = true;
@@ -238,8 +323,22 @@ namespace ShowerUI.UserControls
             this.editText_button_time.Name = "editText_button_time";
             this.editText_button_time.Size = new System.Drawing.Size(187, 39);
             this.editText_button_time.TabIndex = 36;
-            this.editText_button_time.TextBoxHint = "Минимальное время зажатой кнопки для её срабатывания";
+            this.editText_button_time.TextBoxHint = "Время нажатия кнопки для её срабатывания (антидребезг), от 20 до 80 мсек.";
             this.editText_button_time.Value = null;
+            // 
+            // editText_internal_temp_avg_size
+            // 
+            this.editText_internal_temp_avg_size.AutoSize = true;
+            this.editText_internal_temp_avg_size.Caption = "Скользящее среднее для температуры в баке";
+            this.editText_internal_temp_avg_size.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.editText_internal_temp_avg_size.Location = new System.Drawing.Point(224, 250);
+            this.editText_internal_temp_avg_size.Margin = new System.Windows.Forms.Padding(5);
+            this.editText_internal_temp_avg_size.Name = "editText_internal_temp_avg_size";
+            this.editText_internal_temp_avg_size.Size = new System.Drawing.Size(269, 39);
+            this.editText_internal_temp_avg_size.TabIndex = 40;
+            this.editText_internal_temp_avg_size.TextBoxHint = "Размер буфера фильтра \'скользящее среднее\' для значений датчика температуры внутр" +
+    "и бака (от 1 до 8)";
+            this.editText_internal_temp_avg_size.Value = null;
             // 
             // editText_light_brightness
             // 
@@ -254,6 +353,19 @@ namespace ShowerUI.UserControls
             this.editText_light_brightness.TextBoxHint = "Яркость светодиодного освещения от 0 до 100%";
             this.editText_light_brightness.Value = null;
             // 
+            // editText_WaterVolumeLitre
+            // 
+            this.editText_WaterVolumeLitre.AutoSize = true;
+            this.editText_WaterVolumeLitre.Caption = "Объём воды полного бака (л)";
+            this.editText_WaterVolumeLitre.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.editText_WaterVolumeLitre.Location = new System.Drawing.Point(224, 299);
+            this.editText_WaterVolumeLitre.Margin = new System.Windows.Forms.Padding(5);
+            this.editText_WaterVolumeLitre.Name = "editText_WaterVolumeLitre";
+            this.editText_WaterVolumeLitre.Size = new System.Drawing.Size(269, 39);
+            this.editText_WaterVolumeLitre.TabIndex = 43;
+            this.editText_WaterVolumeLitre.TextBoxHint = "";
+            this.editText_WaterVolumeLitre.Value = null;
+            // 
             // editText_wl_empty
             // 
             this.editText_wl_empty.AutoSize = true;
@@ -266,6 +378,19 @@ namespace ShowerUI.UserControls
             this.editText_wl_empty.TabIndex = 30;
             this.editText_wl_empty.TextBoxHint = "Число микросекунд соответствующие расстоянию когда бак полностью пустой";
             this.editText_wl_empty.Value = null;
+            // 
+            // editText_HeaterPowerKWatt
+            // 
+            this.editText_HeaterPowerKWatt.AutoSize = true;
+            this.editText_HeaterPowerKWatt.Caption = "Мощность ТЭНа с учётом КПД (кВт)";
+            this.editText_HeaterPowerKWatt.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.editText_HeaterPowerKWatt.Location = new System.Drawing.Point(224, 348);
+            this.editText_HeaterPowerKWatt.Margin = new System.Windows.Forms.Padding(5);
+            this.editText_HeaterPowerKWatt.Name = "editText_HeaterPowerKWatt";
+            this.editText_HeaterPowerKWatt.Size = new System.Drawing.Size(269, 39);
+            this.editText_HeaterPowerKWatt.TabIndex = 44;
+            this.editText_HeaterPowerKWatt.TextBoxHint = "";
+            this.editText_HeaterPowerKWatt.Value = null;
             // 
             // editText_heating_time_limit
             // 
@@ -308,127 +433,17 @@ namespace ShowerUI.UserControls
             this.editText_min_water_heating_percent.TextBoxHint = "Уровень воды в баке ниже которого нагреватель не будет включаться";
             this.editText_min_water_heating_percent.Value = null;
             // 
-            // editText_WL_measure_interval
-            // 
-            this.editText_WL_measure_interval.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.editText_WL_measure_interval.Caption = "Интервал замера уровня воды (msec)";
-            this.editText_WL_measure_interval.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.editText_WL_measure_interval.Location = new System.Drawing.Point(5, 5);
-            this.editText_WL_measure_interval.Margin = new System.Windows.Forms.Padding(5);
-            this.editText_WL_measure_interval.Name = "editText_WL_measure_interval";
-            this.editText_WL_measure_interval.Size = new System.Drawing.Size(283, 39);
-            this.editText_WL_measure_interval.TabIndex = 37;
-            this.editText_WL_measure_interval.TextBoxHint = "Длительность паузы перед повторным измерением расстояния до воды в баке. Рекоменд" +
-    "уется не меньше 60 мсек";
-            this.editText_WL_measure_interval.Value = null;
-            // 
-            // editText_wl_median_buffer_size
-            // 
-            this.editText_wl_median_buffer_size.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.editText_wl_median_buffer_size.AutoSize = true;
-            this.editText_wl_median_buffer_size.Caption = "Медианный фильтр для уровня воды";
-            this.editText_wl_median_buffer_size.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.editText_wl_median_buffer_size.Location = new System.Drawing.Point(5, 54);
-            this.editText_wl_median_buffer_size.Margin = new System.Windows.Forms.Padding(5);
-            this.editText_wl_median_buffer_size.Name = "editText_wl_median_buffer_size";
-            this.editText_wl_median_buffer_size.Size = new System.Drawing.Size(283, 39);
-            this.editText_wl_median_buffer_size.TabIndex = 38;
-            this.editText_wl_median_buffer_size.TextBoxHint = "Размер буфера медианного фильтра для RAW показаний датчика уровня воды (от 1 до 2" +
-    "55)";
-            this.editText_wl_median_buffer_size.Value = null;
-            // 
-            // editText_wl_avg_buffer_size
-            // 
-            this.editText_wl_avg_buffer_size.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.editText_wl_avg_buffer_size.AutoSize = true;
-            this.editText_wl_avg_buffer_size.Caption = "Cкользящее среднее для уровня воды";
-            this.editText_wl_avg_buffer_size.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.editText_wl_avg_buffer_size.Location = new System.Drawing.Point(5, 103);
-            this.editText_wl_avg_buffer_size.Margin = new System.Windows.Forms.Padding(5);
-            this.editText_wl_avg_buffer_size.Name = "editText_wl_avg_buffer_size";
-            this.editText_wl_avg_buffer_size.Size = new System.Drawing.Size(283, 39);
-            this.editText_wl_avg_buffer_size.TabIndex = 42;
-            this.editText_wl_avg_buffer_size.TextBoxHint = "Размер буфера фильтра \'скользящее среднее\' для значений медианы датчика уровня во" +
-    "ды (от 1 до 129)";
-            this.editText_wl_avg_buffer_size.Value = null;
-            // 
-            // editText_wl_cut_off_percent
-            // 
-            this.editText_wl_cut_off_percent.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.editText_wl_cut_off_percent.AutoSize = true;
-            this.editText_wl_cut_off_percent.Caption = "Порог отключения набора воды (%)";
-            this.editText_wl_cut_off_percent.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.editText_wl_cut_off_percent.Location = new System.Drawing.Point(5, 152);
-            this.editText_wl_cut_off_percent.Margin = new System.Windows.Forms.Padding(5);
-            this.editText_wl_cut_off_percent.Name = "editText_wl_cut_off_percent";
-            this.editText_wl_cut_off_percent.Size = new System.Drawing.Size(283, 39);
-            this.editText_wl_cut_off_percent.TabIndex = 39;
-            this.editText_wl_cut_off_percent.TextBoxHint = "";
-            this.editText_wl_cut_off_percent.Value = null;
-            // 
-            // editText_internal_temp_buf_size
-            // 
-            this.editText_internal_temp_avg_size.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.editText_internal_temp_avg_size.AutoSize = true;
-            this.editText_internal_temp_avg_size.Caption = "Скользящее среднее для температуры в баке";
-            this.editText_internal_temp_avg_size.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.editText_internal_temp_avg_size.Location = new System.Drawing.Point(5, 201);
-            this.editText_internal_temp_avg_size.Margin = new System.Windows.Forms.Padding(5);
-            this.editText_internal_temp_avg_size.Name = "editText_internal_temp_buf_size";
-            this.editText_internal_temp_avg_size.Size = new System.Drawing.Size(283, 39);
-            this.editText_internal_temp_avg_size.TabIndex = 40;
-            this.editText_internal_temp_avg_size.TextBoxHint = "Размер буфера фильтра \'скользящее среднее\' для значений датчика температуры внутр" +
-    "и бака (от 1 до 8)";
-            this.editText_internal_temp_avg_size.Value = null;
-            // 
-            // editText_WaterVolumeLitre
-            // 
-            this.editText_WaterVolumeLitre.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.editText_WaterVolumeLitre.AutoSize = true;
-            this.editText_WaterVolumeLitre.Caption = "Объём воды полного бака (л)";
-            this.editText_WaterVolumeLitre.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.editText_WaterVolumeLitre.Location = new System.Drawing.Point(5, 250);
-            this.editText_WaterVolumeLitre.Margin = new System.Windows.Forms.Padding(5);
-            this.editText_WaterVolumeLitre.Name = "editText_WaterVolumeLitre";
-            this.editText_WaterVolumeLitre.Size = new System.Drawing.Size(283, 39);
-            this.editText_WaterVolumeLitre.TabIndex = 43;
-            this.editText_WaterVolumeLitre.TextBoxHint = "";
-            this.editText_WaterVolumeLitre.Value = null;
-            // 
-            // editText_HeaterPowerKWatt
-            // 
-            this.editText_HeaterPowerKWatt.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.editText_HeaterPowerKWatt.AutoSize = true;
-            this.editText_HeaterPowerKWatt.Caption = "Мощность ТЭНа с учётом КПД (кВт)";
-            this.editText_HeaterPowerKWatt.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.editText_HeaterPowerKWatt.Location = new System.Drawing.Point(5, 299);
-            this.editText_HeaterPowerKWatt.Margin = new System.Windows.Forms.Padding(5);
-            this.editText_HeaterPowerKWatt.Name = "editText_HeaterPowerKWatt";
-            this.editText_HeaterPowerKWatt.Size = new System.Drawing.Size(283, 39);
-            this.editText_HeaterPowerKWatt.TabIndex = 44;
-            this.editText_HeaterPowerKWatt.TextBoxHint = "";
-            this.editText_HeaterPowerKWatt.Value = null;
-            // 
             // ParametersControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.groupBox_properties);
             this.Name = "ParametersControl";
-            this.Size = new System.Drawing.Size(864, 553);
+            this.Size = new System.Drawing.Size(1002, 713);
             this.groupBox_properties.ResumeLayout(false);
             this.groupBox_properties.PerformLayout();
             this.panelProperties.ResumeLayout(false);
             this.panelProperties.PerformLayout();
-            this.panel_properties_custom.ResumeLayout(false);
-            this.panel_properties_custom.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -444,7 +459,6 @@ namespace ShowerUI.UserControls
         private EditText editText_heating_time_limit;
         private EditText editText_abs_heating_time_limit;
         private EditText editText_min_water_heating_percent;
-        private System.Windows.Forms.FlowLayoutPanel panel_properties_custom;
         private EditText editText_WL_measure_interval;
         private EditText editText_wl_median_buffer_size;
         private EditText editText_wl_cut_off_percent;
@@ -462,5 +476,7 @@ namespace ShowerUI.UserControls
         private EditText editText_wl_avg_buffer_size;
         private EditText editText_WaterVolumeLitre;
         private EditText editText_HeaterPowerKWatt;
+        private EditText editTextButtonLongTime;
+        private EditText editTextWaterLevelErrorThreshold;
     }
 }

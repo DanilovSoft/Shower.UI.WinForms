@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -25,7 +26,22 @@ namespace ShowerTcpClient
             _nstream = nstream;
         }
 
-        public RequestBuilder Write<T>(T value) where T : struct
+        public RequestBuilder WriteFloat(float value)
+        {
+            return Write<float>(value);
+        }
+
+        public RequestBuilder WriteUInt16(ushort value)
+        {
+            return Write<UInt16>(value);
+        }
+
+        public RequestBuilder WriteUInt8(byte value)
+        {
+            return Write<byte>(value);
+        }
+
+        private RequestBuilder Write<T>(T value) where T : struct
         {
             int sizeBytes = Marshal.SizeOf(value);
             byte[] output = new byte[sizeBytes];
@@ -51,7 +67,7 @@ namespace ShowerTcpClient
             return this;
         }
 
-        public RequestBuilder Write<T>(ShowerCodes code, Action<T> callback) where T : struct
+        private RequestBuilder Write<T>(ShowerCodes code, Action<T> callback) where T : struct
         {
             _writer.Write(code);
             _writer.End();
@@ -59,7 +75,7 @@ namespace ShowerTcpClient
             return this;
         }
 
-        public RequestBuilder Write(string value)
+        public RequestBuilder WriteString(string value)
         {
             byte[] str = Encoding.ASCII.GetBytes(value);
             int sizeBytes = str.Length;
@@ -83,13 +99,14 @@ namespace ShowerTcpClient
         /// <summary>
         /// Добавляет заголовок в стрим, отправляет все накопленные данные и читает один байт ответа.
         /// </summary>
+        /// <exception cref="InvalidDataException"/>
         public void ReadOK()
         {
             WriteEndAndSend();
             _reader.ReadOK();
         }
 
-        public async Task<ShowerCodes> ReadCodeAsync(CancellationToken cancellationToken)
+        public async Task<ShowerCodes> ReadCodeAsync(CancellationToken cancellationToken = default)
         {
             using (cancellationToken.Register(() => { _con.Dispose(); }))
             {

@@ -63,9 +63,7 @@ namespace ShowerUI
                 Enabled = false;
                 using (var connection = await ConnectionHelper.CreateConnectionAsync(CancellationToken.None))
                 {
-                    connection.BuildRequest()
-                        .Write(ShowerCodes.Reset)
-                        .ReadOK();
+                    connection.Reset();
                 }
             }
             catch (Exception ex)
@@ -82,9 +80,7 @@ namespace ShowerUI
         {
             using (var connection = ConnectionHelper.CreateConnectionAsync(CancellationToken.None).Result)
             {
-                var code = connection.BuildRequest()
-                    .Write(ShowerCodes.Ping)
-                    .ReadCodeAsync(CancellationToken.None).GetAwaiter().GetResult();
+                var code = connection.Ping();
             }
         }
 
@@ -98,9 +94,7 @@ namespace ShowerUI
             {
                 using (var connection = await ConnectionHelper.CreateConnectionAsync(cts.Token))
                 {
-                    var code = await connection.BuildRequest()
-                        .Write(ShowerCodes.Ping)
-                        .ReadCodeAsync(cts.Token);
+                    var code = await connection.PingAsync(cts.Token);
                 }
             }
             catch (Exception)

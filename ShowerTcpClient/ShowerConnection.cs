@@ -15,7 +15,7 @@ namespace ShowerTcpClient
 {
     public sealed class ShowerConnection : IShowerConnection, IDisposable
     {
-        private const int ReadTimeoutMsec = 10000;
+        private const int ReadTimeoutMsec = 10_000;
         private readonly FixedNetworkStream _nstream;
         private readonly ShowerBinaryReader _reader;
         private readonly MyBinaryWriter _writer;
@@ -43,12 +43,12 @@ namespace ShowerTcpClient
             }
         }
 
-        public RequestBuilder BuildRequest()
+        private RequestBuilder BuildRequest()
         {
             return new RequestBuilder(this, _writer, _reader, _nstream);
         }
 
-        public T Request<T>(ShowerCodes code) where T : struct
+        private T Request<T>(ShowerCodes code) where T : struct
         {
             _writer.Write(code);
             _writer.End();
@@ -58,7 +58,6 @@ namespace ShowerTcpClient
             Span<byte> buf = stackalloc byte[unmanagedSize];
             _nstream.ReadBlock(buf);
             var value = MySerializer.Read<T>(buf);
-            //var value2 = MySerializer.UnsafeRead<T>(buf.ToArray(), 0, unmanagedSize);
             return value;
         }
 
@@ -77,6 +76,28 @@ namespace ShowerTcpClient
             return RequestAsync<short>(ShowerCodes.GetWaterLevelRaw, cancellationToken);
         }
 
+        public void SetWaterLevelFullUsec(ushort value)
+        {
+            BuildRequest()
+                .Write(ShowerCodes.SetWaterLevelFullUsec)
+                .WriteUInt16(value)
+                .ReadOK();
+        }
+
+        public ShowerCodes Ping(CancellationToken cancellationToken = default)
+        {
+            return BuildRequest()
+                .Write(ShowerCodes.Ping)
+                .ReadCodeAsync(cancellationToken).GetAwaiter().GetResult();
+        }
+
+        public async Task<ShowerCodes> PingAsync(CancellationToken cancellationToken = default)
+        {
+            return await BuildRequest()
+                .Write(ShowerCodes.Ping)
+                .ReadCodeAsync(cancellationToken);
+        }
+
         /// <summary>
         /// Уровень воды в микросекундах, без всякой фильтрации.
         /// </summary>
@@ -84,6 +105,14 @@ namespace ShowerTcpClient
         public short GetWaterLevelRaw()
         {
             return Request<short>(ShowerCodes.GetWaterLevelRaw);
+        }
+
+        public void SetWaterLevelEmptyUsec(ushort value)
+        {
+            BuildRequest()
+                .Write(ShowerCodes.SetWaterLevelEmptyUsec)
+                .WriteUInt16(value)
+                .ReadOK();
         }
 
         public Task<float> GetInternalTemperatureAsync(CancellationToken cancellationToken = default)
@@ -94,6 +123,14 @@ namespace ShowerTcpClient
         public float GetInternalTemperature()
         {
             return Request<float>(ShowerCodes.GetInternalTemp);
+        }
+
+        public void SetMinimumWaterHeatingLevel(byte value)
+        {
+            BuildRequest()
+                .Write(ShowerCodes.SetMinimumWaterHeatingLevel)
+                .WriteUInt8(value)
+                .ReadOK();
         }
 
         public async Task<bool> GetHeaterEnabledAsync(CancellationToken cancellationToken = default)
@@ -108,6 +145,14 @@ namespace ShowerTcpClient
             return Convert.ToBoolean(value);
         }
 
+        public void SetAbsoluteHeatingTimeLimit(byte value)
+        {
+            BuildRequest()
+                .Write(ShowerCodes.SetAbsoluteHeatingTimeLimit)
+                .WriteUInt8(value)
+                .ReadOK();
+        }
+
         public Task<byte> GetMinutesLeftAsync(CancellationToken cancellationToken = default)
         {
             return RequestAsync<byte>(ShowerCodes.GetMinutesLeft, cancellationToken);
@@ -118,6 +163,14 @@ namespace ShowerTcpClient
             return Request<byte>(ShowerCodes.GetMinutesLeft);
         }
 
+        public void SetHeatingTimeLimit(byte value)
+        {
+            BuildRequest()
+                .Write(ShowerCodes.SetHeatingTimeLimit)
+                .WriteUInt8(value)
+                .ReadOK();
+        }
+
         public async Task<ushort> GetWaterLevelAsync(CancellationToken cancellationToken = default)
         {
             return await RequestAsync<ushort>(ShowerCodes.GetWaterLevel, cancellationToken).ConfigureAwait(false);
@@ -126,6 +179,14 @@ namespace ShowerTcpClient
         public byte GetWaterPercent()
         {
             return Request<byte>(ShowerCodes.GetWaterPercent);
+        }
+
+        public void SetLightBrightness(byte value)
+        {
+            BuildRequest()
+                .Write(ShowerCodes.SetLightBrightness)
+                .WriteUInt8(value)
+                .ReadOK();
         }
 
         public Task<byte> GetWaterPercentAsync(CancellationToken cancellationToken = default)
@@ -147,6 +208,22 @@ namespace ShowerTcpClient
             return model;
         }
 
+        public void SetWiFiPower(byte power)
+        {
+            BuildRequest()
+                .Write(ShowerCodes.SetWiFiPower)
+                .WriteUInt8(power)
+                .ReadOK();
+        }
+
+        public void SetWaterLevelMeasureInterval(byte value)
+        {
+            BuildRequest()
+                .Write(ShowerCodes.SetWaterLevelMeasureInterval)
+                .WriteUInt8(value)
+                .ReadOK();
+        }
+
         public Task<ushort> GetWaterLevelEmptyAsync(CancellationToken cancellationToken = default)
         {
             return RequestAsync<ushort>(ShowerCodes.GetWaterLevelEmptyUsec, cancellationToken);
@@ -155,6 +232,14 @@ namespace ShowerTcpClient
         public Task<ushort> GetWaterLevelFullAsync(CancellationToken cancellationToken = default)
         {
             return RequestAsync<ushort>(ShowerCodes.GetWaterLevelFullUsec, cancellationToken);
+        }
+
+        public void SetWaterLevelMedianBufferSize(byte value)
+        {
+            BuildRequest()
+                .Write(ShowerCodes.SetWaterLevelMedianBufferSize)
+                .WriteUInt8(value)
+                .ReadOK();
         }
 
         public async Task<T> RequestAsync<T>(ShowerCodes code, CancellationToken cancellationToken = default) where T : struct
@@ -169,11 +254,27 @@ namespace ShowerTcpClient
             return value;
         }
 
+        public void SetWaterLevelAverageBufferSize(byte value)
+        {
+            BuildRequest()
+                .Write(ShowerCodes.SetWaterLevelAverageBufferSize)
+                .WriteUInt8(value)
+                .ReadOK();
+        }
+
         public bool GetWatchDogWasReset()
         {
             byte iwd = Request<byte>(ShowerCodes.GetWatchDogWasReset);
             bool result = Convert.ToBoolean(iwd);
             return result;
+        }
+
+        public void SetWaterValveCutOffPercent(byte value)
+        {
+            BuildRequest()
+                .Write(ShowerCodes.SetWaterValveCutOffPercent)
+                .WriteUInt8(value)
+                .ReadOK();
         }
 
         /// <summary>
@@ -182,6 +283,14 @@ namespace ShowerTcpClient
         public float GetWaterTankVolumeLitre()
         {
             return Request<float>(ShowerCodes.GetWaterTankVolumeLitre);
+        }
+
+        public void SetTempSensorInternalTempAverageSize(byte value)
+        {
+            BuildRequest()
+                .Write(ShowerCodes.SetTempSensorInternalTempAverageSize)
+                .WriteUInt8(value)
+                .ReadOK();
         }
 
         /// <summary>
@@ -198,6 +307,14 @@ namespace ShowerTcpClient
         public float GetWaterHeaterPowerKWatt()
         {
             return Request<float>(ShowerCodes.GetWaterHeaterPowerKWatt);
+        }
+
+        public void SetWaterTankVolumeLitre(float value)
+        {
+            BuildRequest()
+                .Write(ShowerCodes.SetWaterTankVolumeLitre)
+                .WriteFloat(value)
+                .ReadOK();
         }
 
         /// <summary>
@@ -222,6 +339,13 @@ namespace ShowerTcpClient
         public Task<byte> GetWaterLevelMedianSizeAsync()
         {
             return RequestAsync<byte>(ShowerCodes.GetWaterLevelMedianBufferSize);
+        }
+
+        public void Save()
+        {
+            BuildRequest()
+                .Write(ShowerCodes.Save)
+                .ReadOK();
         }
 
         /// <summary>
@@ -259,7 +383,7 @@ namespace ShowerTcpClient
 
             BuildRequest()
                 .Write(ShowerCodes.SetCurAP)
-                .Write(espCommand)
+                .WriteString(espCommand)
                 .ReadOK();
         }
 
@@ -282,8 +406,112 @@ namespace ShowerTcpClient
 
             BuildRequest()
                 .Write(ShowerCodes.SetDefAP)
-                .Write(espCommand)
+                .WriteString(espCommand)
                 .ReadOK();
+        }
+
+        public byte GetWaterLevelErrorThreshhold()
+        {
+            return Request<byte>(ShowerCodes.GetWaterLevelErrorThreshold);
+        }
+
+        public void SetWaterLevelErrorThreshold(byte value)
+        {
+            BuildRequest()
+                .Write(ShowerCodes.SetWaterLevelErrorThreshold)
+                .WriteUInt8(value)
+                .ReadOK();
+        }
+
+        public void Reset()
+        {
+            BuildRequest()
+                .Write(ShowerCodes.Reset)
+                .ReadOK();
+        }
+
+        public void SetWaterHeaterPowerKWatt(float value)
+        {
+            BuildRequest()
+                .Write(ShowerCodes.SetWaterHeaterPowerKWatt)
+                .WriteFloat(value)
+                .ReadOK();
+        }
+
+        public void SetButtonTimeMsec(byte value)
+        {
+            BuildRequest()
+                .Write(ShowerCodes.SetButtonTimeMsec)
+                .WriteUInt8(value)
+                .ReadOK();
+        }
+
+        public ushort GetButtonLongPressTimeMsec()
+        {
+            return Request<ushort>(ShowerCodes.GetButtonLongPressTimeMsec);
+        }
+
+        public void SetButtonLongPressTimeMsec(ushort value)
+        {
+            BuildRequest()
+                .Write(ShowerCodes.SetButtonLongPressTimeMsec)
+                .WriteUInt16(value)
+                .ReadOK();
+        }
+
+        public ushort GetWaterLevelFullUsec()
+        {
+            return Request<ushort>(ShowerCodes.GetWaterLevelFullUsec);
+        }
+
+        public ushort GetWaterLevelEmptyUsec()
+        {
+            return Request<ushort>(ShowerCodes.GetWaterLevelEmptyUsec);
+        }
+
+        public byte GetMinimumWaterHeatingLevel()
+        {
+            return Request<byte>(ShowerCodes.GetMinimumWaterHeatingLevel);
+        }
+
+        public byte GetAbsoluteHeatingTimeLimit()
+        {
+            return Request<byte>(ShowerCodes.GetAbsoluteHeatingTimeLimit);
+        }
+
+        public byte GetHeatingTimeLimit()
+        {
+            return Request<byte>(ShowerCodes.GetHeatingTimeLimit);
+        }
+
+        public byte GetLightBrightness()
+        {
+            return Request<byte>(ShowerCodes.GetLightBrightness);
+        }
+
+        public byte GetWiFiPower()
+        {
+            return Request<byte>(ShowerCodes.GetWiFiPower);
+        }
+
+        public byte GetWaterLevelMeasureInterval()
+        {
+            return Request<byte>(ShowerCodes.GetWaterLevelMeasureInterval);
+        }
+
+        public byte GetWaterValveCutOffPercent()
+        {
+            return Request<byte>(ShowerCodes.GetWaterValveCutOffPercent);
+        }
+
+        public byte GetTempSensorInternalTempAverageSize()
+        {
+            return Request<byte>(ShowerCodes.GetTempSensorInternalTempAverageSize);
+        }
+
+        public byte GetButtonPressTimeMsec()
+        {
+            return Request<byte>(ShowerCodes.GetButtonTimeMsec);
         }
     }
 }

@@ -15,7 +15,7 @@ namespace ShowerTcpClient
     public static class ConnectionHelper
     {
         private const int PortNumber = 333;
-        private const string Address = "10.2.2.11";
+        private const string Address = "shower-stm.lan";
 
         /// <exception cref="OperationCanceledException"/>
         public static async Task<ShowerConnection> CreateConnectionAsync(CancellationToken cancellationToken)

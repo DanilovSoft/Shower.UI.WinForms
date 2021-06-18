@@ -15,12 +15,14 @@ namespace ShowerTcpClient
             
         }
 
+        /// <exception cref="InvalidDataException"/>
         public void ReadOK()
         {
             byte code = ReadByte();
+
             if (code != (byte)ShowerCodes.OK)
             {
-                throw new InvalidDataException();
+                throw new InvalidDataException($"Ожидался ответ 'OK' но получено значение '{code}'");
             }
         }
 
