@@ -125,7 +125,7 @@ namespace ShowerUI.UserControls
             this.panelProperties.Controls.Add(this.editText_min_water_heating_percent);
             this.panelProperties.Location = new System.Drawing.Point(6, 20);
             this.panelProperties.Name = "panelProperties";
-            this.panelProperties.Size = new System.Drawing.Size(886, 502);
+            this.panelProperties.Size = new System.Drawing.Size(493, 462);
             this.panelProperties.TabIndex = 53;
             // 
             // button_clear
@@ -147,7 +147,7 @@ namespace ShowerUI.UserControls
             this.button_restart.Size = new System.Drawing.Size(88, 23);
             this.button_restart.TabIndex = 48;
             this.button_restart.Text = "Перезапуск";
-            this.toolTip1.SetToolTip(this.button_restart, "Отправляет запрос микроконтроллеру на перезапуск");
+            this.toolTip1.SetToolTip(this.button_restart, "Отправляет запрос микроконтроллеру на перезагрузку микроконтроллера");
             this.button_restart.UseVisualStyleBackColor = true;
             this.button_restart.Click += new System.EventHandler(this.Button_restart_Click);
             // 
@@ -197,7 +197,7 @@ namespace ShowerUI.UserControls
             this.button_load.Name = "button_load";
             this.button_load.Size = new System.Drawing.Size(75, 23);
             this.button_load.TabIndex = 45;
-            this.button_load.Text = "Загрузить";
+            this.button_load.Text = "Запросить";
             this.button_load.UseVisualStyleBackColor = true;
             this.button_load.Click += new System.EventHandler(this.Button_load_Click);
             // 
@@ -210,7 +210,7 @@ namespace ShowerUI.UserControls
             // editTextWaterLevelErrorThreshold
             // 
             this.editTextWaterLevelErrorThreshold.AutoSize = true;
-            this.editTextWaterLevelErrorThreshold.Caption = "Ошибка уровня воды";
+            this.editTextWaterLevelErrorThreshold.Caption = "Порог ошибок уровня воды";
             this.editTextWaterLevelErrorThreshold.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.editTextWaterLevelErrorThreshold.Location = new System.Drawing.Point(224, 152);
             this.editTextWaterLevelErrorThreshold.Margin = new System.Windows.Forms.Padding(5);
