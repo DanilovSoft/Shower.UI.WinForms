@@ -1,9 +1,6 @@
-﻿using System;
+﻿namespace ShowerTcpClient;
 
-namespace ShowerTcpClient
+public interface IShowerConnection
 {
-    public interface IShowerConnection
-    {
-        ShowerConnection Write<T>(ShowerCodes code, Action<T> callback);
-    }
+    ShowerConnection Write<T>(ShowerCodes code, Action<T> callback);
 }

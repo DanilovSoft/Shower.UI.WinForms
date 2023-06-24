@@ -1,17 +1,14 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net48</TargetFramework>
+		<TargetFramework>netstandard2.0</TargetFramework>
 		<LangVersion>Latest</LangVersion>
 		<Nullable>enable</Nullable>
+		<ImplicitUsings>true</ImplicitUsings>
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="System.Memory" Version="4.5.4" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <ProjectReference Include="..\ShowerUI.Common\ShowerUI.Common.csproj" />
+	  <PackageReference Include="System.Memory" Version="4.5.5" />
 	</ItemGroup>
 
 </Project>

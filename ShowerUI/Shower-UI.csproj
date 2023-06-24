@@ -3,7 +3,7 @@
 	<PropertyGroup>
 		<Nullable>enable</Nullable>
 		<OutputType>WinExe</OutputType>
-		<TargetFramework>net48</TargetFramework>
+		<TargetFramework>net481</TargetFramework>
 		<RootNamespace>ShowerUI</RootNamespace>
 		<UseWindowsForms>true</UseWindowsForms>
 		<LangVersion>Latest</LangVersion>

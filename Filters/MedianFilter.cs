@@ -1,50 +1,43 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace Filters;
 
-namespace Filters
+public sealed class MedianFilter
 {
-    public class MedianFilter
+    private readonly ushort[] _buffer;
+    private readonly ushort[] _bufferCopy;
+    private readonly int _halfSize; // половина размера буффера
+    private int _tail = 0;
+    private int _initCount;
+
+    public MedianFilter(int windowSize)
     {
-        private readonly ushort[] _buffer;
-        private readonly ushort[] _bufferCopy;
-        private readonly int _halfSize; // половина размера буффера
-        private int _tail = 0;
-        private int _initCount;
+        if (windowSize % 2 != 1)
+            throw new ArgumentOutOfRangeException($"Параметр {nameof(windowSize)} должен быть не чётным");
 
-        public MedianFilter(int windowSize)
+        WindowSize = windowSize;
+        _buffer = new ushort[windowSize];
+        _bufferCopy = new ushort[windowSize];
+        _halfSize = (windowSize / 2) + 1;
+    }
+
+    public int WindowSize { get; }
+    public bool IsInitialized { get; private set; }
+
+    public ushort Add(ushort value)
+    {
+        _buffer[_tail] = value;
+        _tail = (_tail + 1) % WindowSize;
+
+        if (!IsInitialized)
         {
-            if (windowSize % 2 != 1)
-                throw new ArgumentOutOfRangeException($"Параметр {nameof(windowSize)} должен быть не чётным");
-
-            WindowSize = windowSize;
-            _buffer = new ushort[windowSize];
-            _bufferCopy = new ushort[windowSize];
-            _halfSize = (windowSize / 2) + 1;
-        }
-
-        public int WindowSize { get; }
-        public bool IsInitialized { get; private set; }
-
-        public ushort Add(ushort value)
-        {
-            _buffer[_tail] = value;
-            _tail = (_tail + 1) % WindowSize;
-
-            if (!IsInitialized)
+            _initCount++;
+            if (_initCount >= WindowSize)
             {
-                _initCount++;
-                if (_initCount >= WindowSize)
-                {
-                    IsInitialized = true;
-                }
+                IsInitialized = true;
             }
-
-            Array.Copy(_buffer, _bufferCopy, _buffer.Length);
-            Array.Sort(_bufferCopy);
-            return _bufferCopy[_halfSize - 1];
         }
+
+        Array.Copy(_buffer, _bufferCopy, _buffer.Length);
+        Array.Sort(_bufferCopy);
+        return _bufferCopy[_halfSize - 1];
     }
 }

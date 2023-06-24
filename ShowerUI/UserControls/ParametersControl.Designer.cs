@@ -69,7 +69,6 @@ namespace ShowerUI.UserControls
             this.groupBox_properties.Controls.Add(this.panelProperties);
             this.groupBox_properties.Controls.Add(this.button_clear);
             this.groupBox_properties.Controls.Add(this.button_restart);
-            this.groupBox_properties.Controls.Add(this.checkBox_iwd);
             this.groupBox_properties.Controls.Add(this.button_cancel);
             this.groupBox_properties.Controls.Add(this.button_save);
             this.groupBox_properties.Controls.Add(this.button_load);
@@ -111,6 +110,7 @@ namespace ShowerUI.UserControls
             this.panelProperties.Controls.Add(this.editText_WL_measure_interval);
             this.panelProperties.Controls.Add(this.editText_wl_median_buffer_size);
             this.panelProperties.Controls.Add(this.wiFiPower);
+            this.panelProperties.Controls.Add(this.checkBox_iwd);
             this.panelProperties.Controls.Add(this.editText_wl_avg_buffer_size);
             this.panelProperties.Controls.Add(this.editText_wl_full);
             this.panelProperties.Controls.Add(this.editText_wl_cut_off_percent);
@@ -158,7 +158,7 @@ namespace ShowerUI.UserControls
             this.checkBox_iwd.AutoSize = true;
             this.checkBox_iwd.Checked = true;
             this.checkBox_iwd.CheckState = System.Windows.Forms.CheckState.Indeterminate;
-            this.checkBox_iwd.Location = new System.Drawing.Point(715, 555);
+            this.checkBox_iwd.Location = new System.Drawing.Point(224, 420);
             this.checkBox_iwd.Name = "checkBox_iwd";
             this.checkBox_iwd.Size = new System.Drawing.Size(76, 17);
             this.checkBox_iwd.TabIndex = 0;
@@ -441,7 +441,6 @@ namespace ShowerUI.UserControls
             this.Name = "ParametersControl";
             this.Size = new System.Drawing.Size(1002, 713);
             this.groupBox_properties.ResumeLayout(false);
-            this.groupBox_properties.PerformLayout();
             this.panelProperties.ResumeLayout(false);
             this.panelProperties.PerformLayout();
             this.ResumeLayout(false);

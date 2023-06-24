@@ -36,7 +36,7 @@ namespace ShowerUI
         private async Task SetAP()
         {
             string apMac = "D4:CA:6D:11:38:AF".ToLower();
-            string ap = $@"""Miles"",""KLEZM00D"",""{apMac}""";
+            var ap = $@"""Miles"",""KLEZM00D"",""{apMac}""";
             _ = Encoding.ASCII.GetBytes(ap);
             int length = ap.Length;  // 38
 
@@ -135,7 +135,7 @@ namespace ShowerUI
                             SetWLCalibration(waterLevelEmpty, waterLevelFull);
                             errorProvider1.SetError(buttonStartCalib, null);
 
-                            int index = 0;
+                            var index = 0;
 
                             while (!cts.IsCancellationRequested)
                             {

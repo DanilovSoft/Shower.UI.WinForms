@@ -69,7 +69,7 @@ namespace ShowerUI.UserControls
         {
             base.ValidatingText(sender, e);
 
-            if (ValidateWiFiPower(textBox1.Text, out string? errorMsg, out _))
+            if (ValidateWiFiPower(textBox1.Text, out var errorMsg, out _))
             {
                 errorProvider1.SetError(textBox1, null);
             }
@@ -82,7 +82,7 @@ namespace ShowerUI.UserControls
 
         private byte ParseValidatedText(string value, [CallerMemberName] string? propertyName = null)
         {
-            if (ValidateWiFiPower(value, out string? errorMsg, out byte? rawValue))
+            if (ValidateWiFiPower(value, out var errorMsg, out var rawValue))
             {
                 if (rawValue != null)
                 {

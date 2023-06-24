@@ -19,7 +19,7 @@ namespace ShowerUI
         // From 0.0 to 50
         public float GetPoint(ushort usec)
         {
-            ushort usecRange = (ushort)(WaterLevelEmpty - WaterLevelFull);
+            var usecRange = (ushort)(WaterLevelEmpty - WaterLevelFull);
 
             // Поправка на выход из диаппазона.
             ClampRawRange(ref usec);
@@ -35,7 +35,7 @@ namespace ShowerUI
             // Сколько пунктов из 50.
             double point = tmp / usecRange;
 
-            float pointf = (float)point;
+            var pointf = (float)point;
 
             return pointf;
         }
@@ -55,11 +55,11 @@ namespace ShowerUI
         /// <returns>От 0 до 99.</returns>
         public byte CalcPercent(int usec)
         {
-            ushort invertedUsec = (ushort)(WaterLevelEmpty - (usec - WaterLevelFull));
+            var invertedUsec = (ushort)(WaterLevelEmpty - (usec - WaterLevelFull));
 
-            float pointf = GetPoint(invertedUsec);
+            var pointf = GetPoint(invertedUsec);
 
-            byte point = (byte)pointf;
+            var point = (byte)pointf;
             //byte point = (byte)Math.Round(pointf);
 
             int percent = point * 2;

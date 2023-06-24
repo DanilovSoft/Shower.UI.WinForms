@@ -1,41 +1,34 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Text;
 
-namespace ShowerTcpClient
+namespace ShowerTcpClient;
+
+internal sealed class ShowerBinaryReader : BinaryReader
 {
-    internal sealed class ShowerBinaryReader : BinaryReader
+    public ShowerBinaryReader(Stream input, Encoding encoding, bool leaveOpen) : base(input, encoding, leaveOpen)
     {
-        public ShowerBinaryReader(Stream input, Encoding encoding, bool leaveOpen) : base(input, encoding, leaveOpen)
-        {
-            
-        }
+        
+    }
 
-        /// <exception cref="InvalidDataException"/>
-        public void ReadOK()
-        {
-            byte code = ReadByte();
+    /// <exception cref="InvalidDataException"/>
+    public void ReadOK()
+    {
+        var code = ReadByte();
 
-            if (code != (byte)ShowerCodes.OK)
-            {
-                throw new InvalidDataException($"Ожидался ответ 'OK' но получено значение '{code}'");
-            }
-        }
-
-        public ShowerCodes ReadCode()
+        if (code != (byte)ShowerCodes.OK)
         {
-            ShowerCodes code = (ShowerCodes)ReadByte();
-            return code;
+            throw new InvalidDataException($"Ожидался ответ 'OK' но получено значение '{code}'");
         }
+    }
 
-        public async Task<ShowerCodes> ReadCodeAsync()
-        {
-            ShowerCodes code = await Task.Run(() => (ShowerCodes)ReadByte()).ConfigureAwait(false);
-            return code;
-        }
+    public ShowerCodes ReadCode()
+    {
+        var code = (ShowerCodes)ReadByte();
+        return code;
+    }
+
+    public async Task<ShowerCodes> ReadCodeAsync()
+    {
+        var code = await Task.Run(() => (ShowerCodes)ReadByte()).ConfigureAwait(false);
+        return code;
     }
 }

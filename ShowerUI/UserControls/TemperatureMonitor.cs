@@ -42,11 +42,11 @@ namespace ShowerUI.UserControls
         {
             InitializeComponent();
 
-            double heaterPowerWatt = HeatingTimeLeft.CalcHeaterPower(heaterResistanceOhm: 36);
+            var heaterPowerWatt = HeatingTimeLeft.CalcHeaterPower(heaterResistanceOhm: 36);
             
             heaterPowerWatt *= HeaterEfficiency; // Учтём КПД нагревателя.
 
-            float heaterPowerKWatt = (float)(heaterPowerWatt / 1000);
+            var heaterPowerKWatt = (float)(heaterPowerWatt / 1000);
             //_heatingTimeLeft = new HeatingTimeLeft(tankHeightMil: 297, tankDiameterMil: 400, heaterPowerKWatt);
 
             _addTemperatureRecordHandler = AddTemperatureRecord;
@@ -59,7 +59,7 @@ namespace ShowerUI.UserControls
             try
             {
                 ClearChart();
-                int reconnectCount = 0;
+                var reconnectCount = 0;
 
                 button_Start.Enabled = false;
                 button_Stop.Enabled = true;
@@ -312,10 +312,10 @@ namespace ShowerUI.UserControls
                         {
                             float waterLevel = _waterPercent / 100f;
 
-                            TimeSpan timeLeft = timeCalc.CalcTimeLeft(point.InternalTemp, CalculationTempLimit, waterLevel);
+                            var timeLeft = timeCalc.CalcTimeLeft(point.InternalTemp, CalculationTempLimit, waterLevel);
                             DisplayTimeLeft(timeLeft);
 
-                            int sec = (int)timeLeft.TotalSeconds;
+                            var sec = (int)timeLeft.TotalSeconds;
                             sec += point.Second;
 
                             chartControl_temperature.Series[TempCalculatedSeries].Points.Clear();
@@ -349,7 +349,7 @@ namespace ShowerUI.UserControls
             }
 
             TimeSpan interval = TimeSpan.Zero;
-            for (int i = 0; i < collection.Length; i++)
+            for (var i = 0; i < collection.Length; i++)
             {
                 InternalTempModel measure = collection[i];
 

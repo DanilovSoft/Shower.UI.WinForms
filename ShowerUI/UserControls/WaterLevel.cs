@@ -103,7 +103,7 @@ namespace ShowerUI.UserControls
             {
                 LastPointIndex = _session?.LastPointIndex ?? 0
             };
-            int reconnectCount = 0;
+            var reconnectCount = 0;
             session.Running = true;
 
             try
@@ -166,10 +166,10 @@ namespace ShowerUI.UserControls
 
             SetMinMaxWaterLevel(session.WaterLevelEmpty, session.WaterLevelFull);
 
-            int medianWindowSize = GetMedianWindowSize();
+            var medianWindowSize = GetMedianWindowSize();
             var medianFilter = new FastMedianFilter(medianWindowSize);
 
-            int avgWindowSize = GetAverageTrackBar();
+            var avgWindowSize = GetAverageTrackBar();
             var avgFilter = new AverageFilter(avgWindowSize);
 
             void OnTrackBar(object sender, EventArgs e)
@@ -188,19 +188,19 @@ namespace ShowerUI.UserControls
                 ClearAverageSeries();
                 ClearPercentSeries();
 
-                for (int i = 0; i < session.UsecList.Count; i++)
+                for (var i = 0; i < session.UsecList.Count; i++)
                 {
                     int medianUsec = medianFilter.Add(session.UsecList[i]);
                     if (medianFilter.IsInitialized)
                     {
                         AddMedianSeriesPoint(i, medianUsec);
 
-                        int avg = avgFilter.Add(medianUsec);
+                        var avg = avgFilter.Add(medianUsec);
                         if (avgFilter.IsInitialized)
                         {
                             AddAverageSeriesPoint(i, avg);
 
-                            byte percent = session.CalcPercent(avg);
+                            var percent = session.CalcPercent(avg);
                             AddPercentSeriesPoint(i, percent);
                         }
                     }
@@ -225,7 +225,7 @@ namespace ShowerUI.UserControls
 
                     if (rawUsec != -1)
                     {
-                        ushort invertedUsec = (ushort)(session.WaterLevelEmpty - (rawUsec - session.WaterLevelFull));
+                        var invertedUsec = (ushort)(session.WaterLevelEmpty - (rawUsec - session.WaterLevelFull));
                         
                         session.UsecList.Add(invertedUsec);
 
@@ -237,12 +237,12 @@ namespace ShowerUI.UserControls
                         {
                             AddMedianSeriesPoint(session.LastPointIndex, medianUsec);
 
-                            int avg = avgFilter.Add(medianUsec);
+                            var avg = avgFilter.Add(medianUsec);
                             if (avgFilter.IsInitialized)
                             {
                                 AddAverageSeriesPoint(session.LastPointIndex, avg);
 
-                                byte percent = session.CalcPercent(avg);
+                                var percent = session.CalcPercent(avg);
                                 AddPercentSeriesPoint(session.LastPointIndex, percent);
                             }
                         }
@@ -392,7 +392,7 @@ namespace ShowerUI.UserControls
             ClearAverageSeries();
             ClearPercentSeries();
 
-            for (int i = 0; i < session.UsecList.Count; i++)
+            for (var i = 0; i < session.UsecList.Count; i++)
             {
                 ushort rawUsec = session.UsecList[i];
                 AddRawSeriesPoint(i, rawUsec);
@@ -403,12 +403,12 @@ namespace ShowerUI.UserControls
                 {
                     AddMedianSeriesPoint(i, medianUsec);
 
-                    int avgUsec = avgFilter.Add(medianUsec);
+                    var avgUsec = avgFilter.Add(medianUsec);
                     if (avgFilter.IsInitialized)
                     {
                         AddAverageSeriesPoint(i, avgUsec);
 
-                        byte percent = session.CalcPercent(avgUsec);
+                        var percent = session.CalcPercent(avgUsec);
                         AddPercentSeriesPoint(i, percent);
                     }
                 }
