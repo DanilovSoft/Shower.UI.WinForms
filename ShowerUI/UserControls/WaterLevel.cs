@@ -100,14 +100,12 @@ public partial class WaterLevel : UserControl
             {
                 try
                 {
-                    using (var con = await ConnectionHelper.CreateConnectionAsync(session.Cts.Token))
-                    {
-                        errorProvider1.SetError(button_start, null);
-                        label_reconnect_count.Text = $"{reconnectCount}";
-                        reconnectCount++;
+                    using var con = await ConnectionHelper.CreateConnectionAsync(session.Cts.Token);
+                    errorProvider1.SetError(button_start, null);
+                    label_reconnect_count.Text = $"{reconnectCount}";
+                    reconnectCount++;
 
-                        await RecordWaterLevelAsync(con, session);
-                    }
+                    await RecordWaterLevelAsync(con, session);
                 }
                 catch when (session.Cts.IsCancellationRequested)
                 {
@@ -155,17 +153,17 @@ public partial class WaterLevel : UserControl
         SetMinMaxWaterLevel(session.WaterLevelEmpty, session.WaterLevelFull);
 
         var medianWindowSize = GetMedianWindowSize();
-        var medianFilter = new FastMedianFilter(medianWindowSize);
+        var medianFilter = new MedianFilter(medianWindowSize);
 
         var avgWindowSize = GetAverageTrackBar();
         var avgFilter = new AverageFilter(avgWindowSize);
 
-        void OnTrackBar(object sender, EventArgs e)
+        void OnTrackBar(object? sender, EventArgs e)
         {
             medianWindowSize = GetMedianWindowSize();
             avgWindowSize = GetAverageTrackBar();
 
-            medianFilter = new FastMedianFilter(medianWindowSize);
+            medianFilter = new MedianFilter(medianWindowSize);
             avgFilter = new AverageFilter(avgWindowSize);
 
             _medianSeries.Points.BeginUpdate();
@@ -304,16 +302,14 @@ public partial class WaterLevel : UserControl
         {
             try
             {
-                using (var dialog = new SaveFileDialog())
+                using var dialog = new SaveFileDialog();
+                dialog.AutoUpgradeEnabled = true;
+                dialog.DefaultExt = "txt";
+                dialog.Filter = "Json File|*.txt";
+                if (dialog.ShowDialog() == DialogResult.OK)
                 {
-                    dialog.AutoUpgradeEnabled = true;
-                    dialog.DefaultExt = "txt";
-                    dialog.Filter = "Json File|*.txt";
-                    if (dialog.ShowDialog() == DialogResult.OK)
-                    {
-                        string json = JsonSerializer.Serialize(session.UsecList);
-                        File.WriteAllText(dialog.FileName, json);
-                    }
+                    string json = JsonSerializer.Serialize(session.UsecList);
+                    File.WriteAllText(dialog.FileName, json);
                 }
             }
             catch (Exception ex)
@@ -325,39 +321,37 @@ public partial class WaterLevel : UserControl
 
     private void Button_LoadFromFile_Click(object sender, EventArgs e)
     {
-        using (var dialog = new OpenFileDialog())
+        using var dialog = new OpenFileDialog();
+        dialog.Filter = "Json File|*.txt";
+        dialog.Multiselect = false;
+        if (dialog.ShowDialog() == DialogResult.OK)
         {
-            dialog.Filter = "Json File|*.txt";
-            dialog.Multiselect = false;
-            if (dialog.ShowDialog() == DialogResult.OK)
+            string json = File.ReadAllText(dialog.FileName);
+            var usecList = JsonSerializer.Deserialize<ushort[]>(json);
+
+            var session = _session = new WaterLevelSession();
+            session.UsecList.Clear();
+            session.UsecList.AddRange(usecList);
+
+            using (var con = ConnectionHelper.CreateConnectionAsync(CancellationToken.None).Result)
             {
-                string json = File.ReadAllText(dialog.FileName);
-                var usecList = JsonSerializer.Deserialize<ushort[]>(json);
+                session.WaterLevelEmpty = con.GetWaterLevelEmptyAsync(CancellationToken.None).Result;
+                session.WaterLevelFull = con.GetWaterLevelFullAsync(CancellationToken.None).Result;
 
-                var session = _session = new WaterLevelSession();
-                session.UsecList.Clear();
-                session.UsecList.AddRange(usecList);
-
-                using (var con = ConnectionHelper.CreateConnectionAsync(CancellationToken.None).Result)
-                {
-                    session.WaterLevelEmpty = con.GetWaterLevelEmptyAsync(CancellationToken.None).Result;
-                    session.WaterLevelFull = con.GetWaterLevelFullAsync(CancellationToken.None).Result;
-
-                    SetMinMaxWaterLevel(session.WaterLevelEmpty, session.WaterLevelFull);
-                }
-
-                ShowWaterLevel(session);
-
-                //chartControl_temperature.BeginInit();
-                //foreach (var item in _dataCollection)
-                //{
-                //    //chartControl1.Series[0].Points.Add(new SeriesPoint(item.Time, item.InternalTemp) { IsEmpty = !item.HeaterEnabled });
-                //    chartControl_temperature.Series[1].Points.Add(new SeriesPoint(item.Time, item.AverageInternalTemp) { IsEmpty = !item.HeaterEnabled });
-                //    //chartControl1.Series[2].Points.Add(new SeriesPoint(item.Time, item.InternalTemp) { IsEmpty = item.HeaterEnabled });
-                //    chartControl_temperature.Series[3].Points.Add(new SeriesPoint(item.Time, item.AverageInternalTemp) { IsEmpty = item.HeaterEnabled });
-                //}
-                //chartControl_temperature.EndInit();
+                SetMinMaxWaterLevel(session.WaterLevelEmpty, session.WaterLevelFull);
             }
+
+            ShowWaterLevel(session);
+
+            //chartControl_temperature.BeginInit();
+            //foreach (var item in _dataCollection)
+            //{
+            //    //chartControl1.Series[0].Points.Add(new SeriesPoint(item.Time, item.InternalTemp) { IsEmpty = !item.HeaterEnabled });
+            //    chartControl_temperature.Series[1].Points.Add(new SeriesPoint(item.Time, item.AverageInternalTemp) { IsEmpty = !item.HeaterEnabled });
+            //    //chartControl1.Series[2].Points.Add(new SeriesPoint(item.Time, item.InternalTemp) { IsEmpty = item.HeaterEnabled });
+            //    chartControl_temperature.Series[3].Points.Add(new SeriesPoint(item.Time, item.AverageInternalTemp) { IsEmpty = item.HeaterEnabled });
+            //}
+            //chartControl_temperature.EndInit();
         }
     }
 

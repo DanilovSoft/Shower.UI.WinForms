@@ -1,4 +1,6 @@
-﻿namespace ShowerUI
+﻿using DevExpress.XtraCharts;
+
+namespace ShowerUI
 {
     partial class Form1
     {
@@ -28,222 +30,162 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
-            DevExpress.XtraCharts.SwiftPlotDiagram swiftPlotDiagram1 = new DevExpress.XtraCharts.SwiftPlotDiagram();
-            DevExpress.XtraCharts.Series series1 = new DevExpress.XtraCharts.Series();
-            DevExpress.XtraCharts.SwiftPlotSeriesView swiftPlotSeriesView1 = new DevExpress.XtraCharts.SwiftPlotSeriesView();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
-            this.tabControl1 = new System.Windows.Forms.TabControl();
-            this.tabPageTemp = new System.Windows.Forms.TabPage();
-            this.Температуры = new System.Windows.Forms.TabPage();
-            this.button2 = new System.Windows.Forms.Button();
-            this.tabPage_wl = new System.Windows.Forms.TabPage();
-            this.tabPageCalibration = new System.Windows.Forms.TabPage();
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.label_elapsedWL = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
-            this.numericWaterLevelCalibInterval = new System.Windows.Forms.NumericUpDown();
-            this.button_stop = new System.Windows.Forms.Button();
-            this.buttonStartCalib = new System.Windows.Forms.Button();
-            this.chartControl_wl_calibration = new DevExpress.XtraCharts.ChartControl();
-            this.tabPageSettings = new System.Windows.Forms.TabPage();
-            this.tabPageDebug = new System.Windows.Forms.TabPage();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.label5 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
-            this.button_wifi_def = new System.Windows.Forms.Button();
-            this.button_wifi_cur = new System.Windows.Forms.Button();
-            this.textBox_ssid = new System.Windows.Forms.TextBox();
-            this.textBox_bsid = new System.Windows.Forms.TextBox();
-            this.textBox_ap_pass = new System.Windows.Forms.TextBox();
-            this.button10 = new System.Windows.Forms.Button();
-            this.button7 = new System.Windows.Forms.Button();
-            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
-            this.командаToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.resetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.pnigToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.errorProvider1 = new System.Windows.Forms.ErrorProvider(this.components);
-            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.temperatureMonitor1 = new ShowerUI.UserControls.TemperatureMonitor();
-            this.waterLevel1 = new ShowerUI.UserControls.WaterLevel();
-            this.parametersControl1 = new ShowerUI.UserControls.ParametersControl();
-            this.panel2 = new System.Windows.Forms.Panel();
-            this.tabControl1.SuspendLayout();
-            this.tabPageTemp.SuspendLayout();
-            this.Температуры.SuspendLayout();
-            this.tabPage_wl.SuspendLayout();
-            this.tabPageCalibration.SuspendLayout();
-            this.panel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericWaterLevelCalibInterval)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.chartControl_wl_calibration)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(swiftPlotDiagram1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(series1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(swiftPlotSeriesView1)).BeginInit();
-            this.tabPageSettings.SuspendLayout();
-            this.tabPageDebug.SuspendLayout();
-            this.groupBox2.SuspendLayout();
-            this.menuStrip1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).BeginInit();
-            this.panel2.SuspendLayout();
-            this.SuspendLayout();
+            components = new System.ComponentModel.Container();
+            var swiftPlotDiagram1 = new DevExpress.XtraCharts.SwiftPlotDiagram();
+            Series series1 = new DevExpress.XtraCharts.Series();
+            var swiftPlotSeriesView1 = new DevExpress.XtraCharts.SwiftPlotSeriesView();
+            var resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
+            tabControl1 = new TabControl();
+            tabPageTemp = new TabPage();
+            temperatureMonitor1 = new UserControls.TemperatureMonitor();
+            Температуры = new TabPage();
+            button2 = new Button();
+            tabPage_wl = new TabPage();
+            waterLevel1 = new UserControls.WaterLevel();
+            tabPageCalibration = new TabPage();
+            panel2 = new Panel();
+            chartControl_wl_calibration = new DevExpress.XtraCharts.ChartControl();
+            panel1 = new Panel();
+            label_elapsedWL = new Label();
+            label1 = new Label();
+            label6 = new Label();
+            numericWaterLevelCalibInterval = new NumericUpDown();
+            button_stop = new Button();
+            buttonStartCalib = new Button();
+            tabPageSettings = new TabPage();
+            parametersControl1 = new UserControls.ParametersControl();
+            tabPageDebug = new TabPage();
+            groupBox2 = new GroupBox();
+            label5 = new Label();
+            label4 = new Label();
+            label3 = new Label();
+            button_wifi_def = new Button();
+            button_wifi_cur = new Button();
+            textBox_ssid = new TextBox();
+            textBox_bsid = new TextBox();
+            textBox_ap_pass = new TextBox();
+            button10 = new Button();
+            button7 = new Button();
+            menuStrip1 = new MenuStrip();
+            командаToolStripMenuItem = new ToolStripMenuItem();
+            resetToolStripMenuItem = new ToolStripMenuItem();
+            pnigToolStripMenuItem = new ToolStripMenuItem();
+            errorProvider1 = new ErrorProvider(components);
+            toolTip1 = new ToolTip(components);
+            tabControl1.SuspendLayout();
+            tabPageTemp.SuspendLayout();
+            Температуры.SuspendLayout();
+            tabPage_wl.SuspendLayout();
+            tabPageCalibration.SuspendLayout();
+            panel2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)chartControl_wl_calibration).BeginInit();
+            panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)numericWaterLevelCalibInterval).BeginInit();
+            tabPageSettings.SuspendLayout();
+            tabPageDebug.SuspendLayout();
+            groupBox2.SuspendLayout();
+            menuStrip1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)errorProvider1).BeginInit();
+            SuspendLayout();
             // 
             // tabControl1
             // 
-            this.tabControl1.Controls.Add(this.tabPageTemp);
-            this.tabControl1.Controls.Add(this.Температуры);
-            this.tabControl1.Controls.Add(this.tabPage_wl);
-            this.tabControl1.Controls.Add(this.tabPageCalibration);
-            this.tabControl1.Controls.Add(this.tabPageSettings);
-            this.tabControl1.Controls.Add(this.tabPageDebug);
-            this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tabControl1.Location = new System.Drawing.Point(0, 24);
-            this.tabControl1.Margin = new System.Windows.Forms.Padding(3, 0, 3, 3);
-            this.tabControl1.Name = "tabControl1";
-            this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(1348, 712);
-            this.tabControl1.TabIndex = 14;
-            this.tabControl1.Selected += new System.Windows.Forms.TabControlEventHandler(this.TabControl1_Selected);
+            tabControl1.Controls.Add(tabPageTemp);
+            tabControl1.Controls.Add(Температуры);
+            tabControl1.Controls.Add(tabPage_wl);
+            tabControl1.Controls.Add(tabPageCalibration);
+            tabControl1.Controls.Add(tabPageSettings);
+            tabControl1.Controls.Add(tabPageDebug);
+            tabControl1.Dock = DockStyle.Fill;
+            tabControl1.Location = new Point(0, 24);
+            tabControl1.Margin = new Padding(3, 0, 3, 3);
+            tabControl1.Name = "tabControl1";
+            tabControl1.SelectedIndex = 0;
+            tabControl1.Size = new Size(1348, 712);
+            tabControl1.TabIndex = 14;
+            tabControl1.Selected += TabControl1_Selected;
             // 
             // tabPageTemp
             // 
-            this.tabPageTemp.BackColor = System.Drawing.Color.Transparent;
-            this.tabPageTemp.Controls.Add(this.temperatureMonitor1);
-            this.tabPageTemp.Location = new System.Drawing.Point(4, 22);
-            this.tabPageTemp.Name = "tabPageTemp";
-            this.tabPageTemp.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageTemp.Size = new System.Drawing.Size(1340, 686);
-            this.tabPageTemp.TabIndex = 0;
-            this.tabPageTemp.Text = "Температура";
+            tabPageTemp.BackColor = Color.Transparent;
+            tabPageTemp.Controls.Add(temperatureMonitor1);
+            tabPageTemp.Location = new Point(4, 22);
+            tabPageTemp.Name = "tabPageTemp";
+            tabPageTemp.Padding = new Padding(3);
+            tabPageTemp.Size = new Size(1340, 686);
+            tabPageTemp.TabIndex = 0;
+            tabPageTemp.Text = "Температура";
+            // 
+            // temperatureMonitor1
+            // 
+            temperatureMonitor1.Dock = DockStyle.Fill;
+            temperatureMonitor1.Location = new Point(3, 3);
+            temperatureMonitor1.Margin = new Padding(4, 3, 4, 3);
+            temperatureMonitor1.Name = "temperatureMonitor1";
+            temperatureMonitor1.Size = new Size(1334, 680);
+            temperatureMonitor1.TabIndex = 0;
             // 
             // Температуры
             // 
-            this.Температуры.BackColor = System.Drawing.SystemColors.Control;
-            this.Температуры.Controls.Add(this.button2);
-            this.Температуры.Location = new System.Drawing.Point(4, 22);
-            this.Температуры.Name = "Температуры";
-            this.Температуры.Padding = new System.Windows.Forms.Padding(3);
-            this.Температуры.Size = new System.Drawing.Size(1340, 686);
-            this.Температуры.TabIndex = 5;
-            this.Температуры.Text = "Температуры";
+            Температуры.BackColor = SystemColors.Control;
+            Температуры.Controls.Add(button2);
+            Температуры.Location = new Point(4, 24);
+            Температуры.Name = "Температуры";
+            Температуры.Padding = new Padding(3);
+            Температуры.Size = new Size(1340, 684);
+            Температуры.TabIndex = 5;
+            Температуры.Text = "Температуры";
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(408, 191);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(188, 23);
-            this.button2.TabIndex = 0;
-            this.button2.Text = "Загрузить таблицу температур";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.Button2_Click);
+            button2.Location = new Point(408, 191);
+            button2.Name = "button2";
+            button2.Size = new Size(188, 23);
+            button2.TabIndex = 0;
+            button2.Text = "Загрузить таблицу температур";
+            button2.UseVisualStyleBackColor = true;
+            button2.Click += Button2_Click;
             // 
             // tabPage_wl
             // 
-            this.tabPage_wl.BackColor = System.Drawing.SystemColors.Control;
-            this.tabPage_wl.Controls.Add(this.waterLevel1);
-            this.tabPage_wl.Location = new System.Drawing.Point(4, 22);
-            this.tabPage_wl.Name = "tabPage_wl";
-            this.tabPage_wl.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage_wl.Size = new System.Drawing.Size(1340, 686);
-            this.tabPage_wl.TabIndex = 1;
-            this.tabPage_wl.Text = "Уровень воды";
+            tabPage_wl.BackColor = SystemColors.Control;
+            tabPage_wl.Controls.Add(waterLevel1);
+            tabPage_wl.Location = new Point(4, 24);
+            tabPage_wl.Name = "tabPage_wl";
+            tabPage_wl.Padding = new Padding(3);
+            tabPage_wl.Size = new Size(1340, 684);
+            tabPage_wl.TabIndex = 1;
+            tabPage_wl.Text = "Уровень воды";
+            // 
+            // waterLevel1
+            // 
+            waterLevel1.Dock = DockStyle.Fill;
+            waterLevel1.Location = new Point(3, 3);
+            waterLevel1.Margin = new Padding(4, 3, 4, 3);
+            waterLevel1.Name = "waterLevel1";
+            waterLevel1.Size = new Size(1334, 678);
+            waterLevel1.TabIndex = 17;
             // 
             // tabPageCalibration
             // 
-            this.tabPageCalibration.BackColor = System.Drawing.SystemColors.Control;
-            this.tabPageCalibration.Controls.Add(this.panel2);
-            this.tabPageCalibration.Controls.Add(this.panel1);
-            this.tabPageCalibration.Location = new System.Drawing.Point(4, 22);
-            this.tabPageCalibration.Name = "tabPageCalibration";
-            this.tabPageCalibration.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageCalibration.Size = new System.Drawing.Size(1340, 686);
-            this.tabPageCalibration.TabIndex = 4;
-            this.tabPageCalibration.Text = "Калибровка уровня";
+            tabPageCalibration.BackColor = SystemColors.Control;
+            tabPageCalibration.Controls.Add(panel2);
+            tabPageCalibration.Controls.Add(panel1);
+            tabPageCalibration.Location = new Point(4, 24);
+            tabPageCalibration.Name = "tabPageCalibration";
+            tabPageCalibration.Padding = new Padding(3);
+            tabPageCalibration.Size = new Size(1340, 684);
+            tabPageCalibration.TabIndex = 4;
+            tabPageCalibration.Text = "Калибровка уровня";
             // 
-            // panel1
+            // panel2
             // 
-            this.panel1.Controls.Add(this.label_elapsedWL);
-            this.panel1.Controls.Add(this.label1);
-            this.panel1.Controls.Add(this.label6);
-            this.panel1.Controls.Add(this.numericWaterLevelCalibInterval);
-            this.panel1.Controls.Add(this.button_stop);
-            this.panel1.Controls.Add(this.buttonStartCalib);
-            this.panel1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel1.Location = new System.Drawing.Point(3, 651);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(1334, 32);
-            this.panel1.TabIndex = 1;
-            // 
-            // label_elapsedWL
-            // 
-            this.label_elapsedWL.AutoSize = true;
-            this.label_elapsedWL.Location = new System.Drawing.Point(519, 8);
-            this.label_elapsedWL.Name = "label_elapsedWL";
-            this.label_elapsedWL.Size = new System.Drawing.Size(19, 13);
-            this.label_elapsedWL.TabIndex = 5;
-            this.label_elapsedWL.Text = "__";
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(425, 8);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(88, 13);
-            this.label1.TabIndex = 4;
-            this.label1.Text = "Среднее время:";
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(243, 8);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(95, 13);
-            this.label6.TabIndex = 3;
-            this.label6.Text = "Интервал (msec):";
-            // 
-            // numericWaterLevelCalibInterval
-            // 
-            this.numericWaterLevelCalibInterval.Increment = new decimal(new int[] {
-            10,
-            0,
-            0,
-            0});
-            this.numericWaterLevelCalibInterval.Location = new System.Drawing.Point(344, 6);
-            this.numericWaterLevelCalibInterval.Maximum = new decimal(new int[] {
-            200,
-            0,
-            0,
-            0});
-            this.numericWaterLevelCalibInterval.Name = "numericWaterLevelCalibInterval";
-            this.numericWaterLevelCalibInterval.Size = new System.Drawing.Size(66, 21);
-            this.numericWaterLevelCalibInterval.TabIndex = 2;
-            this.numericWaterLevelCalibInterval.Value = new decimal(new int[] {
-            100,
-            0,
-            0,
-            0});
-            // 
-            // button_stop
-            // 
-            this.button_stop.Enabled = false;
-            this.button_stop.Location = new System.Drawing.Point(119, 3);
-            this.button_stop.Name = "button_stop";
-            this.button_stop.Size = new System.Drawing.Size(75, 23);
-            this.button_stop.TabIndex = 1;
-            this.button_stop.Text = "Стоп";
-            this.button_stop.UseVisualStyleBackColor = true;
-            this.button_stop.Click += new System.EventHandler(this.Button_stop_Click);
-            // 
-            // buttonStartCalib
-            // 
-            this.buttonStartCalib.Location = new System.Drawing.Point(5, 3);
-            this.buttonStartCalib.Name = "buttonStartCalib";
-            this.buttonStartCalib.Size = new System.Drawing.Size(75, 23);
-            this.buttonStartCalib.TabIndex = 0;
-            this.buttonStartCalib.Text = "Старт";
-            this.buttonStartCalib.UseVisualStyleBackColor = true;
-            this.buttonStartCalib.Click += new System.EventHandler(this.ButtonStartCalibrationClick);
+            panel2.Controls.Add(chartControl_wl_calibration);
+            panel2.Dock = DockStyle.Fill;
+            panel2.Location = new Point(3, 3);
+            panel2.Name = "panel2";
+            panel2.Size = new Size(1334, 646);
+            panel2.TabIndex = 2;
             // 
             // chartControl_wl_calibration
             // 
@@ -259,268 +201,311 @@
             swiftPlotDiagram1.AxisX.WholeRange.MaxValueSerializable = "10";
             swiftPlotDiagram1.AxisX.WholeRange.MinValueSerializable = "0";
             swiftPlotDiagram1.AxisY.VisibleInPanesSerializable = "-1";
-            this.chartControl_wl_calibration.Diagram = swiftPlotDiagram1;
-            this.chartControl_wl_calibration.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.chartControl_wl_calibration.Legend.Name = "Default Legend";
-            this.chartControl_wl_calibration.Legend.Visibility = DevExpress.Utils.DefaultBoolean.False;
-            this.chartControl_wl_calibration.Location = new System.Drawing.Point(0, 0);
-            this.chartControl_wl_calibration.Name = "chartControl_wl_calibration";
+            chartControl_wl_calibration.Diagram = swiftPlotDiagram1;
+            chartControl_wl_calibration.Dock = DockStyle.Fill;
+            chartControl_wl_calibration.Legend.LegendID = -1;
+            chartControl_wl_calibration.Legend.Name = "Default Legend";
+            chartControl_wl_calibration.Legend.Visibility = DevExpress.Utils.DefaultBoolean.False;
+            chartControl_wl_calibration.Location = new Point(0, 0);
+            chartControl_wl_calibration.Name = "chartControl_wl_calibration";
             series1.Name = "usec";
-            swiftPlotSeriesView1.Color = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            swiftPlotSeriesView1.Color = Color.FromArgb(240, 0, 0);
             swiftPlotSeriesView1.LineStyle.Thickness = 2;
             series1.View = swiftPlotSeriesView1;
-            this.chartControl_wl_calibration.SeriesSerializable = new DevExpress.XtraCharts.Series[] {
-        series1};
-            this.chartControl_wl_calibration.Size = new System.Drawing.Size(1334, 648);
-            this.chartControl_wl_calibration.TabIndex = 0;
+            chartControl_wl_calibration.SeriesSerializable = new DevExpress.XtraCharts.Series[]
+    {
+    series1
+    };
+            chartControl_wl_calibration.Size = new Size(1334, 646);
+            chartControl_wl_calibration.TabIndex = 0;
+            // 
+            // panel1
+            // 
+            panel1.Controls.Add(label_elapsedWL);
+            panel1.Controls.Add(label1);
+            panel1.Controls.Add(label6);
+            panel1.Controls.Add(numericWaterLevelCalibInterval);
+            panel1.Controls.Add(button_stop);
+            panel1.Controls.Add(buttonStartCalib);
+            panel1.Dock = DockStyle.Bottom;
+            panel1.Location = new Point(3, 649);
+            panel1.Name = "panel1";
+            panel1.Size = new Size(1334, 32);
+            panel1.TabIndex = 1;
+            // 
+            // label_elapsedWL
+            // 
+            label_elapsedWL.AutoSize = true;
+            label_elapsedWL.Location = new Point(519, 8);
+            label_elapsedWL.Name = "label_elapsedWL";
+            label_elapsedWL.Size = new Size(19, 13);
+            label_elapsedWL.TabIndex = 5;
+            label_elapsedWL.Text = "__";
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Location = new Point(425, 8);
+            label1.Name = "label1";
+            label1.Size = new Size(88, 13);
+            label1.TabIndex = 4;
+            label1.Text = "Среднее время:";
+            // 
+            // label6
+            // 
+            label6.AutoSize = true;
+            label6.Location = new Point(243, 8);
+            label6.Name = "label6";
+            label6.Size = new Size(95, 13);
+            label6.TabIndex = 3;
+            label6.Text = "Интервал (msec):";
+            // 
+            // numericWaterLevelCalibInterval
+            // 
+            numericWaterLevelCalibInterval.Increment = new decimal(new int[] { 10, 0, 0, 0 });
+            numericWaterLevelCalibInterval.Location = new Point(344, 6);
+            numericWaterLevelCalibInterval.Maximum = new decimal(new int[] { 200, 0, 0, 0 });
+            numericWaterLevelCalibInterval.Name = "numericWaterLevelCalibInterval";
+            numericWaterLevelCalibInterval.Size = new Size(66, 21);
+            numericWaterLevelCalibInterval.TabIndex = 2;
+            numericWaterLevelCalibInterval.Value = new decimal(new int[] { 100, 0, 0, 0 });
+            // 
+            // button_stop
+            // 
+            button_stop.Enabled = false;
+            button_stop.Location = new Point(119, 3);
+            button_stop.Name = "button_stop";
+            button_stop.Size = new Size(75, 23);
+            button_stop.TabIndex = 1;
+            button_stop.Text = "Стоп";
+            button_stop.UseVisualStyleBackColor = true;
+            button_stop.Click += Button_stop_Click;
+            // 
+            // buttonStartCalib
+            // 
+            buttonStartCalib.Location = new Point(5, 3);
+            buttonStartCalib.Name = "buttonStartCalib";
+            buttonStartCalib.Size = new Size(75, 23);
+            buttonStartCalib.TabIndex = 0;
+            buttonStartCalib.Text = "Старт";
+            buttonStartCalib.UseVisualStyleBackColor = true;
+            buttonStartCalib.Click += ButtonStartCalibrationClick;
             // 
             // tabPageSettings
             // 
-            this.tabPageSettings.BackColor = System.Drawing.SystemColors.Control;
-            this.tabPageSettings.Controls.Add(this.parametersControl1);
-            this.tabPageSettings.Location = new System.Drawing.Point(4, 22);
-            this.tabPageSettings.Name = "tabPageSettings";
-            this.tabPageSettings.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageSettings.Size = new System.Drawing.Size(1340, 686);
-            this.tabPageSettings.TabIndex = 2;
-            this.tabPageSettings.Text = "Параметры";
-            // 
-            // tabPageDebug
-            // 
-            this.tabPageDebug.BackColor = System.Drawing.SystemColors.Control;
-            this.tabPageDebug.Controls.Add(this.groupBox2);
-            this.tabPageDebug.Controls.Add(this.button10);
-            this.tabPageDebug.Controls.Add(this.button7);
-            this.tabPageDebug.Location = new System.Drawing.Point(4, 22);
-            this.tabPageDebug.Name = "tabPageDebug";
-            this.tabPageDebug.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPageDebug.Size = new System.Drawing.Size(1340, 686);
-            this.tabPageDebug.TabIndex = 3;
-            this.tabPageDebug.Text = "Отладка";
-            // 
-            // groupBox2
-            // 
-            this.groupBox2.Controls.Add(this.label5);
-            this.groupBox2.Controls.Add(this.label4);
-            this.groupBox2.Controls.Add(this.label3);
-            this.groupBox2.Controls.Add(this.button_wifi_def);
-            this.groupBox2.Controls.Add(this.button_wifi_cur);
-            this.groupBox2.Controls.Add(this.textBox_ssid);
-            this.groupBox2.Controls.Add(this.textBox_bsid);
-            this.groupBox2.Controls.Add(this.textBox_ap_pass);
-            this.groupBox2.Location = new System.Drawing.Point(301, 34);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(275, 167);
-            this.groupBox2.TabIndex = 2;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Wi-Fi";
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(62, 75);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(29, 13);
-            this.label5.TabIndex = 7;
-            this.label5.Text = "MAC";
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(39, 49);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(53, 13);
-            this.label4.TabIndex = 6;
-            this.label4.Text = "Password";
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(60, 23);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(30, 13);
-            this.label3.TabIndex = 5;
-            this.label3.Text = "SSID";
-            // 
-            // button_wifi_def
-            // 
-            this.button_wifi_def.Location = new System.Drawing.Point(123, 112);
-            this.button_wifi_def.Name = "button_wifi_def";
-            this.button_wifi_def.Size = new System.Drawing.Size(75, 23);
-            this.button_wifi_def.TabIndex = 6;
-            this.button_wifi_def.Text = "Def";
-            this.toolTip1.SetToolTip(this.button_wifi_def, "Подключение к точке доступа, внесенные данные сохраняются как данные по умолчанию" +
-        ".");
-            this.button_wifi_def.UseVisualStyleBackColor = true;
-            this.button_wifi_def.Click += new System.EventHandler(this.Button_wifi_SetDefault_Click);
-            // 
-            // button_wifi_cur
-            // 
-            this.button_wifi_cur.Location = new System.Drawing.Point(42, 112);
-            this.button_wifi_cur.Name = "button_wifi_cur";
-            this.button_wifi_cur.Size = new System.Drawing.Size(75, 23);
-            this.button_wifi_cur.TabIndex = 5;
-            this.button_wifi_cur.Text = "Cur";
-            this.toolTip1.SetToolTip(this.button_wifi_cur, "Подключение к точке доступа в текущей сессии.");
-            this.button_wifi_cur.UseVisualStyleBackColor = true;
-            this.button_wifi_cur.Click += new System.EventHandler(this.Button_wifi_SetCurrent_Click);
-            // 
-            // textBox_ssid
-            // 
-            this.textBox_ssid.Location = new System.Drawing.Point(98, 20);
-            this.textBox_ssid.Name = "textBox_ssid";
-            this.textBox_ssid.Size = new System.Drawing.Size(121, 21);
-            this.textBox_ssid.TabIndex = 2;
-            // 
-            // textBox_bsid
-            // 
-            this.textBox_bsid.Location = new System.Drawing.Point(98, 72);
-            this.textBox_bsid.Name = "textBox_bsid";
-            this.textBox_bsid.Size = new System.Drawing.Size(121, 21);
-            this.textBox_bsid.TabIndex = 4;
-            // 
-            // textBox_ap_pass
-            // 
-            this.textBox_ap_pass.Location = new System.Drawing.Point(98, 46);
-            this.textBox_ap_pass.Name = "textBox_ap_pass";
-            this.textBox_ap_pass.Size = new System.Drawing.Size(121, 21);
-            this.textBox_ap_pass.TabIndex = 3;
-            // 
-            // button10
-            // 
-            this.button10.Location = new System.Drawing.Point(158, 109);
-            this.button10.Name = "button10";
-            this.button10.Size = new System.Drawing.Size(75, 23);
-            this.button10.TabIndex = 1;
-            this.button10.Text = "Отмена";
-            this.button10.UseVisualStyleBackColor = true;
-            this.button10.Click += new System.EventHandler(this.Button_PingCancel_Click);
-            // 
-            // button7
-            // 
-            this.button7.Location = new System.Drawing.Point(158, 75);
-            this.button7.Name = "button7";
-            this.button7.Size = new System.Drawing.Size(75, 23);
-            this.button7.TabIndex = 0;
-            this.button7.Text = "Ping";
-            this.button7.UseVisualStyleBackColor = true;
-            this.button7.Click += new System.EventHandler(this.Button7_Click);
-            // 
-            // menuStrip1
-            // 
-            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.командаToolStripMenuItem});
-            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
-            this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1348, 24);
-            this.menuStrip1.TabIndex = 15;
-            this.menuStrip1.Text = "menuStrip1";
-            // 
-            // командаToolStripMenuItem
-            // 
-            this.командаToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.resetToolStripMenuItem,
-            this.pnigToolStripMenuItem});
-            this.командаToolStripMenuItem.Name = "командаToolStripMenuItem";
-            this.командаToolStripMenuItem.Size = new System.Drawing.Size(67, 20);
-            this.командаToolStripMenuItem.Text = "Команда";
-            // 
-            // resetToolStripMenuItem
-            // 
-            this.resetToolStripMenuItem.Name = "resetToolStripMenuItem";
-            this.resetToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
-            this.resetToolStripMenuItem.Text = "Перезапуск";
-            this.resetToolStripMenuItem.Click += new System.EventHandler(this.ResetToolStripMenuItem_Reset_Click);
-            // 
-            // pnigToolStripMenuItem
-            // 
-            this.pnigToolStripMenuItem.Name = "pnigToolStripMenuItem";
-            this.pnigToolStripMenuItem.Size = new System.Drawing.Size(138, 22);
-            this.pnigToolStripMenuItem.Text = "Ping";
-            this.pnigToolStripMenuItem.Click += new System.EventHandler(this.PingToolStripMenuItem_Click);
-            // 
-            // errorProvider1
-            // 
-            this.errorProvider1.ContainerControl = this;
-            // 
-            // toolTip1
-            // 
-            this.toolTip1.AutoPopDelay = 3000;
-            this.toolTip1.InitialDelay = 500;
-            this.toolTip1.ReshowDelay = 100;
-            this.toolTip1.ShowAlways = true;
-            // 
-            // temperatureMonitor1
-            // 
-            this.temperatureMonitor1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.temperatureMonitor1.Location = new System.Drawing.Point(3, 3);
-            this.temperatureMonitor1.Name = "temperatureMonitor1";
-            this.temperatureMonitor1.Size = new System.Drawing.Size(1334, 680);
-            this.temperatureMonitor1.TabIndex = 0;
-            // 
-            // waterLevel1
-            // 
-            this.waterLevel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.waterLevel1.Location = new System.Drawing.Point(3, 3);
-            this.waterLevel1.Name = "waterLevel1";
-            this.waterLevel1.Size = new System.Drawing.Size(1334, 680);
-            this.waterLevel1.TabIndex = 17;
+            tabPageSettings.BackColor = SystemColors.Control;
+            tabPageSettings.Controls.Add(parametersControl1);
+            tabPageSettings.Location = new Point(4, 22);
+            tabPageSettings.Name = "tabPageSettings";
+            tabPageSettings.Padding = new Padding(3);
+            tabPageSettings.Size = new Size(1340, 686);
+            tabPageSettings.TabIndex = 2;
+            tabPageSettings.Text = "Параметры";
             // 
             // parametersControl1
             // 
-            this.parametersControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.parametersControl1.Location = new System.Drawing.Point(3, 3);
-            this.parametersControl1.Name = "parametersControl1";
-            this.parametersControl1.Size = new System.Drawing.Size(1334, 680);
-            this.parametersControl1.TabIndex = 0;
+            parametersControl1.Dock = DockStyle.Fill;
+            parametersControl1.Location = new Point(3, 3);
+            parametersControl1.Margin = new Padding(4, 3, 4, 3);
+            parametersControl1.Name = "parametersControl1";
+            parametersControl1.Size = new Size(1334, 680);
+            parametersControl1.TabIndex = 0;
             // 
-            // panel2
+            // tabPageDebug
             // 
-            this.panel2.Controls.Add(this.chartControl_wl_calibration);
-            this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel2.Location = new System.Drawing.Point(3, 3);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(1334, 648);
-            this.panel2.TabIndex = 2;
+            tabPageDebug.BackColor = SystemColors.Control;
+            tabPageDebug.Controls.Add(groupBox2);
+            tabPageDebug.Controls.Add(button10);
+            tabPageDebug.Controls.Add(button7);
+            tabPageDebug.Location = new Point(4, 22);
+            tabPageDebug.Name = "tabPageDebug";
+            tabPageDebug.Padding = new Padding(3);
+            tabPageDebug.Size = new Size(1340, 686);
+            tabPageDebug.TabIndex = 3;
+            tabPageDebug.Text = "Отладка";
+            // 
+            // groupBox2
+            // 
+            groupBox2.Controls.Add(label5);
+            groupBox2.Controls.Add(label4);
+            groupBox2.Controls.Add(label3);
+            groupBox2.Controls.Add(button_wifi_def);
+            groupBox2.Controls.Add(button_wifi_cur);
+            groupBox2.Controls.Add(textBox_ssid);
+            groupBox2.Controls.Add(textBox_bsid);
+            groupBox2.Controls.Add(textBox_ap_pass);
+            groupBox2.Location = new Point(301, 34);
+            groupBox2.Name = "groupBox2";
+            groupBox2.Size = new Size(275, 167);
+            groupBox2.TabIndex = 2;
+            groupBox2.TabStop = false;
+            groupBox2.Text = "Wi-Fi";
+            // 
+            // label5
+            // 
+            label5.AutoSize = true;
+            label5.Location = new Point(62, 75);
+            label5.Name = "label5";
+            label5.Size = new Size(29, 13);
+            label5.TabIndex = 7;
+            label5.Text = "MAC";
+            // 
+            // label4
+            // 
+            label4.AutoSize = true;
+            label4.Location = new Point(39, 49);
+            label4.Name = "label4";
+            label4.Size = new Size(53, 13);
+            label4.TabIndex = 6;
+            label4.Text = "Password";
+            // 
+            // label3
+            // 
+            label3.AutoSize = true;
+            label3.Location = new Point(60, 23);
+            label3.Name = "label3";
+            label3.Size = new Size(30, 13);
+            label3.TabIndex = 5;
+            label3.Text = "SSID";
+            // 
+            // button_wifi_def
+            // 
+            button_wifi_def.Location = new Point(123, 112);
+            button_wifi_def.Name = "button_wifi_def";
+            button_wifi_def.Size = new Size(75, 23);
+            button_wifi_def.TabIndex = 6;
+            button_wifi_def.Text = "Def";
+            toolTip1.SetToolTip(button_wifi_def, "Подключение к точке доступа, внесенные данные сохраняются как данные по умолчанию.");
+            button_wifi_def.UseVisualStyleBackColor = true;
+            button_wifi_def.Click += Button_wifi_SetDefault_Click;
+            // 
+            // button_wifi_cur
+            // 
+            button_wifi_cur.Location = new Point(42, 112);
+            button_wifi_cur.Name = "button_wifi_cur";
+            button_wifi_cur.Size = new Size(75, 23);
+            button_wifi_cur.TabIndex = 5;
+            button_wifi_cur.Text = "Cur";
+            toolTip1.SetToolTip(button_wifi_cur, "Подключение к точке доступа в текущей сессии.");
+            button_wifi_cur.UseVisualStyleBackColor = true;
+            button_wifi_cur.Click += Button_wifi_SetCurrent_Click;
+            // 
+            // textBox_ssid
+            // 
+            textBox_ssid.Location = new Point(98, 20);
+            textBox_ssid.Name = "textBox_ssid";
+            textBox_ssid.Size = new Size(121, 21);
+            textBox_ssid.TabIndex = 2;
+            // 
+            // textBox_bsid
+            // 
+            textBox_bsid.Location = new Point(98, 72);
+            textBox_bsid.Name = "textBox_bsid";
+            textBox_bsid.Size = new Size(121, 21);
+            textBox_bsid.TabIndex = 4;
+            // 
+            // textBox_ap_pass
+            // 
+            textBox_ap_pass.Location = new Point(98, 46);
+            textBox_ap_pass.Name = "textBox_ap_pass";
+            textBox_ap_pass.Size = new Size(121, 21);
+            textBox_ap_pass.TabIndex = 3;
+            // 
+            // button10
+            // 
+            button10.Location = new Point(158, 109);
+            button10.Name = "button10";
+            button10.Size = new Size(75, 23);
+            button10.TabIndex = 1;
+            button10.Text = "Отмена";
+            button10.UseVisualStyleBackColor = true;
+            button10.Click += Button_PingCancel_Click;
+            // 
+            // button7
+            // 
+            button7.Location = new Point(158, 75);
+            button7.Name = "button7";
+            button7.Size = new Size(75, 23);
+            button7.TabIndex = 0;
+            button7.Text = "Ping";
+            button7.UseVisualStyleBackColor = true;
+            button7.Click += Button7_Click;
+            // 
+            // menuStrip1
+            // 
+            menuStrip1.Items.AddRange(new ToolStripItem[] { командаToolStripMenuItem });
+            menuStrip1.Location = new Point(0, 0);
+            menuStrip1.Name = "menuStrip1";
+            menuStrip1.Size = new Size(1348, 24);
+            menuStrip1.TabIndex = 15;
+            menuStrip1.Text = "menuStrip1";
+            // 
+            // командаToolStripMenuItem
+            // 
+            командаToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { resetToolStripMenuItem, pnigToolStripMenuItem });
+            командаToolStripMenuItem.Name = "командаToolStripMenuItem";
+            командаToolStripMenuItem.Size = new Size(67, 20);
+            командаToolStripMenuItem.Text = "Команда";
+            // 
+            // resetToolStripMenuItem
+            // 
+            resetToolStripMenuItem.Name = "resetToolStripMenuItem";
+            resetToolStripMenuItem.Size = new Size(138, 22);
+            resetToolStripMenuItem.Text = "Перезапуск";
+            resetToolStripMenuItem.Click += ResetToolStripMenuItem_Reset_Click;
+            // 
+            // pnigToolStripMenuItem
+            // 
+            pnigToolStripMenuItem.Name = "pnigToolStripMenuItem";
+            pnigToolStripMenuItem.Size = new Size(138, 22);
+            pnigToolStripMenuItem.Text = "Ping";
+            pnigToolStripMenuItem.Click += PingToolStripMenuItem_Click;
+            // 
+            // errorProvider1
+            // 
+            errorProvider1.ContainerControl = this;
+            // 
+            // toolTip1
+            // 
+            toolTip1.AutoPopDelay = 3000;
+            toolTip1.InitialDelay = 500;
+            toolTip1.ReshowDelay = 100;
+            toolTip1.ShowAlways = true;
             // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1348, 736);
-            this.Controls.Add(this.tabControl1);
-            this.Controls.Add(this.menuStrip1);
-            this.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.IsMdiContainer = true;
-            this.MainMenuStrip = this.menuStrip1;
-            this.Name = "Form1";
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "Shower";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
-            this.tabControl1.ResumeLayout(false);
-            this.tabPageTemp.ResumeLayout(false);
-            this.Температуры.ResumeLayout(false);
-            this.tabPage_wl.ResumeLayout(false);
-            this.tabPageCalibration.ResumeLayout(false);
-            this.panel1.ResumeLayout(false);
-            this.panel1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericWaterLevelCalibInterval)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(swiftPlotDiagram1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(swiftPlotSeriesView1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(series1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.chartControl_wl_calibration)).EndInit();
-            this.tabPageSettings.ResumeLayout(false);
-            this.tabPageDebug.ResumeLayout(false);
-            this.groupBox2.ResumeLayout(false);
-            this.groupBox2.PerformLayout();
-            this.menuStrip1.ResumeLayout(false);
-            this.menuStrip1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).EndInit();
-            this.panel2.ResumeLayout(false);
-            this.ResumeLayout(false);
-            this.PerformLayout();
-
+            AutoScaleDimensions = new SizeF(6F, 13F);
+            AutoScaleMode = AutoScaleMode.Font;
+            ClientSize = new Size(1348, 736);
+            Controls.Add(tabControl1);
+            Controls.Add(menuStrip1);
+            Font = new Font("Tahoma", 8.25F, FontStyle.Regular, GraphicsUnit.Point, 204);
+            Icon = (Icon)resources.GetObject("$this.Icon");
+            IsMdiContainer = true;
+            MainMenuStrip = menuStrip1;
+            Name = "Form1";
+            StartPosition = FormStartPosition.CenterScreen;
+            Text = "Shower";
+            FormClosing += Form1_FormClosing;
+            tabControl1.ResumeLayout(false);
+            tabPageTemp.ResumeLayout(false);
+            Температуры.ResumeLayout(false);
+            tabPage_wl.ResumeLayout(false);
+            tabPageCalibration.ResumeLayout(false);
+            panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)chartControl_wl_calibration).EndInit();
+            panel1.ResumeLayout(false);
+            panel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)numericWaterLevelCalibInterval).EndInit();
+            tabPageSettings.ResumeLayout(false);
+            tabPageDebug.ResumeLayout(false);
+            groupBox2.ResumeLayout(false);
+            groupBox2.PerformLayout();
+            menuStrip1.ResumeLayout(false);
+            menuStrip1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)errorProvider1).EndInit();
+            ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion

@@ -2,42 +2,43 @@
 
 public sealed class MedianFilter
 {
-    private readonly ushort[] _buffer;
-    private readonly ushort[] _bufferCopy;
+    private readonly ushort[] _window;
+    private readonly ushort[] _windowCopy;
     private readonly int _halfSize; // половина размера буффера
+    private readonly int _windowSize;
     private int _tail = 0;
     private int _initCount;
 
     public MedianFilter(int windowSize)
     {
         if (windowSize % 2 != 1)
-            throw new ArgumentOutOfRangeException($"Параметр {nameof(windowSize)} должен быть не чётным");
+        {
+            throw new ArgumentOutOfRangeException(nameof(windowSize), "Параметр должен быть не чётным");
+        }
 
-        WindowSize = windowSize;
-        _buffer = new ushort[windowSize];
-        _bufferCopy = new ushort[windowSize];
-        _halfSize = (windowSize / 2) + 1;
+        _windowSize = windowSize;
+        _window = new ushort[windowSize];
+        _windowCopy = new ushort[windowSize];
+        _halfSize = windowSize / 2;
     }
 
-    public int WindowSize { get; }
     public bool IsInitialized { get; private set; }
 
     public ushort Add(ushort value)
     {
-        _buffer[_tail] = value;
-        _tail = (_tail + 1) % WindowSize;
+        _window[_tail++ % _windowSize] = value;
 
         if (!IsInitialized)
         {
             _initCount++;
-            if (_initCount >= WindowSize)
+            if (_initCount > _halfSize)
             {
                 IsInitialized = true;
             }
         }
 
-        Array.Copy(_buffer, _bufferCopy, _buffer.Length);
-        Array.Sort(_bufferCopy);
-        return _bufferCopy[_halfSize - 1];
+        _window.AsSpan().CopyTo(_windowCopy);
+        _windowCopy.AsSpan().Sort();
+        return _windowCopy[_halfSize];
     }
 }

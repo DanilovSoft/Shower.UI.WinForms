@@ -56,13 +56,11 @@ public partial class TemperatureMonitor : UserControl
         Retry:
             try
             {
-                using (var connection = await ConnectionHelper.CreateConnectionAsync(cts.Token))
-                {
-                    errorProvider1.SetError(button_Start, null);
-                    await InitBeforeStart(connection, cts.Token);
-                    await Task.Run(() => RecordTempAsync(connection, cts.Token));
-                    reconnectCount++;
-                }
+                using var connection = await ConnectionHelper.CreateConnectionAsync(cts.Token);
+                errorProvider1.SetError(button_Start, null);
+                await InitBeforeStart(connection, cts.Token);
+                await Task.Run(() => RecordTempAsync(connection, cts.Token));
+                reconnectCount++;
             }
             catch when (cts.IsCancellationRequested)
             {
@@ -117,16 +115,14 @@ public partial class TemperatureMonitor : UserControl
     {
         try
         {
-            using (var dialog = new SaveFileDialog())
+            using var dialog = new SaveFileDialog();
+            dialog.AutoUpgradeEnabled = true;
+            dialog.DefaultExt = "txt";
+            dialog.Filter = "Json File|*.shower.txt";
+            if (dialog.ShowDialog() == DialogResult.OK)
             {
-                dialog.AutoUpgradeEnabled = true;
-                dialog.DefaultExt = "txt";
-                dialog.Filter = "Json File|*.shower.txt";
-                if (dialog.ShowDialog() == DialogResult.OK)
-                {
-                    string json = JsonSerializer.Serialize(_temperatureList);
-                    File.WriteAllText(dialog.FileName, json);
-                }
+                string json = JsonSerializer.Serialize(_temperatureList);
+                File.WriteAllText(dialog.FileName, json);
             }
         }
         catch (Exception ex)
@@ -197,36 +193,34 @@ public partial class TemperatureMonitor : UserControl
 
     private async Task RecordTempAsync(ShowerConnection con, CancellationToken cancellationToken)
     {
-        using (var timer = new System.Threading.Timer(s => UpdateWaterVolume(s, con)))
+        using var timer = new System.Threading.Timer(s => UpdateWaterVolume(s, con));
+        timer.Change(0, 2000);
+
+        var sw = Stopwatch.StartNew();
+        while (!cancellationToken.IsCancellationRequested)
         {
-            timer.Change(0, 2000);
+            var second = (int)sw.Elapsed.TotalSeconds;
 
-            var sw = Stopwatch.StartNew();
-            while (!cancellationToken.IsCancellationRequested)
+            InternalTempModel model;
+
+            lock (con)
             {
-                var second = (int)sw.Elapsed.TotalSeconds;
+                float internalTemp = con.GetInternalTemperature();
+                bool heaterEnabled = con.GetHeaterEnabled();
+                int minutesLeft = con.GetMinutesLeft();
 
-                InternalTempModel model;
-
-                lock (con)
+                model = new InternalTempModel
                 {
-                    float internalTemp = con.GetInternalTemperature();
-                    bool heaterEnabled = con.GetHeaterEnabled();
-                    int minutesLeft = con.GetMinutesLeft();
-
-                    model = new InternalTempModel
-                    {
-                        Second = second,
-                        InternalTemp = internalTemp,
-                        HeaterEnabled = heaterEnabled,
-                        TimeLeft = TimeSpan.FromMinutes(minutesLeft),
-                    };
-                }
-
-                BeginInvoke(_addTemperatureRecordHandler, model);
-
-                await Task.Delay(1000);
+                    Second = second,
+                    InternalTemp = internalTemp,
+                    HeaterEnabled = heaterEnabled,
+                    TimeLeft = TimeSpan.FromMinutes(minutesLeft),
+                };
             }
+
+            BeginInvoke(_addTemperatureRecordHandler, model);
+
+            await Task.Delay(1000);
         }
     }
 
@@ -262,26 +256,24 @@ public partial class TemperatureMonitor : UserControl
 
     private void LoadTempRecord()
     {
-        using (var dialog = new OpenFileDialog())
+        using var dialog = new OpenFileDialog();
+        dialog.Filter = "Json File|*.shower.txt";
+        dialog.Multiselect = false;
+        if (dialog.ShowDialog() == DialogResult.OK)
         {
-            dialog.Filter = "Json File|*.shower.txt";
-            dialog.Multiselect = false;
-            if (dialog.ShowDialog() == DialogResult.OK)
+            string json = File.ReadAllText(dialog.FileName);
+            var dataCollection = JsonSerializer.Deserialize<List<InternalTempModel>>(json);
+
+            _temperatureList.Clear();
+            _temperatureList.AddRange(dataCollection);
+
+            chartControl_temperature.BeginInit();
+            foreach (var model in _temperatureList)
             {
-                string json = File.ReadAllText(dialog.FileName);
-                var dataCollection = JsonSerializer.Deserialize<List<InternalTempModel>>(json);
-
-                _temperatureList.Clear();
-                _temperatureList.AddRange(dataCollection);
-
-                chartControl_temperature.BeginInit();
-                foreach (var model in _temperatureList)
-                {
-                    chartControl_temperature.Series[TempOnSeries].Points.Add(new SeriesPoint(model.Second, model.InternalTemp) { IsEmpty = !model.HeaterEnabled });
-                    chartControl_temperature.Series[TempOffSeries].Points.Add(new SeriesPoint(model.Second, model.InternalTemp) { IsEmpty = model.HeaterEnabled });
-                }
-                chartControl_temperature.EndInit();
+                chartControl_temperature.Series[TempOnSeries].Points.Add(new SeriesPoint(model.Second, model.InternalTemp) { IsEmpty = !model.HeaterEnabled });
+                chartControl_temperature.Series[TempOffSeries].Points.Add(new SeriesPoint(model.Second, model.InternalTemp) { IsEmpty = model.HeaterEnabled });
             }
+            chartControl_temperature.EndInit();
         }
     }
 

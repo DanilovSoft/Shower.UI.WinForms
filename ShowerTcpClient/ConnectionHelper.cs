@@ -14,7 +14,7 @@ public static class ConnectionHelper
         var tcp = new TcpClient();
         try
         {
-            using (cancellationToken.Register(static s => ((IDisposable)s).Dispose(), tcp, useSynchronizationContext: false))
+            using (cancellationToken.Register(static s => ((IDisposable)s!).Dispose(), tcp, useSynchronizationContext: false))
             {
                 await tcp.ConnectAsync(Address, PortNumber).ConfigureAwait(false);
             }

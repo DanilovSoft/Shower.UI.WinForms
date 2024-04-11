@@ -32,25 +32,23 @@ internal sealed class FixedNetworkStream : Stream
 
     public override async Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
     {
-        using (var linked = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken))
-        {
-            linked.CancelAfter(ReadTimeout);
+        using var linked = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+        linked.CancelAfter(ReadTimeout);
 
-            try
+        try
+        {
+            using (linked.Token.Register(() => _nstream.Close(), false))
             {
-                using (linked.Token.Register(() => _nstream.Close(), false))
-                {
-                    return await _nstream.ReadAsync(buffer, offset, count, linked.Token).ConfigureAwait(false);
-                }
+                return await _nstream.ReadAsync(buffer, offset, count, linked.Token).ConfigureAwait(false);
             }
-            catch (Exception ex) when (linked.IsCancellationRequested && !cancellationToken.IsCancellationRequested)
-            {
-                throw new TimeoutException("Превышено время ожидания операции", ex);
-            }
-            catch (Exception ex) when (cancellationToken.IsCancellationRequested)
-            {
-                throw new OperationCanceledException("Операция отменена пользователем", ex, cancellationToken);
-            }
+        }
+        catch (Exception ex) when (linked.IsCancellationRequested && !cancellationToken.IsCancellationRequested)
+        {
+            throw new TimeoutException("Превышено время ожидания операции", ex);
+        }
+        catch (Exception ex) when (cancellationToken.IsCancellationRequested)
+        {
+            throw new OperationCanceledException("Операция отменена пользователем", ex, cancellationToken);
         }
     }
 

@@ -19,10 +19,8 @@ public partial class ParametersControl : UserControl
         var cts = _cts = new CancellationTokenSource();
         try
         {
-            using (var con = await ConnectionHelper.CreateConnectionAsync(cts.Token))
-            {
-                await LoadPropertiesAsync(con, cts.Token);
-            }
+            using var con = await ConnectionHelper.CreateConnectionAsync(cts.Token);
+            await LoadPropertiesAsync(con, cts.Token);
         }
         catch when (cts.IsCancellationRequested)
         {
@@ -206,10 +204,8 @@ public partial class ParametersControl : UserControl
         try
         {
             Parent.Enabled = false;
-            using (var connection = await ConnectionHelper.CreateConnectionAsync(CancellationToken.None))
-            {
-                connection.Reset();
-            }
+            using var connection = await ConnectionHelper.CreateConnectionAsync(CancellationToken.None);
+            connection.Reset();
         }
         catch (Exception ex)
         {
@@ -328,17 +324,15 @@ public partial class ParametersControl : UserControl
 
         try
         {
-            using (var dialog = new SaveFileDialog())
+            using var dialog = new SaveFileDialog();
+            dialog.AutoUpgradeEnabled = true;
+            dialog.DefaultExt = "shower.txt";
+            dialog.Filter = "Json File|*.shower.txt";
+            dialog.FileName = "Parameters";
+            if (dialog.ShowDialog() == DialogResult.OK)
             {
-                dialog.AutoUpgradeEnabled = true;
-                dialog.DefaultExt = "shower.txt";
-                dialog.Filter = "Json File|*.shower.txt";
-                dialog.FileName = "Parameters";
-                if (dialog.ShowDialog() == DialogResult.OK)
-                {
-                    string json = JsonSerializer.Serialize(model, new JsonSerializerOptions { WriteIndented = true });
-                    File.WriteAllText(dialog.FileName, json);
-                }
+                string json = JsonSerializer.Serialize(model, new JsonSerializerOptions { WriteIndented = true });
+                File.WriteAllText(dialog.FileName, json);
             }
         }
         catch (Exception ex)
@@ -349,20 +343,18 @@ public partial class ParametersControl : UserControl
 
     private void Button_Import_Click(object sender, EventArgs e)
     {
-        using (var dialog = new OpenFileDialog())
+        using var dialog = new OpenFileDialog();
+        dialog.Filter = "Json File|*.shower.txt";
+        dialog.FileName = "Parameters";
+        dialog.Multiselect = false;
+        if (dialog.ShowDialog() == DialogResult.OK)
         {
-            dialog.Filter = "Json File|*.shower.txt";
-            dialog.FileName = "Parameters";
-            dialog.Multiselect = false;
-            if (dialog.ShowDialog() == DialogResult.OK)
+            string json = File.ReadAllText(dialog.FileName);
+            var model = JsonSerializer.Deserialize<PropertiesModel>(json);
+            if (model != null)
             {
-                string json = File.ReadAllText(dialog.FileName);
-                var model = JsonSerializer.Deserialize<PropertiesModel>(json);
-                if (model != null)
-                {
-                    ClearProperties();
-                    SetControlValues(model);
-                }
+                ClearProperties();
+                SetControlValues(model);
             }
         }
     }

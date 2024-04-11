@@ -27,15 +27,13 @@ public partial class Form1 : Form
         _ = Encoding.ASCII.GetBytes(ap);
         int length = ap.Length;  // 38
 
-        using (var connection = await ConnectionHelper.CreateConnectionAsync(CancellationToken.None).ConfigureAwait(false))
-        {
-            //connection.Writer.Write(ShowerCodes.SetDefAP);
-            //connection.Writer.Write(buf);
-            //connection.Writer.End();
-            //connection.Writer.Send();
+        using var connection = await ConnectionHelper.CreateConnectionAsync(CancellationToken.None).ConfigureAwait(false);
+        //connection.Writer.Write(ShowerCodes.SetDefAP);
+        //connection.Writer.Write(buf);
+        //connection.Writer.End();
+        //connection.Writer.Send();
 
-            //connection.Reader.ReadOK();
-        }
+        //connection.Reader.ReadOK();
     }
 
     private void ResetToolStripMenuItem_Reset_Click(object sender, EventArgs e)
@@ -48,10 +46,8 @@ public partial class Form1 : Form
         try
         {
             Enabled = false;
-            using (var connection = await ConnectionHelper.CreateConnectionAsync(CancellationToken.None))
-            {
-                connection.Reset();
-            }
+            using var connection = await ConnectionHelper.CreateConnectionAsync(CancellationToken.None);
+            connection.Reset();
         }
         catch (Exception ex)
         {
@@ -65,10 +61,8 @@ public partial class Form1 : Form
 
     private void PingToolStripMenuItem_Click(object sender, EventArgs e)
     {
-        using (var connection = ConnectionHelper.CreateConnectionAsync(CancellationToken.None).Result)
-        {
-            var code = connection.Ping();
-        }
+        using var connection = ConnectionHelper.CreateConnectionAsync(CancellationToken.None).Result;
+        var code = connection.Ping();
     }
 
     private async void Button7_Click(object sender, EventArgs e)
@@ -79,10 +73,8 @@ public partial class Form1 : Form
 
         try
         {
-            using (var connection = await ConnectionHelper.CreateConnectionAsync(cts.Token))
-            {
-                var code = await connection.PingAsync(cts.Token);
-            }
+            using var connection = await ConnectionHelper.CreateConnectionAsync(cts.Token);
+            var code = await connection.PingAsync(cts.Token);
         }
         catch (Exception)
         {
@@ -107,43 +99,41 @@ public partial class Form1 : Form
         buttonStartCalib.Enabled = false;
 
         var sw = new Stopwatch();
-        var median = new FastMedianFilter(9);
+        var median = new MedianFilter(9);
         try
         {
             while (!cts.IsCancellationRequested)
             {
                 try
                 {
-                    using (var con = await ConnectionHelper.CreateConnectionAsync(cts.Token))
+                    using var con = await ConnectionHelper.CreateConnectionAsync(cts.Token);
+                    ushort waterLevelEmpty = await con.RequestAsync<ushort>(ShowerCodes.GetWaterLevelEmptyUsec, cts.Token);
+                    ushort waterLevelFull = await con.RequestAsync<ushort>(ShowerCodes.GetWaterLevelFullUsec, cts.Token);
+
+                    SetWLCalibration(waterLevelEmpty, waterLevelFull);
+                    errorProvider1.SetError(buttonStartCalib, null);
+
+                    var index = 0;
+
+                    while (!cts.IsCancellationRequested)
                     {
-                        ushort waterLevelEmpty = await con.RequestAsync<ushort>(ShowerCodes.GetWaterLevelEmptyUsec, cts.Token);
-                        ushort waterLevelFull = await con.RequestAsync<ushort>(ShowerCodes.GetWaterLevelFullUsec, cts.Token);
+                        var interval = TimeSpan.FromMilliseconds((int)numericWaterLevelCalibInterval.Value);
 
-                        SetWLCalibration(waterLevelEmpty, waterLevelFull);
-                        errorProvider1.SetError(buttonStartCalib, null);
-
-                        var index = 0;
-
-                        while (!cts.IsCancellationRequested)
+                        sw.Restart();
+                        var usec = await Task.Run(async () =>
                         {
-                            var interval = TimeSpan.FromMilliseconds((int)numericWaterLevelCalibInterval.Value);
+                            await Task.Delay(interval);
+                            return con.GetWaterLevelRaw();
+                        });
+                        sw.Stop();
 
-                            sw.Restart();
-                            var usec = await Task.Run(async () => 
-                            {
-                                await Task.Delay(interval);
-                                return con.GetWaterLevelRaw();
-                            });
-                            sw.Stop();
-
-                            var elapsed = median.Add((int)sw.ElapsedMilliseconds);
-                            if (median.IsInitialized)
-                            {
-                                label_elapsedWL.Text = elapsed + " мсек";
-                            }
-
-                            AddUsec(usec, index++);
+                        var elapsed = median.Add((ushort)sw.ElapsedMilliseconds);
+                        if (median.IsInitialized)
+                        {
+                            label_elapsedWL.Text = elapsed + " мсек";
                         }
+
+                        AddUsec(usec, index++);
                     }
                 }
                 catch when (cts.IsCancellationRequested)
@@ -231,10 +221,8 @@ public partial class Form1 : Form
 
         try
         {
-            using (var con = await ConnectionHelper.CreateConnectionAsync(cts.Token))
-            {
-                var chart = con.GetTempChart();
-            }
+            using var con = await ConnectionHelper.CreateConnectionAsync(cts.Token);
+            var chart = con.GetTempChart();
         }
         catch when (cts.IsCancellationRequested)
         {
@@ -270,10 +258,8 @@ public partial class Form1 : Form
 
             PhysicalAddress? bsidValue = string.IsNullOrEmpty(bsid) ? null : PhysicalAddress.Parse(bsid.Replace(":", "").Replace("-", ""));
 
-            using (var con = await ConnectionHelper.CreateConnectionAsync(cts.Token))
-            {
-                con.SetCurAP(ssid, password, bsidValue);
-            }
+            using var con = await ConnectionHelper.CreateConnectionAsync(cts.Token);
+            con.SetCurAP(ssid, password, bsidValue);
         }
         catch (Exception ex)
         {
@@ -300,10 +286,8 @@ public partial class Form1 : Form
 
             PhysicalAddress? bsidValue = string.IsNullOrEmpty(bsid) ? null : PhysicalAddress.Parse(bsid.Replace(":", "").Replace("-", ""));
 
-            using (var con = await ConnectionHelper.CreateConnectionAsync(cts.Token))
-            {
-                con.SetDefAP(ssid, password, bsidValue);
-            }
+            using var con = await ConnectionHelper.CreateConnectionAsync(cts.Token);
+            con.SetDefAP(ssid, password, bsidValue);
         }
         catch (Exception ex)
         {

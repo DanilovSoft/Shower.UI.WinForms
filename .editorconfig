@@ -11,3 +11,6 @@ csharp_style_var_when_type_is_apparent = true
 
 # IDE0007: Использование неявного типа
 csharp_style_var_for_built_in_types = false
+
+# IDE0063: Использовать простой оператор using
+csharp_prefer_simple_using_statement = true
