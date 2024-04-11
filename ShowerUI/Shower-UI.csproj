@@ -9,10 +9,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <None Include="..\.editorconfig" Link=".editorconfig" />
-	</ItemGroup>
-
-	<ItemGroup>
 	  <ProjectReference Include="..\Filters\Filters.csproj" />
 	  <ProjectReference Include="..\ShowerTcpClient\ShowerTcpClient.csproj" />
 	</ItemGroup>
