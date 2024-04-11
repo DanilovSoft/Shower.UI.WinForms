@@ -15,7 +15,6 @@ public partial class Form1 : Form
     private CancellationTokenSource? _pingCts;
     private CancellationTokenSource? _ctsWwaterLevelCalibration;
 
-    // ctor
     public Form1()
     {
         InitializeComponent();
