@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace PidController
+﻿namespace PidController
 {
     /// <summary>
     /// A (P)roportional, (I)ntegral, (D)erivative Controller

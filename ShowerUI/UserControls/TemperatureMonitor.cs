@@ -1,21 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
+﻿using System.ComponentModel;
 using System.Diagnostics;
-using System.Drawing;
 using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Text;
 using System.Text.Json;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using DevExpress.XtraCharts;
 using ShowerTcpClient;
 using ShowerUI.Dto;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace ShowerUI.UserControls
 {

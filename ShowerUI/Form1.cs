@@ -1,19 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Drawing;
-using System.IO;
-using System.Linq;
+﻿using System.Diagnostics;
 using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using DevExpress.XtraBars.Docking2010.Views.WindowsUI;
 using DevExpress.XtraCharts;
 using Filters;
-using ShowerUI.Dto;
 using ShowerTcpClient;
-using DevExpress.XtraCharts.Native;
 using System.Net.NetworkInformation;
 
 namespace ShowerUI

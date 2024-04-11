@@ -6,6 +6,7 @@
 		<TargetFramework>net8.0-windows</TargetFramework>
 		<RootNamespace>ShowerUI</RootNamespace>
 		<UseWindowsForms>true</UseWindowsForms>
+		<ImplicitUsings>true</ImplicitUsings>
 	</PropertyGroup>
 
 	<ItemGroup>
