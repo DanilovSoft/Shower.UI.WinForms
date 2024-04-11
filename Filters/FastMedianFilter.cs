@@ -21,6 +21,7 @@ public sealed class FastMedianFilter
     }
 
     public int WindowSize => _windowSize;
+
     /// <summary>
     /// Фильтр считается инициализированным когда его буффер был полностью заполнен.
     /// </summary>

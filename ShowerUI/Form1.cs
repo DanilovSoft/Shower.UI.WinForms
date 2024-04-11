@@ -11,7 +11,6 @@ using System.Windows.Forms;
 using DevExpress.XtraBars.Docking2010.Views.WindowsUI;
 using DevExpress.XtraCharts;
 using Filters;
-using Newtonsoft.Json;
 using ShowerUI.Dto;
 using ShowerTcpClient;
 using DevExpress.XtraCharts.Native;

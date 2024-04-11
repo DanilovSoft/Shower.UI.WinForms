@@ -7,12 +7,12 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using DevExpress.XtraCharts;
 using Filters;
-using Newtonsoft.Json;
 using ShowerTcpClient;
 
 namespace ShowerUI.UserControls
@@ -323,7 +323,7 @@ namespace ShowerUI.UserControls
                         dialog.Filter = "Json File|*.txt";
                         if (dialog.ShowDialog() == DialogResult.OK)
                         {
-                            string json = JsonConvert.SerializeObject(session.UsecList);
+                            string json = JsonSerializer.Serialize(session.UsecList);
                             File.WriteAllText(dialog.FileName, json);
                         }
                     }
@@ -344,7 +344,7 @@ namespace ShowerUI.UserControls
                 if (dialog.ShowDialog() == DialogResult.OK)
                 {
                     string json = File.ReadAllText(dialog.FileName);
-                    var usecList = JsonConvert.DeserializeObject<ushort[]>(json);
+                    var usecList = JsonSerializer.Deserialize<ushort[]>(json);
 
                     var session = _session = new WaterLevelSession();
                     session.UsecList.Clear();

@@ -8,11 +8,11 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using DevExpress.XtraCharts;
-using Newtonsoft.Json;
 using ShowerTcpClient;
 using ShowerUI.Dto;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
@@ -135,7 +135,7 @@ namespace ShowerUI.UserControls
                     dialog.Filter = "Json File|*.shower.txt";
                     if (dialog.ShowDialog() == DialogResult.OK)
                     {
-                        string json = JsonConvert.SerializeObject(_temperatureList);
+                        string json = JsonSerializer.Serialize(_temperatureList);
                         File.WriteAllText(dialog.FileName, json);
                     }
                 }
@@ -280,7 +280,7 @@ namespace ShowerUI.UserControls
                 if (dialog.ShowDialog() == DialogResult.OK)
                 {
                     string json = File.ReadAllText(dialog.FileName);
-                    var dataCollection = JsonConvert.DeserializeObject<List<InternalTempModel>>(json);
+                    var dataCollection = JsonSerializer.Deserialize<List<InternalTempModel>>(json);
 
                     _temperatureList.Clear();
                     _temperatureList.AddRange(dataCollection);
@@ -342,7 +342,7 @@ namespace ShowerUI.UserControls
                 filePath = openFile.FileName;
             }
 
-            var collection = JsonConvert.DeserializeObject<InternalTempModel[]>(File.ReadAllText(filePath));
+            var collection = JsonSerializer.Deserialize<InternalTempModel[]>(File.ReadAllText(filePath));
             if (collection == null)
             {
                 return;
