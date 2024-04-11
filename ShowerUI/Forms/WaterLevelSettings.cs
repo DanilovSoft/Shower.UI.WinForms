@@ -1,12 +1,11 @@
-﻿namespace ShowerUI.Forms
-{
-    public partial class WaterLevelSettings : Form
-    {
-        private CancellationTokenSource _cts;
+﻿namespace ShowerUI.Forms;
 
-        public WaterLevelSettings()
-        {
-            InitializeComponent();
-        }        
-    }
+public partial class WaterLevelSettings : Form
+{
+    private CancellationTokenSource _cts;
+
+    public WaterLevelSettings()
+    {
+        InitializeComponent();
+    }        
 }

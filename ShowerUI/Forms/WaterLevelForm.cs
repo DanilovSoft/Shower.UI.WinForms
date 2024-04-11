@@ -1,10 +1,9 @@
-﻿namespace ShowerUI.Forms
+﻿namespace ShowerUI.Forms;
+
+public partial class WaterLevelForm : Form
 {
-    public partial class WaterLevelForm : Form
+    public WaterLevelForm()
     {
-        public WaterLevelForm()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

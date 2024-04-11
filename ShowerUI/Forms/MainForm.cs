@@ -1,10 +1,9 @@
-﻿namespace ShowerUI.Forms
+﻿namespace ShowerUI.Forms;
+
+public partial class MainForm : Form
 {
-    public partial class MainForm : Form
+    public MainForm()
     {
-        public MainForm()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

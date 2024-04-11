@@ -1,10 +1,9 @@
-﻿namespace ShowerUI.Forms
+﻿namespace ShowerUI.Forms;
+
+public partial class TemperatureForm : Form
 {
-    public partial class TemperatureForm : Form
+    public TemperatureForm()
     {
-        public TemperatureForm()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
     }
 }

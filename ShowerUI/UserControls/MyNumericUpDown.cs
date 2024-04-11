@@ -1,25 +1,24 @@
 ﻿using System.ComponentModel;
 
-namespace ShowerUI.UserControls
+namespace ShowerUI.UserControls;
+
+public partial class MyNumericUpDown : NumericUpDown
 {
-    public partial class MyNumericUpDown : NumericUpDown
+    public MyNumericUpDown()
     {
-        public MyNumericUpDown()
-        {
-            InitializeComponent();
-        }
+        InitializeComponent();
+    }
 
-        public MyNumericUpDown(IContainer container)
-        {
-            container.Add(this);
+    public MyNumericUpDown(IContainer container)
+    {
+        container.Add(this);
 
-            InitializeComponent();
-        }
+        InitializeComponent();
+    }
 
-        public void UpdateText()
-        {
-            BeginInit();
-            EndInit();
-        }
+    public void UpdateText()
+    {
+        BeginInit();
+        EndInit();
     }
 }
