@@ -1,10 +1,10 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
-namespace ShowerUI.Common;
+namespace Shower.UI.Common;
 
 public static class NullableHelper
 {
-    [return: NotNullIfNotNull("value")]
+    [return: NotNullIfNotNull(nameof(value))]
     public static T? SetNull<T>(ref T? value) where T : class
     {
         var copy = value;

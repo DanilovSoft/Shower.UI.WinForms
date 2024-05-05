@@ -21,7 +21,6 @@ public sealed class AverageFilter
         _buffer[_head] = value;
         _head = (_head + 1) % _windowSize;
 
-
         if(!IsInitialized)
         {
             _initC++;
