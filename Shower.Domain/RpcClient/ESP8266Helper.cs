@@ -1,6 +1,6 @@
 ﻿using System.Net.NetworkInformation;
 
-namespace ShowerTcpClient;
+namespace Shower.Domain.RpcClient;
 
 public static class ESP8266Helper
 {

@@ -1,8 +1,8 @@
 using System.Net.NetworkInformation;
-using ShowerTcpClient;
+using Shower.Domain.RpcClient;
 using Xunit;
 
-namespace Tests;
+namespace Shower.UnitTests;
 
 public class ShowerConnectionTests
 {

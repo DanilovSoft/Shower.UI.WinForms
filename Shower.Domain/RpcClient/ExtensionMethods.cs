@@ -1,6 +1,6 @@
 ﻿using System.Buffers;
 
-namespace ShowerTcpClient;
+namespace Shower.Domain.RpcClient;
 
 public static class ExtensionMethods
 {

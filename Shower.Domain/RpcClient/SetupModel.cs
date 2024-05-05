@@ -1,4 +1,4 @@
-﻿namespace ShowerTcpClient;
+﻿namespace Shower.Domain.RpcClient;
 
 public class SetupModel
 {

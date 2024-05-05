@@ -1,5 +1,5 @@
 ﻿using System.Text.Json;
-using ShowerTcpClient;
+using Shower.Domain.RpcClient;
 using ShowerUI.Dto;
 
 namespace ShowerUI.UserControls;

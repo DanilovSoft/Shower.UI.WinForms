@@ -1,4 +1,4 @@
-﻿namespace PidController;
+﻿namespace ShowerUI;
 
 /// <summary>
 /// A (P)roportional, (I)ntegral, (D)erivative Controller
@@ -33,7 +33,7 @@ public sealed class PidController
         double error = SetPoint - ProcessVariable;
 
         // integral term calculation
-        IntegralTerm += (GainIntegral * error * timeSinceLastUpdate.TotalSeconds);
+        IntegralTerm += GainIntegral * error * timeSinceLastUpdate.TotalSeconds;
         IntegralTerm = Clamp(IntegralTerm);
 
         // derivative term calculation

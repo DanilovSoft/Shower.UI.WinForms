@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace ShowerTcpClient;
+namespace Shower.Domain.RpcClient;
 
 internal sealed class MyBinaryWriter : BinaryWriter
 {
@@ -18,7 +18,7 @@ internal sealed class MyBinaryWriter : BinaryWriter
     {
         Write((byte)code);
     }
-    
+
     /// <summary>
     /// Записывает в начало стрима 1 байт: размер последующих данных в стриме (до 200 байт).
     /// </summary>

@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ShowerTcpClient\ShowerTcpClient.csproj" />
+    <ProjectReference Include="..\Shower.Domain\Shower.Domain.csproj" />
   </ItemGroup>
 
 </Project>

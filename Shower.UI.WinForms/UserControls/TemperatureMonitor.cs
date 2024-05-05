@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.Text.Json;
 using DevExpress.XtraCharts;
-using ShowerTcpClient;
+using Shower.Domain.RpcClient;
 using ShowerUI.Dto;
 
 namespace ShowerUI.UserControls;

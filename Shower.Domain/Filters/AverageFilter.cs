@@ -1,4 +1,4 @@
-﻿namespace Filters;
+﻿namespace Shower.Domain.Filters;
 
 public sealed class AverageFilter
 {
@@ -17,14 +17,14 @@ public sealed class AverageFilter
 
     public ushort AddNextValue(ushort value)
     {
-        _sum += (value - _buffer[_head]);
+        _sum += value - _buffer[_head];
         _buffer[_head] = value;
         _head = (_head + 1) % _windowSize;
 
-        if(!IsInitialized)
+        if (!IsInitialized)
         {
             _initC++;
-            if(_initC >= _windowSize)
+            if (_initC >= _windowSize)
             {
                 IsInitialized = true;
             }

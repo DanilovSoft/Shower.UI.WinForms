@@ -1,7 +1,7 @@
 ﻿using System.Text.Json;
 using DevExpress.XtraCharts;
-using Filters;
-using ShowerTcpClient;
+using Shower.Domain.Filters;
+using Shower.Domain.RpcClient;
 
 namespace ShowerUI.UserControls;
 
@@ -153,7 +153,7 @@ public partial class WaterLevel : UserControl
         SetMinMaxWaterLevel(session.WaterLevelEmpty, session.WaterLevelFull);
 
         var medianWindowSize = GetMedianWindowSize();
-        var medianFilter = new MedianFilter(medianWindowSize);
+        var medianFilter = new MedianFilter<ushort>(medianWindowSize);
 
         var avgWindowSize = GetAverageTrackBar();
         var avgFilter = new AverageFilter(avgWindowSize);
@@ -163,7 +163,7 @@ public partial class WaterLevel : UserControl
             medianWindowSize = GetMedianWindowSize();
             avgWindowSize = GetAverageTrackBar();
 
-            medianFilter = new MedianFilter(medianWindowSize);
+            medianFilter = new MedianFilter<ushort>(medianWindowSize);
             avgFilter = new AverageFilter(avgWindowSize);
 
             _medianSeries.Points.BeginUpdate();
@@ -360,8 +360,7 @@ public partial class WaterLevel : UserControl
         var medianWindowSize = GetMedianWindowSize();
         var avgWindowSize = GetAverageTrackBar();
 
-        //var fastMedianFilter = new FastMedianFilter(medianWindowSize);
-        var medianFilter = new MedianFilter(medianWindowSize);
+        var medianFilter = new MedianFilter<ushort>(medianWindowSize);
         var avgFilter = new AverageFilter(avgWindowSize);
 
         _usecSeries.Points.BeginUpdate();

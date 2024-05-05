@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
-namespace Shower.UI.Common;
+namespace Shower.Domain;
 
 public static class NullableHelper
 {

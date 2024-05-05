@@ -1,7 +1,7 @@
 ﻿using System.Runtime.InteropServices;
 using System.Text;
 
-namespace ShowerTcpClient;
+namespace Shower.Domain.RpcClient;
 
 public class RequestBuilder
 {
@@ -21,17 +21,17 @@ public class RequestBuilder
 
     public RequestBuilder WriteFloat(float value)
     {
-        return Write<float>(value);
+        return Write(value);
     }
 
     public RequestBuilder WriteUInt16(ushort value)
     {
-        return Write<UInt16>(value);
+        return Write(value);
     }
 
     public RequestBuilder WriteUInt8(byte value)
     {
-        return Write<byte>(value);
+        return Write(value);
     }
 
     private RequestBuilder Write<T>(T value) where T : struct
@@ -72,7 +72,7 @@ public class RequestBuilder
     {
         var str = Encoding.ASCII.GetBytes(value);
         var sizeBytes = str.Length;
-        
+
         _writer.Write(str, 0, sizeBytes);
         return this;
     }

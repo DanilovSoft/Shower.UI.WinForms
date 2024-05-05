@@ -1,6 +1,6 @@
 ﻿using System.Net.Sockets;
 
-namespace ShowerTcpClient;
+namespace Shower.Domain.RpcClient;
 
 internal sealed class FixedNetworkStream : Stream
 {

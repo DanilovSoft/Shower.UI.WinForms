@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 
-namespace ShowerTcpClient;
+namespace Shower.Domain.RpcClient;
 
 [DebuggerDisplay("{" + nameof(ExternalTemp) + "} => {" + nameof(InternalTemp) + "}")]
 public struct TemperatureStep

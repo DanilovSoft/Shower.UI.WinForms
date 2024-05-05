@@ -1,12 +1,12 @@
 ﻿using System.Text;
 
-namespace ShowerTcpClient;
+namespace Shower.Domain.RpcClient;
 
 internal sealed class ShowerBinaryReader : BinaryReader
 {
     public ShowerBinaryReader(Stream input, Encoding encoding, bool leaveOpen) : base(input, encoding, leaveOpen)
     {
-        
+
     }
 
     /// <exception cref="InvalidDataException"/>

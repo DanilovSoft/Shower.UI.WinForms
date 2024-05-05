@@ -1,9 +1,9 @@
 ﻿using System.Diagnostics;
 using System.Text;
 using DevExpress.XtraCharts;
-using Filters;
-using ShowerTcpClient;
 using System.Net.NetworkInformation;
+using Shower.Domain.RpcClient;
+using Shower.Domain.Filters;
 
 namespace ShowerUI;
 
@@ -99,7 +99,7 @@ public partial class Form1 : Form
         buttonStartCalib.Enabled = false;
 
         var sw = new Stopwatch();
-        var median = new MedianFilter(9);
+        var median = new MedianFilter<ushort>(9);
         try
         {
             while (!cts.IsCancellationRequested)

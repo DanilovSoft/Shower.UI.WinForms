@@ -1,6 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 
-namespace ShowerTcpClient;
+namespace Shower.Domain.RpcClient;
 
 internal static class MySerializer
 {

@@ -1,4 +1,4 @@
-﻿namespace ShowerTcpClient;
+﻿namespace Shower.Domain.RpcClient;
 
 public enum ShowerCodes : byte
 {
@@ -95,7 +95,7 @@ public enum ShowerCodes : byte
     SetWaterLevelErrorThreshold = 81,
 
     OK = 200,
-	    UnknownCode = 253,
+    UnknownCode = 253,
     Reset = 254,
     Save = 255,
 }
