@@ -31,9 +31,9 @@ namespace ShowerUI
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
-            var swiftPlotDiagram1 = new DevExpress.XtraCharts.SwiftPlotDiagram();
-            Series series1 = new DevExpress.XtraCharts.Series();
-            var swiftPlotSeriesView1 = new DevExpress.XtraCharts.SwiftPlotSeriesView();
+            var swiftPlotDiagram1 = new SwiftPlotDiagram();
+            var series1 = new Series();
+            var swiftPlotSeriesView1 = new SwiftPlotSeriesView();
             var resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             tabControl1 = new TabControl();
             tabPageTemp = new TabPage();
@@ -44,7 +44,7 @@ namespace ShowerUI
             waterLevel1 = new UserControls.WaterLevel();
             tabPageCalibration = new TabPage();
             panel2 = new Panel();
-            chartControl_wl_calibration = new DevExpress.XtraCharts.ChartControl();
+            chartControl_wl_calibration = new ChartControl();
             panel1 = new Panel();
             label_elapsedWL = new Label();
             label1 = new Label();
@@ -171,10 +171,10 @@ namespace ShowerUI
             tabPageCalibration.BackColor = SystemColors.Control;
             tabPageCalibration.Controls.Add(panel2);
             tabPageCalibration.Controls.Add(panel1);
-            tabPageCalibration.Location = new Point(4, 24);
+            tabPageCalibration.Location = new Point(4, 22);
             tabPageCalibration.Name = "tabPageCalibration";
             tabPageCalibration.Padding = new Padding(3);
-            tabPageCalibration.Size = new Size(1340, 684);
+            tabPageCalibration.Size = new Size(1340, 686);
             tabPageCalibration.TabIndex = 4;
             tabPageCalibration.Text = "Калибровка уровня";
             // 
@@ -184,7 +184,7 @@ namespace ShowerUI
             panel2.Dock = DockStyle.Fill;
             panel2.Location = new Point(3, 3);
             panel2.Name = "panel2";
-            panel2.Size = new Size(1334, 646);
+            panel2.Size = new Size(1334, 648);
             panel2.TabIndex = 2;
             // 
             // chartControl_wl_calibration
@@ -212,11 +212,11 @@ namespace ShowerUI
             swiftPlotSeriesView1.Color = Color.FromArgb(240, 0, 0);
             swiftPlotSeriesView1.LineStyle.Thickness = 2;
             series1.View = swiftPlotSeriesView1;
-            chartControl_wl_calibration.SeriesSerializable = new DevExpress.XtraCharts.Series[]
+            chartControl_wl_calibration.SeriesSerializable = new Series[]
     {
     series1
     };
-            chartControl_wl_calibration.Size = new Size(1334, 646);
+            chartControl_wl_calibration.Size = new Size(1334, 648);
             chartControl_wl_calibration.TabIndex = 0;
             // 
             // panel1
@@ -228,7 +228,7 @@ namespace ShowerUI
             panel1.Controls.Add(button_stop);
             panel1.Controls.Add(buttonStartCalib);
             panel1.Dock = DockStyle.Bottom;
-            panel1.Location = new Point(3, 649);
+            panel1.Location = new Point(3, 651);
             panel1.Name = "panel1";
             panel1.Size = new Size(1334, 32);
             panel1.TabIndex = 1;
@@ -289,16 +289,16 @@ namespace ShowerUI
             buttonStartCalib.TabIndex = 0;
             buttonStartCalib.Text = "Старт";
             buttonStartCalib.UseVisualStyleBackColor = true;
-            buttonStartCalib.Click += ButtonStartCalibrationClick;
+            buttonStartCalib.Click += Button_WaterCalibration_Click;
             // 
             // tabPageSettings
             // 
             tabPageSettings.BackColor = SystemColors.Control;
             tabPageSettings.Controls.Add(parametersControl1);
-            tabPageSettings.Location = new Point(4, 22);
+            tabPageSettings.Location = new Point(4, 24);
             tabPageSettings.Name = "tabPageSettings";
             tabPageSettings.Padding = new Padding(3);
-            tabPageSettings.Size = new Size(1340, 686);
+            tabPageSettings.Size = new Size(1340, 684);
             tabPageSettings.TabIndex = 2;
             tabPageSettings.Text = "Параметры";
             // 
@@ -308,7 +308,7 @@ namespace ShowerUI
             parametersControl1.Location = new Point(3, 3);
             parametersControl1.Margin = new Padding(4, 3, 4, 3);
             parametersControl1.Name = "parametersControl1";
-            parametersControl1.Size = new Size(1334, 680);
+            parametersControl1.Size = new Size(1334, 678);
             parametersControl1.TabIndex = 0;
             // 
             // tabPageDebug
@@ -317,10 +317,10 @@ namespace ShowerUI
             tabPageDebug.Controls.Add(groupBox2);
             tabPageDebug.Controls.Add(button10);
             tabPageDebug.Controls.Add(button7);
-            tabPageDebug.Location = new Point(4, 22);
+            tabPageDebug.Location = new Point(4, 24);
             tabPageDebug.Name = "tabPageDebug";
             tabPageDebug.Padding = new Padding(3);
-            tabPageDebug.Size = new Size(1340, 686);
+            tabPageDebug.Size = new Size(1340, 684);
             tabPageDebug.TabIndex = 3;
             tabPageDebug.Text = "Отладка";
             // 

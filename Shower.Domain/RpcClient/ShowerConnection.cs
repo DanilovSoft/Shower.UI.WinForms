@@ -35,12 +35,7 @@ public sealed class ShowerConnection : IShowerConnection, IDisposable
         }
     }
 
-    private RequestBuilder BuildRequest()
-    {
-        return new RequestBuilder(this, _writer, _reader, _nstream);
-    }
-
-    private T Request<T>(ShowerCodes code) where T : struct
+    public T Request<T>(ShowerCodes code) where T : struct
     {
         _writer.Write(code);
         _writer.End();
@@ -48,11 +43,10 @@ public sealed class ShowerConnection : IShowerConnection, IDisposable
 
         var unmanagedSize = Marshal.SizeOf<T>();
         Span<byte> buffer = unmanagedSize <= 256 ? stackalloc byte[256] : new byte[unmanagedSize];
-        buffer = buffer.Slice(0, unmanagedSize);
+        buffer = buffer[..unmanagedSize];
 
-        _nstream.ReadBlock(buffer);
-        var value = MySerializer.Read<T>(buffer);
-        return value;
+        _nstream.ReadExactly(buffer);
+        return MySerializer.Read<T>(buffer);
     }
 
     /// <inheritdoc/>
@@ -195,7 +189,7 @@ public sealed class ShowerConnection : IShowerConnection, IDisposable
         _writer.Send();
 
         Span<byte> data = stackalloc byte[SetupModel.STEP_COUNT];
-        _nstream.ReadBlock(data);
+        _nstream.ReadExactly(data);
 
         var model = new SetupModel();
         model.ParseTemp(data);
@@ -240,12 +234,14 @@ public sealed class ShowerConnection : IShowerConnection, IDisposable
     {
         _writer.Write(code);
         _writer.End();
-        await _writer.SendAsync(cancellationToken).ConfigureAwait(false);
+        
         var unmanagedSize = Marshal.SizeOf<T>();
-        var buf = new byte[unmanagedSize];
-        await _nstream.ReadBlockAsync(buf, 0, unmanagedSize, cancellationToken).ConfigureAwait(false);
-        var value = MySerializer.Read<T>(buf);
-        return value;
+        var buffer = new byte[unmanagedSize];
+
+        await _writer.SendAsync(cancellationToken).ConfigureAwait(false);
+        await _nstream.ReadExactlyAsync(buffer, cancellationToken).ConfigureAwait(false);
+        
+        return MySerializer.Read<T>(buffer);
     }
 
     public void SetWaterLevelAverageBufferSize(byte value)
@@ -506,5 +502,10 @@ public sealed class ShowerConnection : IShowerConnection, IDisposable
     public byte GetButtonPressTimeMsec()
     {
         return Request<byte>(ShowerCodes.GetButtonTimeMsec);
+    }
+
+    private RequestBuilder BuildRequest()
+    {
+        return new RequestBuilder(this, _writer, _reader, _nstream);
     }
 }

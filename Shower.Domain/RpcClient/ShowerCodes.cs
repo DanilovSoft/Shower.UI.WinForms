@@ -94,6 +94,9 @@ public enum ShowerCodes : byte
     GetWaterLevelErrorThreshold = 80,
     SetWaterLevelErrorThreshold = 81,
 
+    GetWaterLevelOverflowCounter = 82,
+    GetWaterLevelNoiseErrorCounter = 83,
+
     OK = 200,
     UnknownCode = 253,
     Reset = 254,

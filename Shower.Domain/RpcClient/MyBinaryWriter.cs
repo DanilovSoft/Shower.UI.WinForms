@@ -51,15 +51,48 @@ internal sealed class MyBinaryWriter : BinaryWriter
     }
 
     /// <exception cref="OperationCanceledException"/>
-    public async Task SendAsync(CancellationToken cancellationToken = default)
+    public Task SendAsync(CancellationToken cancellationToken = default)
     {
-        cancellationToken.ThrowIfCancellationRequested();
+        if (cancellationToken.IsCancellationRequested)
+        {
+            return Task.FromCanceled(cancellationToken);
+        }
 
         OutStream.Position = 0;
-        await OutStream.CopyToAsync(_baseStream, bufferSize: 81920, cancellationToken).ConfigureAwait(false);
-        await _baseStream.FlushAsync(cancellationToken).ConfigureAwait(false);
-        OutStream.SetLength(1);
-        OutStream.Position = 1;
-        _lastPosition = 0;
+
+        var copyTask = OutStream.CopyToAsync(_baseStream, bufferSize: 81920, cancellationToken);
+        if (!copyTask.IsCompletedSuccessfully)
+        {
+            return WaitCopy(copyTask, cancellationToken);
+        }
+
+        var flushTask = _baseStream.FlushAsync(cancellationToken);
+        if (!flushTask.IsCompletedSuccessfully)
+        {
+            return WaitFlush(flushTask);
+        }
+
+        OnComplete();
+        return Task.CompletedTask;
+
+        void OnComplete()
+        {
+            OutStream.SetLength(1);
+            OutStream.Position = 1;
+            _lastPosition = 0;
+        }
+
+        async Task WaitCopy(Task copyTask, CancellationToken ct)
+        {
+            await copyTask.ConfigureAwait(false);
+            await _baseStream.FlushAsync(ct).ConfigureAwait(false);
+            OnComplete();
+        }
+
+        async Task WaitFlush(Task flushTask)
+        {
+            await flushTask.ConfigureAwait(false);
+            OnComplete();
+        }
     }
 }

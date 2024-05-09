@@ -13,7 +13,7 @@ public partial class Form1 : Form
     /// Доступ только через основной поток.
     /// </summary>
     private CancellationTokenSource? _pingCts;
-    private CancellationTokenSource? _ctsWwaterLevelCalibration;
+    private CancellationTokenSource? _ctsWaterLevelCalibration; // доступ из основного потока.
 
     public Form1()
     {
@@ -92,72 +92,74 @@ public partial class Form1 : Form
         _pingCts?.Cancel();
     }
 
-    private async void ButtonStartCalibrationClick(object sender, EventArgs e)
+    private async void Button_WaterCalibration_Click(object sender, EventArgs e)
     {
-        var cts = _ctsWwaterLevelCalibration = new CancellationTokenSource();
+        if (_ctsWaterLevelCalibration is null || !_ctsWaterLevelCalibration.TryReset())
+        {
+            _ctsWaterLevelCalibration = new();
+        }
+
+        await WaterCalibration(_ctsWaterLevelCalibration.Token);
+    }
+
+    private async Task WaterCalibration(CancellationToken ct)
+    {
         button_stop.Enabled = true;
         buttonStartCalib.Enabled = false;
 
         var sw = new Stopwatch();
-        var median = new MedianFilter<ushort>(9);
-        try
+        //var median = new MedianFilter<ushort>(7);
+
+        while (!ct.IsCancellationRequested)
         {
-            while (!cts.IsCancellationRequested)
+            // будем периодически контроллировать число ошибок датчика.
+
+            try
             {
+                using var con = await ConnectionHelper.CreateConnectionAsync(ct);
+                using var _ = StartWaterCallibrationTimer(con);
+                var waterLevelEmpty = await con.RequestAsync<ushort>(ShowerCodes.GetWaterLevelEmptyUsec, ct);
+                var waterLevelFull = await con.RequestAsync<ushort>(ShowerCodes.GetWaterLevelFullUsec, ct);
+
+                SetWLCalibration(waterLevelEmpty, waterLevelFull);
+                errorProvider1.SetError(buttonStartCalib, null);
+
+                while (!ct.IsCancellationRequested)
+                {
+                    var interval = TimeSpan.FromMilliseconds((int)numericWaterLevelCalibInterval.Value);
+
+                    sw.Restart();
+                    await Task.Delay(interval, ct);
+                    var usec = await con.GetWaterLevelRawAsync(ct);
+                    sw.Stop();
+
+                    var elapsed = (ushort)sw.ElapsedMilliseconds;
+                    //var elapsed = median.Add((ushort)sw.ElapsedMilliseconds);
+                    //if (median.IsInitialized)
+                    {
+                        label_elapsedWL.Text = elapsed + " мсек";
+                    }
+
+                    AddUsec(usec);
+                }
+            }
+            catch when (ct.IsCancellationRequested)
+            {
+                return;
+            }
+            catch (Exception ex)
+            {
+                errorProvider1.SetError(buttonStartCalib, ex.Message);
                 try
                 {
-                    using var con = await ConnectionHelper.CreateConnectionAsync(cts.Token);
-                    ushort waterLevelEmpty = await con.RequestAsync<ushort>(ShowerCodes.GetWaterLevelEmptyUsec, cts.Token);
-                    ushort waterLevelFull = await con.RequestAsync<ushort>(ShowerCodes.GetWaterLevelFullUsec, cts.Token);
-
-                    SetWLCalibration(waterLevelEmpty, waterLevelFull);
-                    errorProvider1.SetError(buttonStartCalib, null);
-
-                    var index = 0;
-
-                    while (!cts.IsCancellationRequested)
-                    {
-                        var interval = TimeSpan.FromMilliseconds((int)numericWaterLevelCalibInterval.Value);
-
-                        sw.Restart();
-                        var usec = await Task.Run(async () =>
-                        {
-                            await Task.Delay(interval);
-                            return con.GetWaterLevelRaw();
-                        });
-                        sw.Stop();
-
-                        var elapsed = median.Add((ushort)sw.ElapsedMilliseconds);
-                        if (median.IsInitialized)
-                        {
-                            label_elapsedWL.Text = elapsed + " мсек";
-                        }
-
-                        AddUsec(usec, index++);
-                    }
+                    await Task.Delay(3000, ct);
+                    continue;
                 }
-                catch when (cts.IsCancellationRequested)
+                catch (OperationCanceledException)
                 {
                     return;
                 }
-                catch (Exception ex)
-                {
-                    errorProvider1.SetError(buttonStartCalib, ex.Message);
-                    try
-                    {
-                        await Task.Delay(3000, cts.Token);
-                        continue;
-                    }
-                    catch (OperationCanceledException)
-                    {
-                        return;
-                    }
-                }
             }
-        }
-        finally
-        {
-            cts.Cancel();
         }
     }
 
@@ -165,44 +167,58 @@ public partial class Form1 : Form
     {
         var diagram = (SwiftPlotDiagram)chartControl_wl_calibration.Diagram;
 
-        double emptyCm = waterLevelEmpty /*/ 58d*/ * 1.08;  // +2%
-        double fullCm = waterLevelFull /*/ 58d*/ * 0.98;    // +2%
+        var emptyCm = waterLevelEmpty /*/ 58d*/ * 1.05;  // +5%
+        var fullCm = 116;// waterLevelFull /*/ 58d*/ * 0.80;    // -20%
 
         var wholeRange = diagram.AxisY.WholeRange;
         wholeRange.Auto = false;
         wholeRange.MinValue = fullCm;
         wholeRange.MaxValue = emptyCm;
-        wholeRange.SideMarginsValue = 2;
+        wholeRange.SideMarginsValue = 1;
 
         var visualRange = diagram.AxisY.VisualRange;
         visualRange.Auto = false;
         visualRange.MinValue = fullCm;
         visualRange.MaxValue = emptyCm;
-        visualRange.SideMarginsValue = 2;
+        visualRange.SideMarginsValue = 1;
+
+        chartControl_wl_calibration.Series[0].Points.Clear();
     }
 
-    private void AddUsec(short usec, int index)
+    private IDisposable StartWaterCallibrationTimer(ShowerConnection con)
     {
-        const int dataIntervalSec = 40;
+        var timer = new System.Threading.Timer(state => OnTimer(), this, -1, 1000);
+        return timer;
+
+        void OnTimer()
+        {
+            var overflowCount = con.Request<ushort>(ShowerCodes.GetWaterLevelOverflowCounter);
+            var noiseErrors = con.Request<ushort>(ShowerCodes.GetWaterLevelNoiseErrorCounter);
+
+            BeginInvoke(delegate (ushort overflowCount, ushort noiseErrors) 
+            {
+                //label_wl_calib_errors.Text = $"Ошибки: Overflow: {overflowCount}, Noise: {noiseErrors}";
+            });
+        }
+    }
+
+    private void AddUsec(short usec)
+    {
+        const int dataIntervalSec = 30;
         const int maxPoints = dataIntervalSec * 1000 / 100;
 
         //decimal cm = usec / 58m;
         //cm = Math.Round(cm, 3);
 
-        Series ser = chartControl_wl_calibration.Series[0];
+        var now = DateTime.Now;
+        var point = usec != -1 ? new SeriesPoint(now, usec) : new SeriesPoint(now);
 
-        if (usec != -1)
-        {
-            ser.Points.Add(new SeriesPoint(DateTime.Now, usec));
-        }
-        else
-        {
-            ser.Points.Add(new SeriesPoint(DateTime.Now));
-        }
+        var series = chartControl_wl_calibration.Series[0];
+        series.Points.Add(point);
 
-        if (ser.Points.Count > maxPoints)
+        if (series.Points.Count > maxPoints)
         {
-            ser.Points.RemoveAt(0);
+            series.Points.RemoveAt(0);
         }
     }
 
@@ -211,8 +227,8 @@ public partial class Form1 : Form
         button_stop.Enabled = false;
         buttonStartCalib.Enabled = true;
 
-        _ctsWwaterLevelCalibration?.Cancel();
-        _ctsWwaterLevelCalibration = null;
+        _ctsWaterLevelCalibration?.Cancel();
+        _ctsWaterLevelCalibration = null;
     }
 
     private async void Button2_Click(object sender, EventArgs e)

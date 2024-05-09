@@ -120,31 +120,33 @@ public class RequestBuilder
     {
         _writer.Send();
 
-        if (_callbacks.Count > 0)
+        if (_callbacks.Count == 0)
         {
-            var totalSize = _callbacks.Sum(x => x.UnmanagedSize);
-            var buf = new byte[totalSize];
-            Read(buf, totalSize);
-            var startIndex = 0;
-            for (var i = 0; i < _callbacks.Count; i++)
-            {
-                _callbacks[i].ReadPrimitiveCallback(buf, ref startIndex);
-            }
+            return;
+        }
+
+        var totalSize = _callbacks.Sum(x => x.UnmanagedSize);
+        var buf = new byte[totalSize];
+        Read(buf, totalSize);
+        var startIndex = 0;
+        for (var i = 0; i < _callbacks.Count; i++)
+        {
+            _callbacks[i].ReadPrimitiveCallback(buf, ref startIndex);
         }
     }
 
     public Task ExecuteAsync() => ExecuteAsync(CancellationToken.None);
 
-    public async Task ExecuteAsync(CancellationToken cancellationToken)
+    public async Task ExecuteAsync(CancellationToken cancellationToken = default)
     {
         await _writer.SendAsync(cancellationToken).ConfigureAwait(false);
         var totalSize = _callbacks.Sum(x => x.UnmanagedSize);
-        var buf = new byte[totalSize];
-        await ReadAsync(buf, totalSize, cancellationToken).ConfigureAwait(false);
+        var buffer = new byte[totalSize];
+        await ReadExactlyAsync(buffer, cancellationToken).ConfigureAwait(false);
         var startIndex = 0;
         for (var i = 0; i < _callbacks.Count; i++)
         {
-            _callbacks[i].ReadPrimitiveCallback(buf, ref startIndex);
+            _callbacks[i].ReadPrimitiveCallback(buffer, ref startIndex);
         }
     }
 
@@ -157,9 +159,9 @@ public class RequestBuilder
         _writer.Send();
     }
 
-    private async Task ReadAsync(byte[] buf, int count, CancellationToken cancellationToken)
+    private ValueTask ReadExactlyAsync(Memory<byte> buffer, CancellationToken ct)
     {
-        await _nstream.ReadBlockAsync(buf, 0, count, cancellationToken).ConfigureAwait(false);
+        return _nstream.ReadExactlyAsync(buffer, ct);
     }
 
     private void Read(byte[] buf, int count)
@@ -167,7 +169,7 @@ public class RequestBuilder
         _nstream.ReadBlock(buf, 0, count);
     }
 
-    private struct CallbackInfo
+    private readonly struct CallbackInfo
     {
         public delegate void ReadPrimitiveCallbackHandler(byte[] buffer, ref int startIndex);
         public readonly ReadPrimitiveCallbackHandler ReadPrimitiveCallback;
