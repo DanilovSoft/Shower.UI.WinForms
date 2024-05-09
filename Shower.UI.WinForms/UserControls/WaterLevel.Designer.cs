@@ -1,4 +1,6 @@
 ﻿
+using DevExpress.XtraCharts;
+
 namespace ShowerUI.UserControls
 {
     partial class WaterLevel
@@ -29,64 +31,62 @@ namespace ShowerUI.UserControls
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
-            DevExpress.XtraCharts.SwiftPlotDiagram swiftPlotDiagram1 = new DevExpress.XtraCharts.SwiftPlotDiagram();
-            DevExpress.XtraCharts.SwiftPlotDiagramSecondaryAxisY swiftPlotDiagramSecondaryAxisY1 = new DevExpress.XtraCharts.SwiftPlotDiagramSecondaryAxisY();
-            DevExpress.XtraCharts.Series series1 = new DevExpress.XtraCharts.Series();
-            DevExpress.XtraCharts.SwiftPlotSeriesView swiftPlotSeriesView1 = new DevExpress.XtraCharts.SwiftPlotSeriesView();
-            this.panel_root = new System.Windows.Forms.Panel();
-            this.panel_chart = new System.Windows.Forms.Panel();
-            this.chartControl_water_level = new DevExpress.XtraCharts.ChartControl();
-            this.panel_bottom = new System.Windows.Forms.Panel();
-            this.label8 = new System.Windows.Forms.Label();
-            this.button_loadFrom = new System.Windows.Forms.Button();
-            this.checkBox_avg = new System.Windows.Forms.CheckBox();
-            this.trackBar_avg = new System.Windows.Forms.TrackBar();
-            this.trackBar_medianTrackBar = new System.Windows.Forms.TrackBar();
-            this.button_saveAs = new System.Windows.Forms.Button();
-            this.checkBox_median = new System.Windows.Forms.CheckBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label_reconnect_count = new System.Windows.Forms.Label();
-            this.textBox_max_water_level = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.checkBox_percent = new System.Windows.Forms.CheckBox();
-            this.textBox_min_water_level = new System.Windows.Forms.TextBox();
-            this.button_start = new System.Windows.Forms.Button();
-            this.button_clear = new System.Windows.Forms.Button();
-            this.checkBox_raw = new System.Windows.Forms.CheckBox();
-            this.button_stop = new System.Windows.Forms.Button();
-            this.errorProvider1 = new System.Windows.Forms.ErrorProvider(this.components);
-            this.panel_root.SuspendLayout();
-            this.panel_chart.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.chartControl_water_level)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(swiftPlotDiagram1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(swiftPlotDiagramSecondaryAxisY1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(series1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(swiftPlotSeriesView1)).BeginInit();
-            this.panel_bottom.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBar_avg)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBar_medianTrackBar)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).BeginInit();
-            this.SuspendLayout();
+            components = new System.ComponentModel.Container();
+            var swiftPlotDiagram1 = new DevExpress.XtraCharts.SwiftPlotDiagram();
+            var swiftPlotDiagramSecondaryAxisy1 = new DevExpress.XtraCharts.SwiftPlotDiagramSecondaryAxisY();
+            Series series1 = new DevExpress.XtraCharts.Series();
+            var swiftPlotSeriesView1 = new DevExpress.XtraCharts.SwiftPlotSeriesView();
+            panel_root = new Panel();
+            panel_chart = new Panel();
+            chartControl_water_level = new DevExpress.XtraCharts.ChartControl();
+            panel_bottom = new Panel();
+            label8 = new Label();
+            button_loadFrom = new Button();
+            checkBox_avg = new CheckBox();
+            trackBar_avg = new TrackBar();
+            trackBar_medianTrackBar = new TrackBar();
+            button_saveAs = new Button();
+            checkBox_median = new CheckBox();
+            label2 = new Label();
+            label_reconnect_count = new Label();
+            textBox_max_water_level = new TextBox();
+            label1 = new Label();
+            checkBox_percent = new CheckBox();
+            textBox_min_water_level = new TextBox();
+            button_start = new Button();
+            button_clear = new Button();
+            checkBox_raw = new CheckBox();
+            button_stop = new Button();
+            errorProvider1 = new ErrorProvider(components);
+            panel_root.SuspendLayout();
+            panel_chart.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)chartControl_water_level).BeginInit();
+            panel_bottom.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)trackBar_avg).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)trackBar_medianTrackBar).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)errorProvider1).BeginInit();
+            SuspendLayout();
             // 
             // panel_root
             // 
-            this.panel_root.Controls.Add(this.panel_chart);
-            this.panel_root.Controls.Add(this.panel_bottom);
-            this.panel_root.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel_root.Location = new System.Drawing.Point(0, 0);
-            this.panel_root.Name = "panel_root";
-            this.panel_root.Size = new System.Drawing.Size(1225, 676);
-            this.panel_root.TabIndex = 10;
+            panel_root.Controls.Add(panel_chart);
+            panel_root.Controls.Add(panel_bottom);
+            panel_root.Dock = DockStyle.Fill;
+            panel_root.Location = new Point(0, 0);
+            panel_root.Margin = new Padding(4, 3, 4, 3);
+            panel_root.Name = "panel_root";
+            panel_root.Size = new Size(1429, 780);
+            panel_root.TabIndex = 10;
             // 
             // panel_chart
             // 
-            this.panel_chart.Controls.Add(this.chartControl_water_level);
-            this.panel_chart.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel_chart.Location = new System.Drawing.Point(0, 0);
-            this.panel_chart.Name = "panel_chart";
-            this.panel_chart.Size = new System.Drawing.Size(1225, 567);
-            this.panel_chart.TabIndex = 10;
+            panel_chart.Controls.Add(chartControl_water_level);
+            panel_chart.Dock = DockStyle.Fill;
+            panel_chart.Location = new Point(0, 0);
+            panel_chart.Margin = new Padding(4, 3, 4, 3);
+            panel_chart.Name = "panel_chart";
+            panel_chart.Size = new Size(1429, 654);
+            panel_chart.TabIndex = 10;
             // 
             // chartControl_water_level
             // 
@@ -106,266 +106,282 @@ namespace ShowerUI.UserControls
             swiftPlotDiagram1.AxisY.WholeRange.MinValueSerializable = "0";
             swiftPlotDiagram1.EnableAxisXScrolling = true;
             swiftPlotDiagram1.EnableAxisXZooming = true;
-            swiftPlotDiagramSecondaryAxisY1.AxisID = 0;
-            swiftPlotDiagramSecondaryAxisY1.GridLines.Visible = true;
-            swiftPlotDiagramSecondaryAxisY1.MinorCount = 1;
-            swiftPlotDiagramSecondaryAxisY1.Name = "percent";
-            swiftPlotDiagramSecondaryAxisY1.NumericScaleOptions.AutoGrid = false;
-            swiftPlotDiagramSecondaryAxisY1.NumericScaleOptions.CustomGridAlignment = 2D;
-            swiftPlotDiagramSecondaryAxisY1.NumericScaleOptions.GridAlignment = DevExpress.XtraCharts.NumericGridAlignment.Custom;
-            swiftPlotDiagramSecondaryAxisY1.NumericScaleOptions.GridOffset = 2D;
-            swiftPlotDiagramSecondaryAxisY1.NumericScaleOptions.GridSpacing = 2D;
-            swiftPlotDiagramSecondaryAxisY1.Tickmarks.MinorVisible = false;
-            swiftPlotDiagramSecondaryAxisY1.Tickmarks.Visible = false;
-            swiftPlotDiagramSecondaryAxisY1.Visibility = DevExpress.Utils.DefaultBoolean.True;
-            swiftPlotDiagramSecondaryAxisY1.VisibleInPanesSerializable = "-1";
-            swiftPlotDiagramSecondaryAxisY1.VisualRange.Auto = false;
-            swiftPlotDiagramSecondaryAxisY1.VisualRange.MaxValueSerializable = "99";
-            swiftPlotDiagramSecondaryAxisY1.VisualRange.MinValueSerializable = "0";
-            swiftPlotDiagramSecondaryAxisY1.WholeRange.Auto = false;
-            swiftPlotDiagramSecondaryAxisY1.WholeRange.MaxValueSerializable = "99";
-            swiftPlotDiagramSecondaryAxisY1.WholeRange.MinValueSerializable = "0";
-            swiftPlotDiagram1.SecondaryAxesY.AddRange(new DevExpress.XtraCharts.SwiftPlotDiagramSecondaryAxisY[] {
-            swiftPlotDiagramSecondaryAxisY1});
-            this.chartControl_water_level.Diagram = swiftPlotDiagram1;
-            this.chartControl_water_level.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.chartControl_water_level.Legend.Name = "Default Legend";
-            this.chartControl_water_level.Location = new System.Drawing.Point(0, 0);
-            this.chartControl_water_level.Name = "chartControl_water_level";
+            swiftPlotDiagramSecondaryAxisy1.GridLines.Visible = true;
+            swiftPlotDiagramSecondaryAxisy1.MinorCount = 1;
+            swiftPlotDiagramSecondaryAxisy1.Name = "percent";
+            swiftPlotDiagramSecondaryAxisy1.NumericScaleOptions.AutoGrid = false;
+            swiftPlotDiagramSecondaryAxisy1.NumericScaleOptions.CustomGridAlignment = 2D;
+            swiftPlotDiagramSecondaryAxisy1.NumericScaleOptions.GridAlignment = DevExpress.XtraCharts.NumericGridAlignment.Custom;
+            swiftPlotDiagramSecondaryAxisy1.NumericScaleOptions.GridOffset = 2D;
+            swiftPlotDiagramSecondaryAxisy1.NumericScaleOptions.GridSpacing = 2D;
+            swiftPlotDiagramSecondaryAxisy1.Tickmarks.MinorVisible = false;
+            swiftPlotDiagramSecondaryAxisy1.Tickmarks.Visible = false;
+            swiftPlotDiagramSecondaryAxisy1.Visibility = DevExpress.Utils.DefaultBoolean.True;
+            swiftPlotDiagramSecondaryAxisy1.VisibleInPanesSerializable = "-1";
+            swiftPlotDiagramSecondaryAxisy1.VisualRange.Auto = false;
+            swiftPlotDiagramSecondaryAxisy1.VisualRange.MaxValueSerializable = "99";
+            swiftPlotDiagramSecondaryAxisy1.VisualRange.MinValueSerializable = "0";
+            swiftPlotDiagramSecondaryAxisy1.WholeRange.Auto = false;
+            swiftPlotDiagramSecondaryAxisy1.WholeRange.MaxValueSerializable = "99";
+            swiftPlotDiagramSecondaryAxisy1.WholeRange.MinValueSerializable = "0";
+            swiftPlotDiagram1.SecondaryAxesY.AddRange(new DevExpress.XtraCharts.SwiftPlotDiagramSecondaryAxisY[] { swiftPlotDiagramSecondaryAxisy1 });
+            chartControl_water_level.Diagram = swiftPlotDiagram1;
+            chartControl_water_level.Dock = DockStyle.Fill;
+            chartControl_water_level.Legend.LegendID = -1;
+            chartControl_water_level.Legend.Name = "Default Legend";
+            chartControl_water_level.Location = new Point(0, 0);
+            chartControl_water_level.Margin = new Padding(4, 3, 4, 3);
+            chartControl_water_level.Name = "chartControl_water_level";
             series1.ArgumentScaleType = DevExpress.XtraCharts.ScaleType.Numerical;
             series1.LabelsVisibility = DevExpress.Utils.DefaultBoolean.False;
             series1.Name = "RAW";
-            swiftPlotSeriesView1.Color = System.Drawing.Color.Fuchsia;
+            swiftPlotSeriesView1.Color = Color.Fuchsia;
             series1.View = swiftPlotSeriesView1;
-            this.chartControl_water_level.SeriesSerializable = new DevExpress.XtraCharts.Series[] {
-        series1};
-            this.chartControl_water_level.Size = new System.Drawing.Size(1225, 567);
-            this.chartControl_water_level.TabIndex = 0;
+            chartControl_water_level.SeriesSerializable = new DevExpress.XtraCharts.Series[]
+    {
+    series1
+    };
+            chartControl_water_level.Size = new Size(1429, 654);
+            chartControl_water_level.TabIndex = 0;
             // 
             // panel_bottom
             // 
-            this.panel_bottom.Controls.Add(this.label8);
-            this.panel_bottom.Controls.Add(this.button_loadFrom);
-            this.panel_bottom.Controls.Add(this.checkBox_avg);
-            this.panel_bottom.Controls.Add(this.trackBar_avg);
-            this.panel_bottom.Controls.Add(this.trackBar_medianTrackBar);
-            this.panel_bottom.Controls.Add(this.button_saveAs);
-            this.panel_bottom.Controls.Add(this.checkBox_median);
-            this.panel_bottom.Controls.Add(this.label2);
-            this.panel_bottom.Controls.Add(this.label_reconnect_count);
-            this.panel_bottom.Controls.Add(this.textBox_max_water_level);
-            this.panel_bottom.Controls.Add(this.label1);
-            this.panel_bottom.Controls.Add(this.checkBox_percent);
-            this.panel_bottom.Controls.Add(this.textBox_min_water_level);
-            this.panel_bottom.Controls.Add(this.button_start);
-            this.panel_bottom.Controls.Add(this.button_clear);
-            this.panel_bottom.Controls.Add(this.checkBox_raw);
-            this.panel_bottom.Controls.Add(this.button_stop);
-            this.panel_bottom.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel_bottom.Location = new System.Drawing.Point(0, 567);
-            this.panel_bottom.Name = "panel_bottom";
-            this.panel_bottom.Size = new System.Drawing.Size(1225, 109);
-            this.panel_bottom.TabIndex = 9;
+            panel_bottom.Controls.Add(label8);
+            panel_bottom.Controls.Add(button_loadFrom);
+            panel_bottom.Controls.Add(checkBox_avg);
+            panel_bottom.Controls.Add(trackBar_avg);
+            panel_bottom.Controls.Add(trackBar_medianTrackBar);
+            panel_bottom.Controls.Add(button_saveAs);
+            panel_bottom.Controls.Add(checkBox_median);
+            panel_bottom.Controls.Add(label2);
+            panel_bottom.Controls.Add(label_reconnect_count);
+            panel_bottom.Controls.Add(textBox_max_water_level);
+            panel_bottom.Controls.Add(label1);
+            panel_bottom.Controls.Add(checkBox_percent);
+            panel_bottom.Controls.Add(textBox_min_water_level);
+            panel_bottom.Controls.Add(button_start);
+            panel_bottom.Controls.Add(button_clear);
+            panel_bottom.Controls.Add(checkBox_raw);
+            panel_bottom.Controls.Add(button_stop);
+            panel_bottom.Dock = DockStyle.Bottom;
+            panel_bottom.Location = new Point(0, 654);
+            panel_bottom.Margin = new Padding(4, 3, 4, 3);
+            panel_bottom.Name = "panel_bottom";
+            panel_bottom.Size = new Size(1429, 126);
+            panel_bottom.TabIndex = 9;
             // 
             // label8
             // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(1028, 76);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(136, 13);
-            this.label8.TabIndex = 16;
-            this.label8.Text = "Повторных подключений:";
+            label8.AutoSize = true;
+            label8.Location = new Point(1199, 88);
+            label8.Margin = new Padding(4, 0, 4, 0);
+            label8.Name = "label8";
+            label8.Size = new Size(153, 15);
+            label8.TabIndex = 16;
+            label8.Text = "Повторных подключений:";
             // 
             // button_loadFrom
             // 
-            this.button_loadFrom.Location = new System.Drawing.Point(116, 43);
-            this.button_loadFrom.Name = "button_loadFrom";
-            this.button_loadFrom.Size = new System.Drawing.Size(100, 23);
-            this.button_loadFrom.TabIndex = 15;
-            this.button_loadFrom.Text = "Загрузить из...";
-            this.button_loadFrom.UseVisualStyleBackColor = true;
-            this.button_loadFrom.Click += new System.EventHandler(this.Button_LoadFromFile_Click);
+            button_loadFrom.Location = new Point(135, 50);
+            button_loadFrom.Margin = new Padding(4, 3, 4, 3);
+            button_loadFrom.Name = "button_loadFrom";
+            button_loadFrom.Size = new Size(117, 27);
+            button_loadFrom.TabIndex = 15;
+            button_loadFrom.Text = "Загрузить из...";
+            button_loadFrom.UseVisualStyleBackColor = true;
+            button_loadFrom.Click += Button_LoadFromFile_Click;
             // 
             // checkBox_avg
             // 
-            this.checkBox_avg.AutoSize = true;
-            this.checkBox_avg.Checked = true;
-            this.checkBox_avg.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox_avg.Location = new System.Drawing.Point(697, 72);
-            this.checkBox_avg.Name = "checkBox_avg";
-            this.checkBox_avg.Size = new System.Drawing.Size(110, 17);
-            this.checkBox_avg.TabIndex = 14;
-            this.checkBox_avg.Text = "М + Среднее (μs)";
-            this.checkBox_avg.UseVisualStyleBackColor = true;
-            this.checkBox_avg.CheckedChanged += new System.EventHandler(this.CheckBox_avg_CheckedChanged);
+            checkBox_avg.AutoSize = true;
+            checkBox_avg.Location = new Point(813, 83);
+            checkBox_avg.Margin = new Padding(4, 3, 4, 3);
+            checkBox_avg.Name = "checkBox_avg";
+            checkBox_avg.Size = new Size(72, 19);
+            checkBox_avg.TabIndex = 14;
+            checkBox_avg.Text = "Среднее";
+            checkBox_avg.UseVisualStyleBackColor = true;
+            checkBox_avg.CheckedChanged += CheckBox_avg_CheckedChanged;
             // 
             // trackBar_avg
             // 
-            this.trackBar_avg.Location = new System.Drawing.Point(267, 57);
-            this.trackBar_avg.Maximum = 129;
-            this.trackBar_avg.Minimum = 1;
-            this.trackBar_avg.Name = "trackBar_avg";
-            this.trackBar_avg.Size = new System.Drawing.Size(415, 45);
-            this.trackBar_avg.TabIndex = 13;
-            this.trackBar_avg.Value = 1;
-            this.trackBar_avg.Scroll += new System.EventHandler(this.TrackBar_avg_Scroll);
+            trackBar_avg.Location = new Point(312, 66);
+            trackBar_avg.Margin = new Padding(4, 3, 4, 3);
+            trackBar_avg.Maximum = 129;
+            trackBar_avg.Minimum = 1;
+            trackBar_avg.Name = "trackBar_avg";
+            trackBar_avg.Size = new Size(484, 45);
+            trackBar_avg.TabIndex = 13;
+            trackBar_avg.Value = 1;
+            trackBar_avg.Scroll += TrackBar_avg_Scroll;
             // 
             // trackBar_medianTrackBar
             // 
-            this.trackBar_medianTrackBar.Location = new System.Drawing.Point(267, 11);
-            this.trackBar_medianTrackBar.Maximum = 128;
-            this.trackBar_medianTrackBar.Minimum = 1;
-            this.trackBar_medianTrackBar.Name = "trackBar_medianTrackBar";
-            this.trackBar_medianTrackBar.Size = new System.Drawing.Size(415, 45);
-            this.trackBar_medianTrackBar.TabIndex = 12;
-            this.trackBar_medianTrackBar.TickFrequency = 2;
-            this.trackBar_medianTrackBar.Value = 1;
-            this.trackBar_medianTrackBar.Scroll += new System.EventHandler(this.TrackBar_Median_Scroll);
+            trackBar_medianTrackBar.Location = new Point(312, 13);
+            trackBar_medianTrackBar.Margin = new Padding(4, 3, 4, 3);
+            trackBar_medianTrackBar.Maximum = 128;
+            trackBar_medianTrackBar.Minimum = 1;
+            trackBar_medianTrackBar.Name = "trackBar_medianTrackBar";
+            trackBar_medianTrackBar.Size = new Size(484, 45);
+            trackBar_medianTrackBar.TabIndex = 12;
+            trackBar_medianTrackBar.TickFrequency = 2;
+            trackBar_medianTrackBar.Value = 1;
+            trackBar_medianTrackBar.Scroll += TrackBar_Median_Scroll;
             // 
             // button_saveAs
             // 
-            this.button_saveAs.Location = new System.Drawing.Point(11, 43);
-            this.button_saveAs.Name = "button_saveAs";
-            this.button_saveAs.Size = new System.Drawing.Size(99, 23);
-            this.button_saveAs.TabIndex = 11;
-            this.button_saveAs.Text = "Сохранить в...";
-            this.button_saveAs.UseVisualStyleBackColor = true;
-            this.button_saveAs.Click += new System.EventHandler(this.Button_SaveAs_Click);
+            button_saveAs.Location = new Point(13, 50);
+            button_saveAs.Margin = new Padding(4, 3, 4, 3);
+            button_saveAs.Name = "button_saveAs";
+            button_saveAs.Size = new Size(115, 27);
+            button_saveAs.TabIndex = 11;
+            button_saveAs.Text = "Сохранить в...";
+            button_saveAs.UseVisualStyleBackColor = true;
+            button_saveAs.Click += Button_SaveAs_Click;
             // 
             // checkBox_median
             // 
-            this.checkBox_median.AutoSize = true;
-            this.checkBox_median.Location = new System.Drawing.Point(813, 20);
-            this.checkBox_median.Name = "checkBox_median";
-            this.checkBox_median.Size = new System.Drawing.Size(91, 17);
-            this.checkBox_median.TabIndex = 9;
-            this.checkBox_median.Text = "Медиана (μs)";
-            this.checkBox_median.UseVisualStyleBackColor = true;
-            this.checkBox_median.CheckedChanged += new System.EventHandler(this.CheckBox_Median_CheckedChanged);
+            checkBox_median.AutoSize = true;
+            checkBox_median.Location = new Point(948, 23);
+            checkBox_median.Margin = new Padding(4, 3, 4, 3);
+            checkBox_median.Name = "checkBox_median";
+            checkBox_median.Size = new Size(98, 19);
+            checkBox_median.TabIndex = 9;
+            checkBox_median.Text = "Медиана (μs)";
+            checkBox_median.UseVisualStyleBackColor = true;
+            checkBox_median.CheckedChanged += CheckBox_Median_CheckedChanged;
             // 
             // label2
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(1100, 16);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(47, 13);
-            this.label2.TabIndex = 6;
-            this.label2.Text = "Max (μs)";
+            label2.AutoSize = true;
+            label2.Location = new Point(1283, 18);
+            label2.Margin = new Padding(4, 0, 4, 0);
+            label2.Name = "label2";
+            label2.Size = new Size(53, 15);
+            label2.TabIndex = 6;
+            label2.Text = "Max (μs)";
             // 
             // label_reconnect_count
             // 
-            this.label_reconnect_count.AutoSize = true;
-            this.label_reconnect_count.Location = new System.Drawing.Point(1175, 76);
-            this.label_reconnect_count.Name = "label_reconnect_count";
-            this.label_reconnect_count.Size = new System.Drawing.Size(13, 13);
-            this.label_reconnect_count.TabIndex = 7;
-            this.label_reconnect_count.Text = "0";
+            label_reconnect_count.AutoSize = true;
+            label_reconnect_count.Location = new Point(1371, 88);
+            label_reconnect_count.Margin = new Padding(4, 0, 4, 0);
+            label_reconnect_count.Name = "label_reconnect_count";
+            label_reconnect_count.Size = new Size(13, 15);
+            label_reconnect_count.TabIndex = 7;
+            label_reconnect_count.Text = "0";
             // 
             // textBox_max_water_level
             // 
-            this.textBox_max_water_level.Location = new System.Drawing.Point(1103, 31);
-            this.textBox_max_water_level.Name = "textBox_max_water_level";
-            this.textBox_max_water_level.ReadOnly = true;
-            this.textBox_max_water_level.Size = new System.Drawing.Size(85, 20);
-            this.textBox_max_water_level.TabIndex = 4;
+            textBox_max_water_level.Location = new Point(1287, 36);
+            textBox_max_water_level.Margin = new Padding(4, 3, 4, 3);
+            textBox_max_water_level.Name = "textBox_max_water_level";
+            textBox_max_water_level.ReadOnly = true;
+            textBox_max_water_level.Size = new Size(98, 23);
+            textBox_max_water_level.TabIndex = 4;
             // 
             // label1
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(974, 16);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(44, 13);
-            this.label1.TabIndex = 5;
-            this.label1.Text = "Min (μs)";
+            label1.AutoSize = true;
+            label1.Location = new Point(1136, 18);
+            label1.Margin = new Padding(4, 0, 4, 0);
+            label1.Name = "label1";
+            label1.Size = new Size(51, 15);
+            label1.TabIndex = 5;
+            label1.Text = "Min (μs)";
             // 
             // checkBox_percent
             // 
-            this.checkBox_percent.AutoSize = true;
-            this.checkBox_percent.Location = new System.Drawing.Point(813, 72);
-            this.checkBox_percent.Name = "checkBox_percent";
-            this.checkBox_percent.Size = new System.Drawing.Size(64, 17);
-            this.checkBox_percent.TabIndex = 4;
-            this.checkBox_percent.Text = "0-99 (%)";
-            this.checkBox_percent.UseVisualStyleBackColor = true;
-            this.checkBox_percent.CheckedChanged += new System.EventHandler(this.CheckBox_Percent_CheckedChanged);
+            checkBox_percent.AutoSize = true;
+            checkBox_percent.Checked = true;
+            checkBox_percent.CheckState = CheckState.Checked;
+            checkBox_percent.Location = new Point(948, 83);
+            checkBox_percent.Margin = new Padding(4, 3, 4, 3);
+            checkBox_percent.Name = "checkBox_percent";
+            checkBox_percent.Size = new Size(70, 19);
+            checkBox_percent.TabIndex = 4;
+            checkBox_percent.Text = "0-99 (%)";
+            checkBox_percent.UseVisualStyleBackColor = true;
+            checkBox_percent.CheckedChanged += CheckBox_Percent_CheckedChanged;
             // 
             // textBox_min_water_level
             // 
-            this.textBox_min_water_level.Location = new System.Drawing.Point(977, 32);
-            this.textBox_min_water_level.Name = "textBox_min_water_level";
-            this.textBox_min_water_level.ReadOnly = true;
-            this.textBox_min_water_level.Size = new System.Drawing.Size(82, 20);
-            this.textBox_min_water_level.TabIndex = 3;
+            textBox_min_water_level.Location = new Point(1140, 37);
+            textBox_min_water_level.Margin = new Padding(4, 3, 4, 3);
+            textBox_min_water_level.Name = "textBox_min_water_level";
+            textBox_min_water_level.ReadOnly = true;
+            textBox_min_water_level.Size = new Size(95, 23);
+            textBox_min_water_level.TabIndex = 3;
             // 
             // button_start
             // 
-            this.button_start.Location = new System.Drawing.Point(11, 14);
-            this.button_start.Name = "button_start";
-            this.button_start.Size = new System.Drawing.Size(75, 23);
-            this.button_start.TabIndex = 0;
-            this.button_start.Text = "Запись";
-            this.button_start.UseVisualStyleBackColor = true;
-            this.button_start.Click += new System.EventHandler(this.Button_Start_Click);
+            button_start.Location = new Point(13, 16);
+            button_start.Margin = new Padding(4, 3, 4, 3);
+            button_start.Name = "button_start";
+            button_start.Size = new Size(88, 27);
+            button_start.TabIndex = 0;
+            button_start.Text = "Запись";
+            button_start.UseVisualStyleBackColor = true;
+            button_start.Click += Button_Start_Click;
             // 
             // button_clear
             // 
-            this.button_clear.Location = new System.Drawing.Point(173, 14);
-            this.button_clear.Name = "button_clear";
-            this.button_clear.Size = new System.Drawing.Size(75, 23);
-            this.button_clear.TabIndex = 2;
-            this.button_clear.Text = "Очистить";
-            this.button_clear.UseVisualStyleBackColor = true;
-            this.button_clear.Click += new System.EventHandler(this.Button_Clear_Click);
+            button_clear.Location = new Point(202, 16);
+            button_clear.Margin = new Padding(4, 3, 4, 3);
+            button_clear.Name = "button_clear";
+            button_clear.Size = new Size(88, 27);
+            button_clear.TabIndex = 2;
+            button_clear.Text = "Очистить";
+            button_clear.UseVisualStyleBackColor = true;
+            button_clear.Click += Button_Clear_Click;
             // 
             // checkBox_raw
             // 
-            this.checkBox_raw.AutoSize = true;
-            this.checkBox_raw.Checked = true;
-            this.checkBox_raw.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox_raw.Location = new System.Drawing.Point(697, 20);
-            this.checkBox_raw.Name = "checkBox_raw";
-            this.checkBox_raw.Size = new System.Drawing.Size(72, 17);
-            this.checkBox_raw.TabIndex = 3;
-            this.checkBox_raw.Text = "RAW (μs)";
-            this.checkBox_raw.UseVisualStyleBackColor = true;
-            this.checkBox_raw.CheckedChanged += new System.EventHandler(this.CheckBox_RAW_CheckedChanged);
+            checkBox_raw.AutoSize = true;
+            checkBox_raw.Checked = true;
+            checkBox_raw.CheckState = CheckState.Checked;
+            checkBox_raw.Location = new Point(813, 23);
+            checkBox_raw.Margin = new Padding(4, 3, 4, 3);
+            checkBox_raw.Name = "checkBox_raw";
+            checkBox_raw.Size = new Size(74, 19);
+            checkBox_raw.TabIndex = 3;
+            checkBox_raw.Text = "RAW (μs)";
+            checkBox_raw.UseVisualStyleBackColor = true;
+            checkBox_raw.CheckedChanged += CheckBox_RAW_CheckedChanged;
             // 
             // button_stop
             // 
-            this.button_stop.Enabled = false;
-            this.button_stop.Location = new System.Drawing.Point(92, 14);
-            this.button_stop.Name = "button_stop";
-            this.button_stop.Size = new System.Drawing.Size(75, 23);
-            this.button_stop.TabIndex = 1;
-            this.button_stop.Text = "Стоп";
-            this.button_stop.UseVisualStyleBackColor = true;
-            this.button_stop.Click += new System.EventHandler(this.Button_Stop_Click);
+            button_stop.Enabled = false;
+            button_stop.Location = new Point(107, 16);
+            button_stop.Margin = new Padding(4, 3, 4, 3);
+            button_stop.Name = "button_stop";
+            button_stop.Size = new Size(88, 27);
+            button_stop.TabIndex = 1;
+            button_stop.Text = "Стоп";
+            button_stop.UseVisualStyleBackColor = true;
+            button_stop.Click += Button_Stop_Click;
             // 
             // errorProvider1
             // 
-            this.errorProvider1.ContainerControl = this;
+            errorProvider1.ContainerControl = this;
             // 
             // WaterLevel
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.panel_root);
-            this.Name = "WaterLevel";
-            this.Size = new System.Drawing.Size(1225, 676);
-            this.panel_root.ResumeLayout(false);
-            this.panel_chart.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(swiftPlotDiagramSecondaryAxisY1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(swiftPlotDiagram1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(swiftPlotSeriesView1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(series1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.chartControl_water_level)).EndInit();
-            this.panel_bottom.ResumeLayout(false);
-            this.panel_bottom.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBar_avg)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBar_medianTrackBar)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.errorProvider1)).EndInit();
-            this.ResumeLayout(false);
-
+            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleMode = AutoScaleMode.Font;
+            Controls.Add(panel_root);
+            Margin = new Padding(4, 3, 4, 3);
+            Name = "WaterLevel";
+            Size = new Size(1429, 780);
+            panel_root.ResumeLayout(false);
+            panel_chart.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)chartControl_water_level).EndInit();
+            panel_bottom.ResumeLayout(false);
+            panel_bottom.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)trackBar_avg).EndInit();
+            ((System.ComponentModel.ISupportInitialize)trackBar_medianTrackBar).EndInit();
+            ((System.ComponentModel.ISupportInitialize)errorProvider1).EndInit();
+            ResumeLayout(false);
         }
 
         #endregion

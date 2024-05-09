@@ -2,7 +2,7 @@
 
 public partial class WaterLevelSettings : Form
 {
-    private CancellationTokenSource _cts;
+    //private CancellationTokenSource _cts;
 
     public WaterLevelSettings()
     {

@@ -5,7 +5,7 @@ namespace Shower.Domain.RpcClient;
 
 public class RequestBuilder
 {
-    private readonly List<CallbackInfo> _callbacks = new();
+    private readonly List<CallbackInfo> _callbacks = [];
     private readonly MyBinaryWriter _writer;
     private readonly ShowerBinaryReader _reader;
     private readonly FixedNetworkStream _nstream;
@@ -116,24 +116,25 @@ public class RequestBuilder
         }
     }
 
-    public void Execute()
-    {
-        _writer.Send();
+    //public void Execute()
+    //{
+    //    _writer.Send();
 
-        if (_callbacks.Count == 0)
-        {
-            return;
-        }
+    //    if (_callbacks.Count == 0)
+    //    {
+    //        return;
+    //    }
 
-        var totalSize = _callbacks.Sum(x => x.UnmanagedSize);
-        var buf = new byte[totalSize];
-        Read(buf, totalSize);
-        var startIndex = 0;
-        for (var i = 0; i < _callbacks.Count; i++)
-        {
-            _callbacks[i].ReadPrimitiveCallback(buf, ref startIndex);
-        }
-    }
+    //    var totalSize = _callbacks.Sum(x => x.UnmanagedSize);
+    //    var buffer = new byte[totalSize];
+    //    Read(buffer);
+
+    //    var startIndex = 0;
+    //    for (var i = 0; i < _callbacks.Count; i++)
+    //    {
+    //        _callbacks[i].ReadPrimitiveCallback(buffer, ref startIndex);
+    //    }
+    //}
 
     public Task ExecuteAsync() => ExecuteAsync(CancellationToken.None);
 
@@ -143,6 +144,7 @@ public class RequestBuilder
         var totalSize = _callbacks.Sum(x => x.UnmanagedSize);
         var buffer = new byte[totalSize];
         await ReadExactlyAsync(buffer, cancellationToken).ConfigureAwait(false);
+
         var startIndex = 0;
         for (var i = 0; i < _callbacks.Count; i++)
         {
@@ -164,9 +166,9 @@ public class RequestBuilder
         return _nstream.ReadExactlyAsync(buffer, ct);
     }
 
-    private void Read(byte[] buf, int count)
+    private void Read(Span<byte> buffer)
     {
-        _nstream.ReadBlock(buf, 0, count);
+        _nstream.ReadExactly(buffer);
     }
 
     private readonly struct CallbackInfo

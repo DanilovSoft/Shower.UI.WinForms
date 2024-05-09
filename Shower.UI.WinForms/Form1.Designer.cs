@@ -46,6 +46,7 @@ namespace ShowerUI
             panel2 = new Panel();
             chartControl_wl_calibration = new ChartControl();
             panel1 = new Panel();
+            label_wl_calib_errors = new Label();
             label_elapsedWL = new Label();
             label1 = new Label();
             label6 = new Label();
@@ -221,6 +222,7 @@ namespace ShowerUI
             // 
             // panel1
             // 
+            panel1.Controls.Add(label_wl_calib_errors);
             panel1.Controls.Add(label_elapsedWL);
             panel1.Controls.Add(label1);
             panel1.Controls.Add(label6);
@@ -232,6 +234,15 @@ namespace ShowerUI
             panel1.Name = "panel1";
             panel1.Size = new Size(1334, 32);
             panel1.TabIndex = 1;
+            // 
+            // label_wl_calib_errors
+            // 
+            label_wl_calib_errors.AutoSize = true;
+            label_wl_calib_errors.Location = new Point(687, 8);
+            label_wl_calib_errors.Name = "label_wl_calib_errors";
+            label_wl_calib_errors.Size = new Size(51, 13);
+            label_wl_calib_errors.TabIndex = 6;
+            label_wl_calib_errors.Text = "Ошибки:";
             // 
             // label_elapsedWL
             // 
@@ -547,5 +558,6 @@ namespace ShowerUI
         private System.Windows.Forms.Label label1;
         private UserControls.TemperatureMonitor temperatureMonitor1;
         private System.Windows.Forms.Panel panel2;
+        private Label label_wl_calib_errors;
     }
 }

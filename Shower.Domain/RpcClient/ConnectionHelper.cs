@@ -8,7 +8,7 @@ public static class ConnectionHelper
     private const string Address = "shower-stm.lan";
 
     /// <exception cref="OperationCanceledException"/>
-    public static async Task<ShowerConnection> CreateConnectionAsync(CancellationToken cancellationToken)
+    public static async Task<ShowerConnection> CreateConnectionAsync(CancellationToken cancellationToken = default)
     {
         cancellationToken.ThrowIfCancellationRequested();
         var tcp = new TcpClient();

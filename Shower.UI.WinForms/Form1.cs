@@ -108,7 +108,7 @@ public partial class Form1 : Form
         buttonStartCalib.Enabled = false;
 
         var sw = new Stopwatch();
-        //var median = new MedianFilter<ushort>(7);
+        var elapsedFilter = new MedianFilter<ushort>(9);
 
         while (!ct.IsCancellationRequested)
         {
@@ -116,8 +116,10 @@ public partial class Form1 : Form
 
             try
             {
+                using var _ = StartWaterCallibrationTimer(ct);
                 using var con = await ConnectionHelper.CreateConnectionAsync(ct);
-                using var _ = StartWaterCallibrationTimer(con);
+                var measureInterval = await con.GetWaterLevelMeasureIntervalAsync(ct);
+                numericWaterLevelCalibInterval.Value = (int)measureInterval.TotalMilliseconds;
                 var waterLevelEmpty = await con.RequestAsync<ushort>(ShowerCodes.GetWaterLevelEmptyUsec, ct);
                 var waterLevelFull = await con.RequestAsync<ushort>(ShowerCodes.GetWaterLevelFullUsec, ct);
 
@@ -126,16 +128,15 @@ public partial class Form1 : Form
 
                 while (!ct.IsCancellationRequested)
                 {
-                    var interval = TimeSpan.FromMilliseconds((int)numericWaterLevelCalibInterval.Value);
-
+                    var intervalMsec = (int)numericWaterLevelCalibInterval.Value;
                     sw.Restart();
-                    await Task.Delay(interval, ct);
+                    await Task.Delay(intervalMsec, ct);
                     var usec = await con.GetWaterLevelRawAsync(ct);
                     sw.Stop();
 
                     var elapsed = (ushort)sw.ElapsedMilliseconds;
-                    //var elapsed = median.Add((ushort)sw.ElapsedMilliseconds);
-                    //if (median.IsInitialized)
+                    elapsed = elapsedFilter.Add(elapsed);
+                    if (elapsedFilter.IsInitialized)
                     {
                         label_elapsedWL.Text = elapsed + " мсек";
                     }
@@ -167,7 +168,7 @@ public partial class Form1 : Form
     {
         var diagram = (SwiftPlotDiagram)chartControl_wl_calibration.Diagram;
 
-        var emptyCm = waterLevelEmpty /*/ 58d*/ * 1.05;  // +5%
+        var emptyCm = waterLevelEmpty /*/ 58d*/ * 1.10;  // +10%
         var fullCm = 116;// waterLevelFull /*/ 58d*/ * 0.80;    // -20%
 
         var wholeRange = diagram.AxisY.WholeRange;
@@ -185,20 +186,29 @@ public partial class Form1 : Form
         chartControl_wl_calibration.Series[0].Points.Clear();
     }
 
-    private IDisposable StartWaterCallibrationTimer(ShowerConnection con)
+    private PeriodicTimer StartWaterCallibrationTimer(CancellationToken ct)
     {
-        var timer = new System.Threading.Timer(state => OnTimer(), this, -1, 1000);
+        var timer = new PeriodicTimer(TimeSpan.FromSeconds(1));
+        _ = Task.Run(Loop, ct);
         return timer;
 
-        void OnTimer()
+        async Task Loop()
         {
-            var overflowCount = con.Request<ushort>(ShowerCodes.GetWaterLevelOverflowCounter);
-            var noiseErrors = con.Request<ushort>(ShowerCodes.GetWaterLevelNoiseErrorCounter);
+            using var con = await ConnectionHelper.CreateConnectionAsync(ct);
 
-            BeginInvoke(delegate (ushort overflowCount, ushort noiseErrors) 
+            while (!ct.IsCancellationRequested)
             {
-                //label_wl_calib_errors.Text = $"Ошибки: Overflow: {overflowCount}, Noise: {noiseErrors}";
-            });
+                await timer.WaitForNextTickAsync(ct);
+                var overflowCount = await con.RequestAsync<ushort>(ShowerCodes.GetWaterLevelOverflowCounter, ct);
+                var noiseErrors = await con.RequestAsync<ushort>(ShowerCodes.GetWaterLevelNoiseErrorCounter, ct);
+
+                BeginInvoke(delegate (ushort overflowCount, ushort noiseErrors)
+                {
+                    label_wl_calib_errors.Text = $"Ошибки: Overflow: {overflowCount}, Noise: {noiseErrors}";
+                },
+                overflowCount,
+                noiseErrors);
+            }
         }
     }
 

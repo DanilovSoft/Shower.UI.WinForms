@@ -5,6 +5,7 @@ using System.Text;
 
 namespace Shower.Domain.RpcClient;
 
+/// <remarks>Не потокобезопасный</remarks>
 public sealed class ShowerConnection : IShowerConnection, IDisposable
 {
     private const int ReadTimeoutMsec = 10_000;
@@ -487,6 +488,12 @@ public sealed class ShowerConnection : IShowerConnection, IDisposable
     public byte GetWaterLevelMeasureInterval()
     {
         return Request<byte>(ShowerCodes.GetWaterLevelMeasureInterval);
+    }
+
+    public async Task<TimeSpan> GetWaterLevelMeasureIntervalAsync(CancellationToken cancellationToken = default)
+    {
+        var value = await RequestAsync<byte>(ShowerCodes.GetWaterLevelMeasureInterval, cancellationToken);
+        return TimeSpan.FromMilliseconds(value);
     }
 
     public byte GetWaterValveCutOffPercent()

@@ -74,7 +74,7 @@ public partial class WaterLevel : UserControl
         // выключить отображение значений микросекунд.
         _usecSeries.CrosshairLabelVisibility = DevExpress.Utils.DefaultBoolean.True;
         _medianSeries.CrosshairLabelVisibility = DevExpress.Utils.DefaultBoolean.True;
-        _percentSeries.CrosshairLabelVisibility = DevExpress.Utils.DefaultBoolean.False;
+        _percentSeries.CrosshairLabelVisibility = DevExpress.Utils.DefaultBoolean.True;
         _averageSeries.CrosshairLabelVisibility = DevExpress.Utils.DefaultBoolean.False;
 
         _medianSeries.Visible = checkBox_median.Checked;
@@ -138,7 +138,7 @@ public partial class WaterLevel : UserControl
         session.WaterLevelFull = await con.GetWaterLevelFullAsync(session.Cts.Token);
 
         // Число должно быть не чётным.
-        byte medianSize = await con.GetWaterLevelMedianSizeAsync();
+        var medianSize = await con.GetWaterLevelMedianSizeAsync();
         if (medianSize % 2 != 1)
         {
             medianSize++;
@@ -146,7 +146,7 @@ public partial class WaterLevel : UserControl
         trackBar_medianTrackBar.Value = (medianSize - 1) / 2;
         UpdateMedianCheckBoxText();
 
-        byte averageSize = await con.GetWaterLevelAverageSizeAsync();
+        var averageSize = await con.GetWaterLevelAverageSizeAsync();
         trackBar_avg.Value = averageSize;
         UpdateAverageCheckBox();
 
@@ -203,7 +203,7 @@ public partial class WaterLevel : UserControl
         {
             while (!session.Cts.IsCancellationRequested)
             {
-                short rawUsec = await Task.Run(async () =>
+                var rawUsec = await Task.Run(async () =>
                 {
                     await Task.Delay(40);
                     return await con.GetWaterLevelRawAsync(session.Cts.Token);
@@ -217,7 +217,7 @@ public partial class WaterLevel : UserControl
 
                     int medianUsec = medianFilter.Add(invertedUsec);
 
-                    AddRawSeriesPoint(session.LastPointIndex, invertedUsec);
+                    AddRawSeriesPoint(session.LastPointIndex, invertedUsec, rawUsec);
 
                     if (medianFilter.IsInitialized)
                     {
@@ -376,7 +376,7 @@ public partial class WaterLevel : UserControl
         for (var i = 0; i < session.UsecList.Count; i++)
         {
             ushort rawUsec = session.UsecList[i];
-            AddRawSeriesPoint(i, rawUsec);
+            AddRawSeriesPoint(i, rawUsec, rawUsec);
 
             ushort medianUsec = medianFilter.Add(rawUsec);
 
@@ -442,9 +442,13 @@ public partial class WaterLevel : UserControl
         _medianSeries.Points.Add(new SeriesPoint(pointIndex, value));
     }
 
-    private void AddRawSeriesPoint(int pointIndex, double value)
+    private void AddRawSeriesPoint(int pointIndex, double rawUsec, double displayValue)
     {
-        _usecSeries.Points.Add(new SeriesPoint(pointIndex, value));
+        var point = new SeriesPoint(pointIndex, rawUsec)
+        {
+            //Tag = displayValue.ToString()
+        };
+        _usecSeries.Points.Add(point);
     }
 
     private void ClearAverageSeries()
