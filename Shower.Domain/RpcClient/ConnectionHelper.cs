@@ -5,7 +5,7 @@ namespace Shower.Domain.RpcClient;
 public static class ConnectionHelper
 {
     private const int PortNumber = 333;
-    private const string Address = "shower-stm.lan";
+    private const string Address = "10.2.2.218";
 
     /// <exception cref="OperationCanceledException"/>
     public static async Task<ShowerConnection> CreateConnectionAsync(CancellationToken cancellationToken = default)
