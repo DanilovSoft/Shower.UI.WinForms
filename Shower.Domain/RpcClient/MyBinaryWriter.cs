@@ -22,7 +22,7 @@ internal sealed class MyBinaryWriter : BinaryWriter
     /// <summary>
     /// Записывает в начало стрима 1 байт: размер последующих данных в стриме (до 200 байт).
     /// </summary>
-    public void End()
+    public void WriteEnd()
     {
         if (OutStream.Length > MaxLength)
         {

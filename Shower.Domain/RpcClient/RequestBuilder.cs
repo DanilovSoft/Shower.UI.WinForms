@@ -63,7 +63,7 @@ public class RequestBuilder
     private RequestBuilder Write<T>(ShowerCodes code, Action<T> callback) where T : struct
     {
         _writer.Write(code);
-        _writer.End();
+        _writer.WriteEnd();
         _callbacks.Add(CallbackInfo.Create(callback));
         return this;
     }
@@ -79,7 +79,7 @@ public class RequestBuilder
 
     public RequestBuilder Result<T>(Action<T> callback) where T : struct
     {
-        _writer.End();
+        _writer.WriteEnd();
         _callbacks.Add(CallbackInfo.Create(callback));
         return this;
     }
@@ -157,7 +157,7 @@ public class RequestBuilder
     /// </summary>
     private void WriteEndAndSend()
     {
-        _writer.End();
+        _writer.WriteEnd();
         _writer.Send();
     }
 

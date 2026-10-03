@@ -8,24 +8,20 @@ public static class ConnectionHelper
     private const string Address = "10.2.2.218";
 
     /// <exception cref="OperationCanceledException"/>
-    public static async Task<ShowerConnection> CreateConnectionAsync(CancellationToken cancellationToken = default)
+    public static async Task<ShowerConnection> CreateConnectionAsync(CancellationToken ct)
     {
-        cancellationToken.ThrowIfCancellationRequested();
+        ct.ThrowIfCancellationRequested();
+
         var tcp = new TcpClient();
         try
         {
-            using (cancellationToken.Register(static s => ((IDisposable)s!).Dispose(), tcp, useSynchronizationContext: false))
+            //using (cancellationToken.Register(static s => ((IDisposable)s!).Dispose(), tcp, useSynchronizationContext: false))
             {
-                await tcp.ConnectAsync(Address, PortNumber).ConfigureAwait(false);
+                await tcp.ConnectAsync(Address, PortNumber, ct).ConfigureAwait(false);
             }
             var connection = new ShowerConnection(tcp);
             tcp = null;
             return connection;
-        }
-        catch when (cancellationToken.IsCancellationRequested)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-            throw;
         }
         finally
         {

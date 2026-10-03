@@ -39,15 +39,21 @@ public sealed class ShowerConnection : IShowerConnection, IDisposable
     public T Request<T>(ShowerCodes code) where T : struct
     {
         _writer.Write(code);
-        _writer.End();
+        _writer.WriteEnd();
         _writer.Send();
 
         var unmanagedSize = Marshal.SizeOf<T>();
-        Span<byte> buffer = unmanagedSize <= 256 ? stackalloc byte[256] : new byte[unmanagedSize];
-        buffer = buffer[..unmanagedSize];
+        Span<byte> buffer = GetRequestBuffer(unmanagedSize, stackalloc byte[256]);
 
         _nstream.ReadExactly(buffer);
         return MySerializer.Read<T>(buffer);
+    }
+
+    private static Span<byte> GetRequestBuffer(int size, Span<byte> buffer)
+    {
+        return buffer.Length >= size
+            ? buffer[..size]
+            : new byte[size];
     }
 
     /// <inheritdoc/>
@@ -186,7 +192,7 @@ public sealed class ShowerConnection : IShowerConnection, IDisposable
     public SetupModel GetTempChart()
     {
         _writer.Write(ShowerCodes.GetTempChart);
-        _writer.End();
+        _writer.WriteEnd();
         _writer.Send();
 
         Span<byte> data = stackalloc byte[SetupModel.STEP_COUNT];
@@ -234,14 +240,14 @@ public sealed class ShowerConnection : IShowerConnection, IDisposable
     public async Task<T> RequestAsync<T>(ShowerCodes code, CancellationToken cancellationToken = default) where T : struct
     {
         _writer.Write(code);
-        _writer.End();
-        
+        _writer.WriteEnd();
+
         var unmanagedSize = Marshal.SizeOf<T>();
         var buffer = new byte[unmanagedSize];
 
         await _writer.SendAsync(cancellationToken).ConfigureAwait(false);
         await _nstream.ReadExactlyAsync(buffer, cancellationToken).ConfigureAwait(false);
-        
+
         return MySerializer.Read<T>(buffer);
     }
 
