@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+  </Folder>
+  <Project Path="Shower.App.WinForms/Shower.App.WinForms.csproj" />
+  <Project Path="Shower.App/Shower.App.csproj" />
+  <Project Path="Shower.Domain/Shower.Domain.csproj" />
+  <Project Path="Shower.UnitTests/Shower.UnitTests.csproj" />
+</Solution>
