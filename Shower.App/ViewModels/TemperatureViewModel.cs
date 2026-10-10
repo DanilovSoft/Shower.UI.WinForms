@@ -1,0 +1,375 @@
+﻿using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
+using System.Globalization;
+using System.IO;
+using System.Text.Json;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using Shower.App.Charts;
+using Shower.App.Services;
+using Shower.Domain.Heating;
+using Shower.Domain.Models;
+using Shower.Domain.RpcClient;
+
+namespace Shower.App.ViewModels;
+
+/// <summary>
+/// Вкладка «Температура»: запись температуры в баке и прогноз времени нагрева.
+/// </summary>
+public sealed partial class TemperatureViewModel : ObservableValidator
+{
+    private const int CalculationTempLimit = 40;
+    private const string TimeLeftPlaceholder = "__:__:__";
+    private const string RecordFileFilter = "Json File|*.shower.txt";
+    private const string SimulationFileFilter = "Json File|*.txt";
+
+    private static readonly TimeSpan PollInterval = TimeSpan.FromSeconds(1);
+    private static readonly TimeSpan ReconnectDelay = TimeSpan.FromSeconds(2);
+
+    private readonly IDialogService _dialogs;
+    private readonly List<InternalTempModel> _records = new(600);
+    private CancellationTokenSource? _cts;
+    private HeatingTimeLeft? _calculator;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsBusy))]
+    [NotifyCanExecuteChangedFor(nameof(StartCommand), nameof(StopCommand), nameof(LoadCommand), nameof(SimulateCommand))]
+    private bool _isRecording;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(IsBusy))]
+    [NotifyCanExecuteChangedFor(nameof(StartCommand), nameof(StopCommand), nameof(LoadCommand), nameof(SimulateCommand))]
+    private bool _isSimulating;
+
+    [ObservableProperty]
+    private int _reconnectCount;
+
+    [ObservableProperty]
+    private string? _errorMessage;
+
+    [ObservableProperty]
+    private string _timeLeftText = TimeLeftPlaceholder;
+
+    /// <summary>
+    /// Через сколько минут после включения нагрева взять точку для прогноза. 0 — показывать время с контроллера.
+    /// </summary>
+    [ObservableProperty]
+    private int _forecastStartMinute;
+
+    [ObservableProperty]
+    [NotifyDataErrorInfo]
+    [CustomValidation(typeof(TemperatureViewModel), nameof(ValidateHeaterPower))]
+    private string _heaterPowerText = "";
+
+    [ObservableProperty]
+    [NotifyDataErrorInfo]
+    [CustomValidation(typeof(TemperatureViewModel), nameof(ValidateTankVolume))]
+    private string _tankVolumeText = "";
+
+    [ObservableProperty]
+    [NotifyDataErrorInfo]
+    [CustomValidation(typeof(TemperatureViewModel), nameof(ValidateWaterLevel))]
+    private string _waterLevelText = "";
+
+    public TemperatureViewModel(IDialogService dialogs)
+    {
+        _dialogs = dialogs;
+    }
+
+    public TemperatureChart Chart { get; } = new();
+
+    public bool IsBusy => IsRecording || IsSimulating;
+
+    public static ValidationResult? ValidateHeaterPower(string text, ValidationContext context)
+    {
+        return TryParseHeaterPower(text, out _)
+            ? ValidationResult.Success
+            : new ValidationResult("Введите число больше 0 и меньше 3");
+    }
+
+    public static ValidationResult? ValidateTankVolume(string text, ValidationContext context)
+    {
+        return TryParseTankVolume(text, out _)
+            ? ValidationResult.Success
+            : new ValidationResult("Введите число больше 1 и меньше 100");
+    }
+
+    public static ValidationResult? ValidateWaterLevel(string text, ValidationContext context)
+    {
+        return TryParseWaterLevel(text, out _)
+            ? ValidationResult.Success
+            : new ValidationResult("Введите число от 1 до 100");
+    }
+
+    /// <summary>
+    /// Останавливает запись и симуляцию.
+    /// </summary>
+    [RelayCommand(CanExecute = nameof(IsBusy))]
+    public void Stop()
+    {
+        _cts?.Cancel();
+    }
+
+    [RelayCommand(CanExecute = nameof(CanStart))]
+    private async Task StartAsync()
+    {
+        var cts = _cts = new CancellationTokenSource();
+        IsRecording = true;
+        ErrorMessage = null;
+        ReconnectCount = 0;
+        ClearRecords();
+
+        var stopwatch = Stopwatch.StartNew();
+        var wasConnected = false;
+
+        try
+        {
+            while (!cts.IsCancellationRequested)
+            {
+                try
+                {
+                    using var connection = await ConnectionHelper.CreateConnectionAsync(cts.Token);
+                    if (wasConnected)
+                    {
+                        ReconnectCount++;
+                    }
+                    wasConnected = true;
+                    ErrorMessage = null;
+
+                    await InitBeforeStartAsync(connection, cts.Token);
+                    await RecordAsync(connection, stopwatch, cts.Token);
+                }
+                catch when (cts.IsCancellationRequested)
+                {
+                    return;
+                }
+                catch (Exception ex)
+                {
+                    ErrorMessage = ex.Message;
+                    try
+                    {
+                        await Task.Delay(ReconnectDelay, cts.Token);
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        return;
+                    }
+                }
+            }
+        }
+        finally
+        {
+            cts.Cancel();
+            IsRecording = false;
+        }
+    }
+
+    private bool CanStart() => !IsBusy;
+
+    [RelayCommand]
+    private void Clear()
+    {
+        if (IsSimulating)
+        {
+            Stop();
+        }
+        ClearRecords();
+    }
+
+    [RelayCommand]
+    private void Save()
+    {
+        if (_dialogs.SaveFile(RecordFileFilter, "shower.txt") is not { } path)
+        {
+            return;
+        }
+
+        try
+        {
+            File.WriteAllText(path, JsonSerializer.Serialize(_records));
+        }
+        catch (Exception ex)
+        {
+            _dialogs.ShowError(ex.Message);
+        }
+    }
+
+    [RelayCommand(CanExecute = nameof(CanStart))]
+    private void Load()
+    {
+        if (_dialogs.OpenFile(RecordFileFilter) is not { } path)
+        {
+            return;
+        }
+
+        try
+        {
+            var records = ReadRecords(path);
+
+            ClearRecords();
+            _records.AddRange(records);
+            Chart.AddRange(records);
+            UpdateTimeLeft();
+        }
+        catch (Exception ex)
+        {
+            _dialogs.ShowError(ex.Message);
+        }
+    }
+
+    [RelayCommand(CanExecute = nameof(CanStart))]
+    private async Task SimulateAsync()
+    {
+        if (_dialogs.OpenFile(SimulationFileFilter) is not { } path)
+        {
+            return;
+        }
+
+        List<InternalTempModel> records;
+        try
+        {
+            records = ReadRecords(path);
+        }
+        catch (Exception ex)
+        {
+            _dialogs.ShowError(ex.Message);
+            return;
+        }
+
+        var cts = _cts = new CancellationTokenSource();
+        IsSimulating = true;
+        ClearRecords();
+
+        try
+        {
+            foreach (var record in records)
+            {
+                AddRecord(record);
+                await Task.Delay(10, cts.Token);
+            }
+        }
+        catch (OperationCanceledException)
+        {
+        }
+        finally
+        {
+            cts.Cancel();
+            IsSimulating = false;
+        }
+    }
+
+    partial void OnForecastStartMinuteChanged(int value) => UpdateTimeLeft();
+
+    partial void OnHeaterPowerTextChanged(string value) => UpdateCalculator();
+
+    partial void OnTankVolumeTextChanged(string value) => UpdateCalculator();
+
+    partial void OnWaterLevelTextChanged(string value) => UpdateTimeLeft();
+
+    private async Task InitBeforeStartAsync(ShowerConnection connection, CancellationToken ct)
+    {
+        var heaterPower = await Device.RequestAsync(connection.GetWaterHeaterPowerKWattAsync, ct);
+        var tankVolume = await Device.RequestAsync(connection.GetWaterTankVolumeLitreAsync, ct);
+
+        HeaterPowerText = heaterPower.ToString(CultureInfo.InvariantCulture);
+        TankVolumeText = tankVolume.ToString(CultureInfo.InvariantCulture);
+    }
+
+    private async Task RecordAsync(ShowerConnection connection, Stopwatch stopwatch, CancellationToken ct)
+    {
+        for (var i = 0; !ct.IsCancellationRequested; i++)
+        {
+            var second = (int)stopwatch.Elapsed.TotalSeconds;
+            var internalTemp = await Device.RequestAsync(connection.GetInternalTemperatureAsync, ct);
+            var heaterEnabled = await Device.RequestAsync(connection.GetHeaterEnabledAsync, ct);
+            var minutesLeft = await Device.RequestAsync(connection.GetMinutesLeftAsync, ct);
+
+            // Уровень воды меняется медленно — достаточно раз в 2 секунды.
+            if (i % 2 == 0)
+            {
+                var waterPercent = await Device.RequestAsync(connection.GetWaterPercentAsync, ct);
+                WaterLevelText = waterPercent.ToString(CultureInfo.InvariantCulture);
+            }
+
+            AddRecord(new InternalTempModel
+            {
+                Second = second,
+                InternalTemp = internalTemp,
+                HeaterEnabled = heaterEnabled,
+                TimeLeft = TimeSpan.FromMinutes(minutesLeft),
+            });
+
+            await Task.Delay(PollInterval, ct);
+        }
+    }
+
+    private void AddRecord(InternalTempModel record)
+    {
+        _records.Add(record);
+        Chart.Add(record);
+        UpdateTimeLeft();
+    }
+
+    private void ClearRecords()
+    {
+        _records.Clear();
+        Chart.Clear();
+        TimeLeftText = TimeLeftPlaceholder;
+    }
+
+    private void UpdateCalculator()
+    {
+        _calculator = TryParseHeaterPower(HeaterPowerText, out var power) && TryParseTankVolume(TankVolumeText, out var volume)
+            ? new HeatingTimeLeft(volume, power)
+            : null;
+
+        UpdateTimeLeft();
+    }
+
+    private void UpdateTimeLeft()
+    {
+        if (ForecastStartMinute == 0)
+        {
+            Chart.SetForecast(null);
+            TimeLeftText = _records.Count > 0 ? FormatTimeLeft(_records[^1].TimeLeft) : TimeLeftPlaceholder;
+            return;
+        }
+
+        HeatingForecast? forecast = null;
+        if (_calculator is { } calculator && TryParseWaterLevel(WaterLevelText, out var waterPercent))
+        {
+            forecast = HeatingForecast.Calculate(_records, ForecastStartMinute, waterPercent / 100f, calculator, CalculationTempLimit);
+        }
+
+        Chart.SetForecast(forecast);
+        TimeLeftText = forecast is { } f ? FormatTimeLeft(f.TimeLeft) : TimeLeftPlaceholder;
+    }
+
+    private static List<InternalTempModel> ReadRecords(string path)
+    {
+        return JsonSerializer.Deserialize<List<InternalTempModel>>(File.ReadAllText(path))
+            ?? throw new InvalidDataException("Файл не содержит записей.");
+    }
+
+    private static string FormatTimeLeft(TimeSpan timeLeft) => timeLeft.ToString("hh\\:mm\\:ss");
+
+    private static bool TryParseHeaterPower(string? text, out float kWatt)
+    {
+        return TryParse(text, out kWatt) && kWatt > 0 && kWatt < 3;
+    }
+
+    private static bool TryParseTankVolume(string? text, out float litre)
+    {
+        return TryParse(text, out litre) && litre > 1 && litre < 100;
+    }
+
+    private static bool TryParseWaterLevel(string? text, out float percent)
+    {
+        return TryParse(text, out percent) && percent >= 1 && percent <= 100;
+    }
+
+    private static bool TryParse(string? text, out float value)
+    {
+        return float.TryParse(text?.Replace(',', '.'), NumberStyles.Number, CultureInfo.InvariantCulture, out value);
+    }
+}

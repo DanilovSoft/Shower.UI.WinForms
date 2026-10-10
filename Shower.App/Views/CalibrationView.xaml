@@ -1,0 +1,35 @@
+﻿<UserControl x:Class="Shower.App.Views.CalibrationView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:scottplot="clr-namespace:ScottPlot.WPF;assembly=ScottPlot.WPF"
+             xmlns:charts="clr-namespace:Shower.App.Charts"
+             xmlns:vm="clr-namespace:Shower.App.ViewModels"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance Type=vm:CalibrationViewModel}"
+             d:DesignWidth="1300" d:DesignHeight="700">
+    <DockPanel>
+        <Border DockPanel.Dock="Bottom" Style="{StaticResource ToolPanel}">
+            <StackPanel Orientation="Horizontal">
+                <Button Content="Старт" Command="{Binding StartCommand}" />
+                <Button Content="Стоп" Command="{Binding StopCommand}" />
+
+                <TextBlock Style="{StaticResource SecondaryText}" Margin="24,0,8,0" Text="Интервал (msec):" />
+                <Slider Width="200" VerticalAlignment="Center"
+                        Minimum="0" Maximum="200"
+                        SmallChange="10" LargeChange="50" TickFrequency="10" IsSnapToTickEnabled="True"
+                        Value="{Binding MeasureIntervalMsec}" />
+                <TextBlock VerticalAlignment="Center" Width="40" Margin="8,0,0,0" Text="{Binding MeasureIntervalMsec}" />
+
+                <TextBlock Style="{StaticResource SecondaryText}" Margin="24,0,8,0" Text="Среднее время:" />
+                <TextBlock VerticalAlignment="Center" Text="{Binding ElapsedText}" />
+
+                <TextBlock Style="{StaticResource SecondaryText}" Margin="24,0,0,0" Text="{Binding ErrorCountersText}" />
+                <TextBlock Style="{StaticResource ErrorText}" Margin="24,0,0,0" MaxWidth="500" Text="{Binding ErrorMessage}" />
+            </StackPanel>
+        </Border>
+
+        <scottplot:WpfPlot charts:ChartBinding.Chart="{Binding Chart}" />
+    </DockPanel>
+</UserControl>

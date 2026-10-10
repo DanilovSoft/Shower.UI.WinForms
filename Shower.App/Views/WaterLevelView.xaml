@@ -1,0 +1,124 @@
+﻿<UserControl x:Class="Shower.App.Views.WaterLevelView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:scottplot="clr-namespace:ScottPlot.WPF;assembly=ScottPlot.WPF"
+             xmlns:charts="clr-namespace:Shower.App.Charts"
+             xmlns:vm="clr-namespace:Shower.App.ViewModels"
+             mc:Ignorable="d"
+             d:DataContext="{d:DesignInstance Type=vm:WaterLevelViewModel}"
+             d:DesignWidth="1300" d:DesignHeight="700">
+    <DockPanel>
+        <Border DockPanel.Dock="Bottom" Style="{StaticResource ToolPanel}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" MinWidth="200" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <!-- Управление записью -->
+                <StackPanel VerticalAlignment="Center">
+                    <StackPanel Orientation="Horizontal">
+                        <Button Content="Запись" Command="{Binding StartCommand}" />
+                        <Button Content="Стоп" Command="{Binding StopCommand}" />
+                        <Button Content="Очистить" Command="{Binding ClearCommand}" />
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                        <Button Content="Сохранить в…" Command="{Binding SaveCommand}" />
+                        <Button Content="Загрузить из…" Command="{Binding LoadCommand}" />
+                        <Button Content="Показать всё" Command="{Binding FitToDataCommand}"
+                                ToolTip="Масштабировать график по всем данным и следить за новыми.&#x0a;Колесо мыши — масштаб по X, перетаскивание — прокрутка." />
+                    </StackPanel>
+                </StackPanel>
+
+                <!-- Фильтры -->
+                <Grid Grid.Column="1" Margin="24,0" VerticalAlignment="Center">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Style="{StaticResource SecondaryText}" Margin="0,0,12,0" Text="Медиана" />
+                    <Slider Grid.Column="1" VerticalAlignment="Center"
+                            Minimum="1"
+                            Maximum="128"
+                            SmallChange="1" LargeChange="8" IsSnapToTickEnabled="True" TickFrequency="1"
+                            Value="{Binding MedianSlider}" />
+
+                    <TextBlock Grid.Row="1" Style="{StaticResource SecondaryText}" Margin="0,8,12,0" Text="Среднее" />
+                    <Slider Grid.Row="1" Grid.Column="1" Margin="0,8,0,0" VerticalAlignment="Center"
+                            Minimum="1"
+                            Maximum="129"
+                            SmallChange="1" LargeChange="8" IsSnapToTickEnabled="True" TickFrequency="1"
+                            Value="{Binding AverageWindow}" />
+                </Grid>
+
+                <!-- Видимость серий; цвет подписи совпадает с цветом линии -->
+                <Grid Grid.Column="2" Margin="0,0,24,0" VerticalAlignment="Center">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <CheckBox Margin="0,0,16,0" IsChecked="{Binding ShowRaw}">
+                        <TextBlock Foreground="DodgerBlue" Text="RAW (μs)" />
+                    </CheckBox>
+                    <CheckBox Grid.Column="1" IsChecked="{Binding ShowMedian}">
+                        <TextBlock Foreground="Violet">
+                            <Run Text="Медиана (" /><Run Text="{Binding MedianWindow, Mode=OneWay}" /><Run Text=")" />
+                        </TextBlock>
+                    </CheckBox>
+                    <CheckBox Grid.Row="1" Margin="0,0,16,0" IsChecked="{Binding ShowAverage}">
+                        <TextBlock Foreground="MediumSeaGreen">
+                            <Run Text="Среднее (" /><Run Text="{Binding AverageWindow, Mode=OneWay}" /><Run Text=")" />
+                        </TextBlock>
+                    </CheckBox>
+                    <CheckBox Grid.Row="1" Grid.Column="1" IsChecked="{Binding ShowPercent}">
+                        <TextBlock Foreground="Red" Text="0-99 (%)" />
+                    </CheckBox>
+                </Grid>
+
+                <!-- Калибровка и состояние связи -->
+                <Grid Grid.Column="3" VerticalAlignment="Center">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Style="{StaticResource SecondaryText}" Text="Min (μs)" />
+                    <TextBlock Grid.Column="1" Style="{StaticResource SecondaryText}" Margin="12,0,0,0" Text="Max (μs)" />
+                    <TextBox Grid.Row="1" Width="100" IsReadOnly="True" Text="{Binding MinWaterLevel, Mode=OneWay}"
+                             ToolTip="Показание датчика для полного бака" />
+                    <TextBox Grid.Row="1" Grid.Column="1" Width="100" Margin="12,0,0,0" IsReadOnly="True" Text="{Binding MaxWaterLevel, Mode=OneWay}"
+                             ToolTip="Показание датчика для пустого бака" />
+
+                    <StackPanel Grid.Row="2" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="0,8,0,0">
+                        <TextBlock Style="{StaticResource SecondaryText}" Text="Повторных подключений:" />
+                        <TextBlock VerticalAlignment="Center" Margin="6,0,0,0" Text="{Binding ReconnectCount}" />
+                    </StackPanel>
+                    <TextBlock Grid.Row="3" Grid.ColumnSpan="2" MaxWidth="260" HorizontalAlignment="Left"
+                               Style="{StaticResource ErrorText}" Text="{Binding ErrorMessage}" />
+                </Grid>
+            </Grid>
+        </Border>
+
+        <scottplot:WpfPlot charts:ChartBinding.Chart="{Binding Chart}" />
+    </DockPanel>
+</UserControl>

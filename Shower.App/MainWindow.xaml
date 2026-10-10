@@ -3,10 +3,39 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Shower.App"
+        xmlns:views="clr-namespace:Shower.App.Views"
+        xmlns:vm="clr-namespace:Shower.App.ViewModels"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
+        d:DataContext="{d:DesignInstance Type=vm:MainViewModel}"
+        Title="Shower"
+        Icon="Resources/Shower.ico"
+        Width="1350" Height="800"
+        MinWidth="900" MinHeight="600"
+        WindowStartupLocation="CenterScreen">
+    <DockPanel IsEnabled="{Binding IsIdle}">
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Header="Команда">
+                <MenuItem Header="Перезапуск" Command="{Binding RestartCommand}" />
+                <MenuItem Header="Ping" Command="{Binding PingCommand}" />
+            </MenuItem>
+        </Menu>
 
-    </Grid>
+        <TabControl>
+            <TabItem Header="Температура">
+                <views:TemperatureView DataContext="{Binding Temperature}" />
+            </TabItem>
+            <TabItem Header="Уровень воды">
+                <views:WaterLevelView DataContext="{Binding WaterLevel}" />
+            </TabItem>
+            <TabItem Header="Калибровка уровня">
+                <views:CalibrationView DataContext="{Binding Calibration}" />
+            </TabItem>
+            <TabItem Header="Параметры">
+                <views:ParametersView DataContext="{Binding Parameters}" />
+            </TabItem>
+            <TabItem Header="Отладка">
+                <views:DebugView DataContext="{Binding Debug}" />
+            </TabItem>
+        </TabControl>
+    </DockPanel>
 </Window>

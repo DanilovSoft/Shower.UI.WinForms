@@ -1,21 +1,31 @@
 ﻿namespace Shower.Domain.Filters;
 
+/// <summary>
+/// Фильтр «скользящее среднее».
+/// </summary>
 public sealed class AverageFilter
 {
-    private readonly ushort[] _buffer;
+    private readonly int[] _buffer;
     private readonly int _windowSize;
-    public bool IsInitialized;
     private int _head;
     private int _sum;
-    private int _initC;
+    private int _initCounter;
 
     public AverageFilter(int windowSize)
     {
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(windowSize);
+
         _windowSize = windowSize;
-        _buffer = new ushort[windowSize];
+        _buffer = new int[windowSize];
     }
 
-    public ushort AddNextValue(ushort value)
+    /// <summary>
+    /// Буфер заполнен и возвращаемые значения корректны.
+    /// </summary>
+    public bool IsInitialized { get; private set; }
+
+    /// <returns>Среднее значение по окну, округлённое до целого.</returns>
+    public int Add(int value)
     {
         _sum += value - _buffer[_head];
         _buffer[_head] = value;
@@ -23,13 +33,13 @@ public sealed class AverageFilter
 
         if (!IsInitialized)
         {
-            _initC++;
-            if (_initC >= _windowSize)
+            _initCounter++;
+            if (_initCounter == _windowSize)
             {
                 IsInitialized = true;
             }
         }
 
-        return (ushort)(_sum / _windowSize);
+        return (int)Math.Round(_sum / (double)_windowSize);
     }
 }
