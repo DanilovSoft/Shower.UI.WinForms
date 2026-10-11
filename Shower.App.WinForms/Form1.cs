@@ -27,7 +27,7 @@ public partial class Form1 : Form
         _ = Encoding.ASCII.GetBytes(ap);
         int length = ap.Length;  // 38
 
-        using var connection = await ConnectionHelper.CreateConnectionAsync(CancellationToken.None).ConfigureAwait(false);
+        using var connection = await ConnectionFactory.ConnectAsync(CancellationToken.None).ConfigureAwait(false);
         //connection.Writer.Write(ShowerCodes.SetDefAP);
         //connection.Writer.Write(buf);
         //connection.Writer.End();
@@ -46,7 +46,7 @@ public partial class Form1 : Form
         try
         {
             Enabled = false;
-            using var connection = await ConnectionHelper.CreateConnectionAsync(CancellationToken.None);
+            using var connection = await ConnectionFactory.ConnectAsync(CancellationToken.None);
             connection.Reset();
         }
         catch (Exception ex)
@@ -61,7 +61,7 @@ public partial class Form1 : Form
 
     private void PingToolStripMenuItem_Click(object sender, EventArgs e)
     {
-        using var connection = ConnectionHelper.CreateConnectionAsync(CancellationToken.None).Result;
+        using var connection = ConnectionFactory.ConnectAsync(CancellationToken.None).Result;
         var code = connection.Ping();
     }
 
@@ -73,7 +73,7 @@ public partial class Form1 : Form
 
         try
         {
-            using var connection = await ConnectionHelper.CreateConnectionAsync(cts.Token);
+            using var connection = await ConnectionFactory.ConnectAsync(cts.Token);
             var code = await connection.PingAsync(cts.Token);
         }
         catch (Exception)
@@ -117,7 +117,7 @@ public partial class Form1 : Form
             try
             {
                 using var _ = StartWaterCallibrationTimer(ct);
-                using var con = await ConnectionHelper.CreateConnectionAsync(ct);
+                using var con = await ConnectionFactory.ConnectAsync(ct);
                 var measureInterval = await con.GetWaterLevelMeasureIntervalAsync(ct);
                 numericWaterLevelCalibInterval.Value = (int)measureInterval.TotalMilliseconds;
                 var waterLevelEmpty = await con.RequestAsync<ushort>(ShowerCodes.GetWaterLevelEmptyUsec, ct);
@@ -194,7 +194,7 @@ public partial class Form1 : Form
 
         async Task Loop()
         {
-            using var con = await ConnectionHelper.CreateConnectionAsync(ct);
+            using var con = await ConnectionFactory.ConnectAsync(ct);
 
             while (!ct.IsCancellationRequested)
             {
@@ -247,7 +247,7 @@ public partial class Form1 : Form
 
         try
         {
-            using var con = await ConnectionHelper.CreateConnectionAsync(cts.Token);
+            using var con = await ConnectionFactory.ConnectAsync(cts.Token);
             var chart = con.GetTempChart();
         }
         catch when (cts.IsCancellationRequested)
@@ -284,7 +284,7 @@ public partial class Form1 : Form
 
             PhysicalAddress? bsidValue = string.IsNullOrEmpty(bsid) ? null : PhysicalAddress.Parse(bsid.Replace(":", "").Replace("-", ""));
 
-            using var con = await ConnectionHelper.CreateConnectionAsync(cts.Token);
+            using var con = await ConnectionFactory.ConnectAsync(cts.Token);
             con.SetCurAP(ssid, password, bsidValue);
         }
         catch (Exception ex)
@@ -312,7 +312,7 @@ public partial class Form1 : Form
 
             PhysicalAddress? bsidValue = string.IsNullOrEmpty(bsid) ? null : PhysicalAddress.Parse(bsid.Replace(":", "").Replace("-", ""));
 
-            using var con = await ConnectionHelper.CreateConnectionAsync(cts.Token);
+            using var con = await ConnectionFactory.ConnectAsync(cts.Token);
             con.SetDefAP(ssid, password, bsidValue);
         }
         catch (Exception ex)

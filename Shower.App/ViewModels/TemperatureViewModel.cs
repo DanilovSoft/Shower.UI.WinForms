@@ -188,7 +188,7 @@ public sealed partial class TemperatureViewModel : ObservableValidator
             {
                 try
                 {
-                    using var connection = await ConnectionHelper.CreateConnectionAsync(cts.Token);
+                    using var connection = await ConnectionFactory.ConnectAsync(cts.Token);
                     if (wasConnected)
                     {
                         ReconnectCount++;
@@ -376,7 +376,7 @@ public sealed partial class TemperatureViewModel : ObservableValidator
         try
         {
             using var cts = new CancellationTokenSource(Device.RequestTimeout);
-            using var connection = await ConnectionHelper.CreateConnectionAsync(cts.Token);
+            using var connection = await ConnectionFactory.ConnectAsync(cts.Token);
             await InitBeforeStartAsync(connection, cts.Token);
         }
         catch (Exception ex)
@@ -390,7 +390,7 @@ public sealed partial class TemperatureViewModel : ObservableValidator
         for (var i = 0; !ct.IsCancellationRequested; i++)
         {
             var second = (int)stopwatch.Elapsed.TotalSeconds;
-            var internalTemp = await Device.RequestAsync(connection.GetInternalTemperatureAsync, ct);
+            var internalTemp = await Device.RequestAsync(connection.GetWaterTemperatureAsync, ct);
             var heaterEnabled = await Device.RequestAsync(connection.GetHeaterEnabledAsync, ct);
             var minutesLeft = await Device.RequestAsync(connection.GetMinutesLeftAsync, ct);
 

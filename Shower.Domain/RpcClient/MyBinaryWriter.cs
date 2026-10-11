@@ -51,22 +51,24 @@ public sealed class MyBinaryWriter : BinaryWriter
     }
 
     /// <exception cref="OperationCanceledException"/>
-    public Task SendAsync(CancellationToken cancellationToken = default)
+    public Task SendAsync(CancellationToken ct)
     {
-        if (cancellationToken.IsCancellationRequested)
+        if (ct.IsCancellationRequested)
         {
-            return Task.FromCanceled(cancellationToken);
+            return Task.FromCanceled(ct);
         }
 
         OutStream.Position = 0;
 
-        var copyTask = OutStream.CopyToAsync(_baseStream, bufferSize: 81920, cancellationToken);
+        var copyTask = OutStream.CopyToAsync(_baseStream, bufferSize: 81920, ct);
+
         if (!copyTask.IsCompletedSuccessfully)
         {
-            return WaitCopy(copyTask, cancellationToken);
+            return WaitCopy(copyTask, ct);
         }
 
-        var flushTask = _baseStream.FlushAsync(cancellationToken);
+        var flushTask = _baseStream.FlushAsync(ct);
+
         if (!flushTask.IsCompletedSuccessfully)
         {
             return WaitFlush(flushTask);

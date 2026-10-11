@@ -37,7 +37,7 @@ public static class Device
     /// </summary>
     public static async Task<T> RunAsync<T>(Func<ShowerConnection, T> action, CancellationToken cancellationToken = default)
     {
-        using var connection = await ConnectionHelper.CreateConnectionAsync(cancellationToken);
+        using var connection = await ConnectionFactory.ConnectAsync(cancellationToken);
         return await Task.Run(() => action(connection), cancellationToken);
     }
 
@@ -58,7 +58,7 @@ public static class Device
 
     public static async Task<ShowerCodes> PingAsync(CancellationToken cancellationToken)
     {
-        using var connection = await ConnectionHelper.CreateConnectionAsync(cancellationToken);
+        using var connection = await ConnectionFactory.ConnectAsync(cancellationToken);
         return await RequestAsync(connection.PingAsync, cancellationToken);
     }
 }

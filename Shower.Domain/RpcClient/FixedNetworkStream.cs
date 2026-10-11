@@ -4,7 +4,7 @@ namespace Shower.Domain.RpcClient;
 
 internal sealed class FixedNetworkStream : Stream
 {
-    private readonly NetworkStream _nstream;
+    private readonly Stream _nstream;
     private int _readTimeout;
     private int _writeTimeout;
 
@@ -32,48 +32,11 @@ internal sealed class FixedNetworkStream : Stream
 
     public override int Read(byte[] buffer, int offset, int count) => _nstream.Read(buffer, offset, count);
 
-    //public override async Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken = default)
-    //{
-    //    using var linked = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
-    //    linked.CancelAfter(ReadTimeout);
-
-    //    try
-    //    {
-    //        using (linked.Token.Register(_nstream.Close, false))
-    //        {
-    //            return await _nstream.ReadAsync(buffer, offset, count, linked.Token).ConfigureAwait(false);
-    //        }
-    //    }
-    //    catch (Exception ex) when (linked.IsCancellationRequested && !cancellationToken.IsCancellationRequested)
-    //    {
-    //        throw new TimeoutException("Превышено время ожидания операции", ex);
-    //    }
-    //    catch (Exception ex) when (cancellationToken.IsCancellationRequested)
-    //    {
-    //        throw new OperationCanceledException("Операция отменена пользователем", ex, cancellationToken);
-    //    }
-    //}
-
     public override ValueTask<int> ReadAsync(Memory<byte> buffer, CancellationToken cancellationToken = default)
     {
         // TO THINK закрывать соединение по токену?
         return _nstream.ReadAsync(buffer, cancellationToken);
     }
-
-    //[Obsolete("Use ReadExactly")]
-    //public async Task ReadBlockAsync(byte[] buf, int offset, int count, CancellationToken cancellationToken = default)
-    //{
-    //    int n;
-    //    while ((count -= n = await ReadAsync(buf, offset, count, cancellationToken).ConfigureAwait(false)) > 0)
-    //    {
-    //        if (n == 0)
-    //        {
-    //            throw new EndOfStreamException();
-    //        }
-
-    //        offset += n;
-    //    }
-    //}
 
     public override long Seek(long offset, SeekOrigin origin) => _nstream.Seek(offset, origin);
 
@@ -91,10 +54,11 @@ internal sealed class FixedNetworkStream : Stream
 
     protected override void Dispose(bool disposing)
     {
-        base.Dispose(disposing);
         if (disposing)
         {
             _nstream.Dispose();
         }
+
+        base.Dispose(disposing);
     }
 }

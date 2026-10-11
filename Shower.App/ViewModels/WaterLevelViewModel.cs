@@ -107,7 +107,7 @@ public sealed partial class WaterLevelViewModel : ObservableObject
             {
                 try
                 {
-                    using var connection = await ConnectionHelper.CreateConnectionAsync(cts.Token);
+                    using var connection = await ConnectionFactory.ConnectAsync(cts.Token);
                     if (wasConnected)
                     {
                         ReconnectCount++;
@@ -217,7 +217,7 @@ public sealed partial class WaterLevelViewModel : ObservableObject
         try
         {
             using var cts = new CancellationTokenSource(Device.RequestTimeout);
-            using var connection = await ConnectionHelper.CreateConnectionAsync(cts.Token);
+            using var connection = await ConnectionFactory.ConnectAsync(cts.Token);
             session.WaterLevelEmpty = await connection.GetWaterLevelEmptyAsync(cts.Token);
             session.WaterLevelFull = await connection.GetWaterLevelFullAsync(cts.Token);
         }

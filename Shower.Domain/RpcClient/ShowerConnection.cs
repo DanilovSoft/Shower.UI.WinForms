@@ -8,21 +8,23 @@ namespace Shower.Domain.RpcClient;
 /// <remarks>Не потокобезопасный</remarks>
 public sealed class ShowerConnection : IShowerConnection, IDisposable
 {
-    private const int ReadTimeoutMsec = 10_000;
-    private readonly FixedNetworkStream _nstream;
+    //private const int ReadTimeoutMsec = 10_000;
+    private readonly Stream _socketStream;
     private readonly ShowerBinaryReader _reader;
     private readonly MyBinaryWriter _writer;
     private bool _disposed;
 
-    internal ShowerConnection(TcpClient connection)
+    public ShowerConnection(TcpClient connection)
     {
-        _nstream = new FixedNetworkStream(connection.GetStream())
-        {
-            ReadTimeout = ReadTimeoutMsec,
-            WriteTimeout = 5000
-        };
-        _writer = new MyBinaryWriter(_nstream);
-        _reader = new ShowerBinaryReader(_nstream, Encoding.ASCII, leaveOpen: true);
+        _socketStream = connection.GetStream();
+        
+        //{
+        //    ReadTimeout = ReadTimeoutMsec,
+        //    WriteTimeout = 5000
+        //};
+
+        _writer = new MyBinaryWriter(_socketStream);
+        _reader = new ShowerBinaryReader(_socketStream, Encoding.ASCII, leaveOpen: true);
     }
 
     public void Dispose()
@@ -32,7 +34,7 @@ public sealed class ShowerConnection : IShowerConnection, IDisposable
             _disposed = true;
             _reader.Dispose();
             _writer.Dispose();
-            _nstream.Dispose();
+            _socketStream.Dispose();
         }
     }
 
@@ -45,7 +47,7 @@ public sealed class ShowerConnection : IShowerConnection, IDisposable
         var unmanagedSize = Marshal.SizeOf<T>();
         Span<byte> buffer = GetRequestBuffer(unmanagedSize, stackalloc byte[256]);
 
-        _nstream.ReadExactly(buffer);
+        _socketStream.ReadExactly(buffer);
         return MySerializer.Read<T>(buffer);
     }
 
@@ -110,9 +112,9 @@ public sealed class ShowerConnection : IShowerConnection, IDisposable
             .ReadOK();
     }
 
-    public Task<float> GetInternalTemperatureAsync(CancellationToken cancellationToken = default)
+    public Task<float> GetWaterTemperatureAsync(CancellationToken ct)
     {
-        return RequestAsync<float>(ShowerCodes.GetWaterTemperature, cancellationToken);
+        return RequestAsync<float>(ShowerCodes.GetWaterTemperature, ct);
     }
 
     public float GetInternalTemperature()
@@ -196,7 +198,7 @@ public sealed class ShowerConnection : IShowerConnection, IDisposable
         _writer.Send();
 
         Span<byte> data = stackalloc byte[SetupModel.STEP_COUNT];
-        _nstream.ReadExactly(data);
+        _socketStream.ReadExactly(data);
 
         var model = new SetupModel();
         model.ParseTemp(data);
@@ -246,7 +248,7 @@ public sealed class ShowerConnection : IShowerConnection, IDisposable
         var buffer = new byte[unmanagedSize];
 
         await _writer.SendAsync(cancellationToken).ConfigureAwait(false);
-        await _nstream.ReadExactlyAsync(buffer, cancellationToken).ConfigureAwait(false);
+        await _socketStream.ReadExactlyAsync(buffer, cancellationToken).ConfigureAwait(false);
 
         return MySerializer.Read<T>(buffer);
     }
@@ -519,6 +521,6 @@ public sealed class ShowerConnection : IShowerConnection, IDisposable
 
     private RequestBuilder CreateRequestBuilder()
     {
-        return new RequestBuilder(this, _writer, _reader, _nstream);
+        return new RequestBuilder(this, _writer, _reader, _socketStream);
     }
 }

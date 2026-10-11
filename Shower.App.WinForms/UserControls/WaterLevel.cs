@@ -100,7 +100,7 @@ public partial class WaterLevel : UserControl
             {
                 try
                 {
-                    using var con = await ConnectionHelper.CreateConnectionAsync(session.Cts.Token);
+                    using var con = await ConnectionFactory.ConnectAsync(session.Cts.Token);
                     errorProvider1.SetError(button_start, null);
                     label_reconnect_count.Text = $"{reconnectCount}";
                     reconnectCount++;
@@ -333,7 +333,7 @@ public partial class WaterLevel : UserControl
             session.UsecList.Clear();
             session.UsecList.AddRange(usecList);
 
-            using (var con = ConnectionHelper.CreateConnectionAsync(CancellationToken.None).Result)
+            using (var con = ConnectionFactory.ConnectAsync(CancellationToken.None).Result)
             {
                 session.WaterLevelEmpty = con.GetWaterLevelEmptyAsync(CancellationToken.None).Result;
                 session.WaterLevelFull = con.GetWaterLevelFullAsync(CancellationToken.None).Result;
