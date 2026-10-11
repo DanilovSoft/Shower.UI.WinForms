@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Text.Json;
+using CommunityToolkit.HighPerformance.Buffers;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Shower.App.Charts;
@@ -28,7 +29,7 @@ public sealed partial class WaterTemperatureViewModel : ObservableValidator
     private const double MaxHeaterPower = 3;
 
     private static readonly TimeSpan PollInterval = TimeSpan.FromSeconds(1);
-    private static readonly TimeSpan ReconnectDelay = TimeSpan.FromSeconds(2);
+    private static readonly TimeSpan ReconnectDelay = TimeSpan.FromSeconds(1);
 
     private readonly IDialogService _dialogs;
     private readonly Device _device;
@@ -176,53 +177,53 @@ public sealed partial class WaterTemperatureViewModel : ObservableValidator
     private async Task StartAsync()
     {
         var cts = _cts = new CancellationTokenSource();
+
         IsRecording = true;
+        try
+        {
+            await RecordTemperature(cts.Token);
+        }
+        catch (OperationCanceledException)
+        {
+        }
+        finally
+        {
+            await cts.CancelAsync();
+            IsRecording = false;
+        }
+    }
+
+    private async Task RecordTemperature(CancellationToken ct)
+    {
         ErrorMessage = null;
         ReconnectCount = 0;
         ClearRecords();
 
         var stopwatch = Stopwatch.StartNew();
-        var wasConnected = false;
+        var wasConnectedOnce = false;
 
-        try
+        while (!ct.IsCancellationRequested)
         {
-            while (!cts.IsCancellationRequested)
+            try
             {
-                try
-                {
-                    using var connection = await _device.CreateConnection(cts.Token);
-                    if (wasConnected)
-                    {
-                        ReconnectCount++;
-                    }
-                    wasConnected = true;
-                    ErrorMessage = null;
+                using var connection = await _device.CreateConnection(ct);
 
-                    await InitBeforeStartAsync(connection, cts.Token);
-                    await RecordAsync(connection, stopwatch, cts.Token);
-                }
-                catch when (cts.IsCancellationRequested)
+                if (wasConnectedOnce)
                 {
-                    return;
+                    ReconnectCount++;
                 }
-                catch (Exception ex)
-                {
-                    ErrorMessage = ex.Message;
-                    try
-                    {
-                        await Task.Delay(ReconnectDelay, cts.Token);
-                    }
-                    catch (OperationCanceledException)
-                    {
-                        return;
-                    }
-                }
+
+                wasConnectedOnce = true;
+                ErrorMessage = null;
+
+                await InitBeforeStartAsync(connection, ct);
+                await RecordAsync(connection, stopwatch, ct);
             }
-        }
-        finally
-        {
-            cts.Cancel();
-            IsRecording = false;
+            catch (Exception e) when (!ct.IsCancellationRequested)
+            {
+                ErrorMessage = e.Message;
+                await Task.Delay(ReconnectDelay, ct);
+            }
         }
     }
 
@@ -390,30 +391,45 @@ public sealed partial class WaterTemperatureViewModel : ObservableValidator
 
     private async Task RecordAsync(ShowerConnection connection, Stopwatch stopwatch, CancellationToken ct)
     {
-        for (var i = 0; !ct.IsCancellationRequested; i++)
-        {
-            var second = (int)stopwatch.Elapsed.TotalSeconds;
-            var internalTemp = await _device.RequestAsync(connection.GetWaterTemperatureAsync, ct);
-            var heaterEnabled = await _device.RequestAsync(connection.GetHeaterEnabledAsync, ct);
-            var minutesLeft = await _device.RequestAsync(connection.GetMinutesLeftAsync, ct);
+        // Все показания запрашиваются одним пакетом — один раундтрип за опрос.
+        var batch = connection.CreateBatch();
+        var internalTemp = batch.Get<float>(ShowerCode.GetWaterTemperature);
+        var heaterEnabled = batch.Get<byte>(ShowerCode.GetHeaterEnabled);
+        var minutesLeft = batch.Get<byte>(ShowerCode.GetMinutesLeft);
+        var waterPercent = batch.Get<byte>(ShowerCode.GetWaterPercent);
 
-            // Уровень воды меняется медленно — достаточно раз в 2 секунды.
-            if (i % 2 == 0)
-            {
-                var waterPercent = await _device.RequestAsync(connection.GetWaterPercentAsync, ct);
-                WaterLevelText = waterPercent.ToString(CultureInfo.InvariantCulture);
-            }
+        while (!ct.IsCancellationRequested)
+        {
+            await _device.RequestAsync(batch.ExecuteAsync, ct);
+
+            var second = (int)stopwatch.Elapsed.TotalSeconds;
+
+            WaterLevelText = PercentToString(waterPercent);
 
             AddRecord(new InternalTempModel
             {
+                Timestamp = DateTime.Now,
                 Second = second,
-                InternalTemp = internalTemp,
-                HeaterEnabled = heaterEnabled,
-                TimeLeft = TimeSpan.FromMinutes(minutesLeft),
+                InternalTemp = internalTemp.Value,
+                HeaterEnabled = heaterEnabled.Value != 0,
+                TimeLeft = TimeSpan.FromMinutes(minutesLeft.Value),
             });
 
             await Task.Delay(PollInterval, ct);
         }
+    }
+
+    private static string PercentToString(BatchValue<byte> waterPercent)
+    {
+        Span<char> buffer = stackalloc char[4];
+
+        // value to span
+        if (!waterPercent.Value.TryFormat(buffer, out var charsWritten, provider: CultureInfo.InvariantCulture))
+        {
+            return waterPercent.Value.ToString(CultureInfo.InvariantCulture);
+        }
+
+        return StringPool.Shared.GetOrAdd(buffer[..charsWritten]);
     }
 
     private void AddRecord(InternalTempModel record)

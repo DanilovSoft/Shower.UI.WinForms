@@ -8,7 +8,8 @@ namespace Shower.Domain.RpcClient;
 /// </summary>
 /// <remarks>
 /// Формат: каждое сообщение начинается с байта длины, который учитывает и сам себя,
-/// затем код команды и аргументы в little-endian. Весь запрос — не больше <see cref="MaxLength"/> байт.
+/// затем код команды и аргументы в little-endian. В одном запросе может быть несколько сообщений подряд,
+/// контроллер отвечает на них по очереди. Весь запрос — не больше <see cref="MaxLength"/> байт.
 /// </remarks>
 internal sealed class RequestBuffer
 {
@@ -36,6 +37,17 @@ internal sealed class RequestBuffer
         Write((byte)code);
     }
 
+    /// <summary>
+    /// Завершает текущее сообщение и начинает следующее в том же запросе.
+    /// </summary>
+    public void Append(ShowerCode code)
+    {
+        EndMessage();
+        _messageStart = _position;
+        Next(1);
+        Write((byte)code);
+    }
+
     public void Write(byte value)
     {
         Next(sizeof(byte))[0] = value;
@@ -57,12 +69,17 @@ internal sealed class RequestBuffer
     }
 
     /// <summary>
-    /// Записывает байт длины текущего сообщения. Возвращает готовый к отправке запрос.
+    /// Завершает последнее сообщение. Возвращает готовый к отправке запрос.
     /// </summary>
     public ReadOnlyMemory<byte> Complete()
     {
-        _buffer[_messageStart] = (byte)(_position - _messageStart);
+        EndMessage();
         return _buffer.AsMemory(0, _position);
+    }
+
+    private void EndMessage()
+    {
+        _buffer[_messageStart] = (byte)(_position - _messageStart);
     }
 
     private Span<byte> Next(int size)

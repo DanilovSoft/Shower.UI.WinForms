@@ -8,6 +8,8 @@ namespace Shower.Domain.Models;
 [DebuggerDisplay("{ToString(),nq}")]
 public sealed class InternalTempModel
 {
+    public DateTime Timestamp { get; set; }
+
     /// <summary>
     /// Число секунд от начала записи.
     /// </summary>

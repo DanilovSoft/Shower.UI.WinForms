@@ -47,6 +47,18 @@ public sealed class Device
         }
     }
 
+    /// <inheritdoc cref="RequestAsync{T}(Func{CancellationToken, Task{T}}, CancellationToken)"/>
+    public Task RequestAsync(Func<CancellationToken, Task> request, CancellationToken ct)
+    {
+        ArgumentNullException.ThrowIfNull(request);
+
+        return RequestAsync(async t =>
+        {
+            await request(t).ConfigureAwait(false);
+            return true;
+        }, ct);
+    }
+
     /// <summary>
     /// Открывает соединение и выполняет на нём серию запросов. Вся серия ограничена таймаутом <see cref="RequestTimeout"/>.
     /// </summary>

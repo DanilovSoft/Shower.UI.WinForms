@@ -62,6 +62,39 @@ public sealed class ShowerConnection : IShowerConnection, IDisposable, IAsyncDis
         return MemoryMarshal.Read<TResult>(response.Span);
     }
 
+    /// <summary>
+    /// Создаёт пакет запросов, которые отправляются за один раундтрип.
+    /// </summary>
+    public ShowerBatch CreateBatch()
+    {
+        return new ShowerBatch(this);
+    }
+
+    internal async Task ExecuteBatchAsync(IReadOnlyList<BatchItem> items, CancellationToken ct)
+    {
+        if (items.Count == 0)
+        {
+            return;
+        }
+
+        _request.Begin(items[0].Code);
+        var responseSize = items[0].ResponseSize;
+        for (var i = 1; i < items.Count; i++)
+        {
+            _request.Append(items[i].Code);
+            responseSize += items[i].ResponseSize;
+        }
+
+        var response = await ExchangeAsync(responseSize, ct).ConfigureAwait(false);
+
+        var offset = 0;
+        foreach (var item in items)
+        {
+            item.Read(response.Span.Slice(offset, item.ResponseSize));
+            offset += item.ResponseSize;
+        }
+    }
+
     private async Task ExecuteAsync(ShowerCode code, CancellationToken ct)
     {
         _request.Begin(code);

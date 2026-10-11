@@ -123,6 +123,64 @@ public sealed class ShowerConnectionProtocolTests : IAsyncLifetime
         Assert.Equal(expectedPayload, received[2..]);
     }
 
+    [Fact]
+    public async Task Batch_SendsAllMessagesInOnePacketAndSplitsResponse()
+    {
+        var batch = _connection.CreateBatch();
+        var temperature = batch.Get<float>(ShowerCode.GetWaterTemperature);
+        var heater = batch.Get<byte>(ShowerCode.GetHeaterEnabled);
+        var empty = batch.Get<ushort>(ShowerCode.GetWaterLevelEmptyUsec);
+
+        var request = batch.ExecuteAsync(CancellationToken.None);
+
+        Assert.Equal(
+            new byte[] { 2, (byte)ShowerCode.GetWaterTemperature, 2, (byte)ShowerCode.GetHeaterEnabled, 2, (byte)ShowerCode.GetWaterLevelEmptyUsec },
+            await ReceiveAsync(6));
+        await SendAsync([.. BitConverter.GetBytes(41f), 1, 0x47, 0x07]);
+        await request;
+
+        Assert.Equal(41f, temperature.Value);
+        Assert.Equal(1, heater.Value);
+        Assert.Equal((ushort)0x0747, empty.Value);
+    }
+
+    [Fact]
+    public async Task Batch_CanBeExecutedRepeatedly()
+    {
+        var batch = _connection.CreateBatch();
+        var percent = batch.Get<byte>(ShowerCode.GetWaterPercent);
+
+        foreach (byte expected in new byte[] { 10, 20 })
+        {
+            var request = batch.ExecuteAsync(CancellationToken.None);
+            await ReceiveAsync(2);
+            await SendAsync(expected);
+            await request;
+
+            Assert.Equal(expected, percent.Value);
+        }
+    }
+
+    [Fact]
+    public void Batch_ValueIsUnavailableBeforeExecute()
+    {
+        var value = _connection.CreateBatch().Get<byte>(ShowerCode.GetWaterPercent);
+
+        Assert.Throws<InvalidOperationException>(() => value.Value);
+    }
+
+    [Fact]
+    public async Task Batch_ThrowsWhenRequestDoesNotFit()
+    {
+        var batch = _connection.CreateBatch();
+        for (var i = 0; i < 101; i++)
+        {
+            batch.Get<byte>(ShowerCode.GetWaterPercent);
+        }
+
+        await Assert.ThrowsAsync<InvalidOperationException>(() => batch.ExecuteAsync(CancellationToken.None));
+    }
+
     private async Task<byte[]> ReceiveAsync(int count)
     {
         var buffer = new byte[count];
