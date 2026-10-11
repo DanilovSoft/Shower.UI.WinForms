@@ -2,7 +2,7 @@
 
 namespace Shower.Domain.RpcClient;
 
-internal sealed class MyBinaryWriter : BinaryWriter
+public sealed class MyBinaryWriter : BinaryWriter
 {
     private const byte MaxLength = 200;
     private readonly Stream _baseStream;

@@ -73,7 +73,7 @@ public sealed class ShowerConnection : IShowerConnection, IDisposable
 
     public void SetWaterLevelFullUsec(ushort value)
     {
-        BuildRequest()
+        CreateRequestBuilder()
             .Write(ShowerCodes.SetWaterLevelFullUsec)
             .WriteUInt16(value)
             .ReadOK();
@@ -81,14 +81,14 @@ public sealed class ShowerConnection : IShowerConnection, IDisposable
 
     public ShowerCodes Ping(CancellationToken cancellationToken = default)
     {
-        return BuildRequest()
+        return CreateRequestBuilder()
             .Write(ShowerCodes.Ping)
             .ReadCodeAsync(cancellationToken).GetAwaiter().GetResult();
     }
 
     public async Task<ShowerCodes> PingAsync(CancellationToken cancellationToken = default)
     {
-        return await BuildRequest()
+        return await CreateRequestBuilder()
             .Write(ShowerCodes.Ping)
             .ReadCodeAsync(cancellationToken);
     }
@@ -104,7 +104,7 @@ public sealed class ShowerConnection : IShowerConnection, IDisposable
 
     public void SetWaterLevelEmptyUsec(ushort value)
     {
-        BuildRequest()
+        CreateRequestBuilder()
             .Write(ShowerCodes.SetWaterLevelEmptyUsec)
             .WriteUInt16(value)
             .ReadOK();
@@ -112,17 +112,17 @@ public sealed class ShowerConnection : IShowerConnection, IDisposable
 
     public Task<float> GetInternalTemperatureAsync(CancellationToken cancellationToken = default)
     {
-        return RequestAsync<float>(ShowerCodes.GetInternalTemp, cancellationToken);
+        return RequestAsync<float>(ShowerCodes.GetWaterTemperature, cancellationToken);
     }
 
     public float GetInternalTemperature()
     {
-        return Request<float>(ShowerCodes.GetInternalTemp);
+        return Request<float>(ShowerCodes.GetWaterTemperature);
     }
 
     public void SetMinimumWaterHeatingLevel(byte value)
     {
-        BuildRequest()
+        CreateRequestBuilder()
             .Write(ShowerCodes.SetMinimumWaterHeatingLevel)
             .WriteUInt8(value)
             .ReadOK();
@@ -142,7 +142,7 @@ public sealed class ShowerConnection : IShowerConnection, IDisposable
 
     public void SetAbsoluteHeatingTimeLimit(byte value)
     {
-        BuildRequest()
+        CreateRequestBuilder()
             .Write(ShowerCodes.SetAbsoluteHeatingTimeLimit)
             .WriteUInt8(value)
             .ReadOK();
@@ -160,7 +160,7 @@ public sealed class ShowerConnection : IShowerConnection, IDisposable
 
     public void SetHeatingTimeLimit(byte value)
     {
-        BuildRequest()
+        CreateRequestBuilder()
             .Write(ShowerCodes.SetHeatingTimeLimit)
             .WriteUInt8(value)
             .ReadOK();
@@ -178,7 +178,7 @@ public sealed class ShowerConnection : IShowerConnection, IDisposable
 
     public void SetLightBrightness(byte value)
     {
-        BuildRequest()
+        CreateRequestBuilder()
             .Write(ShowerCodes.SetLightBrightness)
             .WriteUInt8(value)
             .ReadOK();
@@ -191,7 +191,7 @@ public sealed class ShowerConnection : IShowerConnection, IDisposable
 
     public SetupModel GetTempChart()
     {
-        _writer.Write(ShowerCodes.GetTempChart);
+        _writer.Write(ShowerCodes.GetTemperatureChart);
         _writer.WriteEnd();
         _writer.Send();
 
@@ -205,7 +205,7 @@ public sealed class ShowerConnection : IShowerConnection, IDisposable
 
     public void SetWiFiPower(byte power)
     {
-        BuildRequest()
+        CreateRequestBuilder()
             .Write(ShowerCodes.SetWiFiPower)
             .WriteUInt8(power)
             .ReadOK();
@@ -213,7 +213,7 @@ public sealed class ShowerConnection : IShowerConnection, IDisposable
 
     public void SetWaterLevelMeasureInterval(byte value)
     {
-        BuildRequest()
+        CreateRequestBuilder()
             .Write(ShowerCodes.SetWaterLevelMeasureInterval)
             .WriteUInt8(value)
             .ReadOK();
@@ -231,7 +231,7 @@ public sealed class ShowerConnection : IShowerConnection, IDisposable
 
     public void SetWaterLevelMedianBufferSize(byte value)
     {
-        BuildRequest()
+        CreateRequestBuilder()
             .Write(ShowerCodes.SetWaterLevelMedianBufferSize)
             .WriteUInt8(value)
             .ReadOK();
@@ -253,7 +253,7 @@ public sealed class ShowerConnection : IShowerConnection, IDisposable
 
     public void SetWaterLevelAverageBufferSize(byte value)
     {
-        BuildRequest()
+        CreateRequestBuilder()
             .Write(ShowerCodes.SetWaterLevelAverageBufferSize)
             .WriteUInt8(value)
             .ReadOK();
@@ -268,7 +268,7 @@ public sealed class ShowerConnection : IShowerConnection, IDisposable
 
     public void SetWaterValveCutOffPercent(byte value)
     {
-        BuildRequest()
+        CreateRequestBuilder()
             .Write(ShowerCodes.SetWaterValveCutOffPercent)
             .WriteUInt8(value)
             .ReadOK();
@@ -284,8 +284,8 @@ public sealed class ShowerConnection : IShowerConnection, IDisposable
 
     public void SetTempSensorInternalTempAverageSize(byte value)
     {
-        BuildRequest()
-            .Write(ShowerCodes.SetTempSensorInternalTempAverageSize)
+        CreateRequestBuilder()
+            .Write(ShowerCodes.SetTemperatureSensorInternalTempAverageSize)
             .WriteUInt8(value)
             .ReadOK();
     }
@@ -308,7 +308,7 @@ public sealed class ShowerConnection : IShowerConnection, IDisposable
 
     public void SetWaterTankVolumeLitre(float value)
     {
-        BuildRequest()
+        CreateRequestBuilder()
             .Write(ShowerCodes.SetWaterTankVolumeLitre)
             .WriteFloat(value)
             .ReadOK();
@@ -340,7 +340,7 @@ public sealed class ShowerConnection : IShowerConnection, IDisposable
 
     public void Save()
     {
-        BuildRequest()
+        CreateRequestBuilder()
             .Write(ShowerCodes.Save)
             .ReadOK();
     }
@@ -378,7 +378,7 @@ public sealed class ShowerConnection : IShowerConnection, IDisposable
         // Полная команда на контроллере: AT+CWJAP_CUR="abc","0123456789"
         var espCommand = ESP8266Helper.CreateSetCurrentAPCommand(ssid, password, bsid);
 
-        BuildRequest()
+        CreateRequestBuilder()
             .Write(ShowerCodes.SetCurAP)
             .WriteString(espCommand)
             .ReadOK();
@@ -401,7 +401,7 @@ public sealed class ShowerConnection : IShowerConnection, IDisposable
         // Полная команда на контроллере: AT+CWJAP_CUR="abc","0123456789"
         var espCommand = ESP8266Helper.CreateSetCurrentAPCommand(ssid, password, bsid);
 
-        BuildRequest()
+        CreateRequestBuilder()
             .Write(ShowerCodes.SetDefAP)
             .WriteString(espCommand)
             .ReadOK();
@@ -414,7 +414,7 @@ public sealed class ShowerConnection : IShowerConnection, IDisposable
 
     public void SetWaterLevelErrorThreshold(byte value)
     {
-        BuildRequest()
+        CreateRequestBuilder()
             .Write(ShowerCodes.SetWaterLevelErrorThreshold)
             .WriteUInt8(value)
             .ReadOK();
@@ -422,14 +422,14 @@ public sealed class ShowerConnection : IShowerConnection, IDisposable
 
     public void Reset()
     {
-        BuildRequest()
+        CreateRequestBuilder()
             .Write(ShowerCodes.Reset)
             .ReadOK();
     }
 
     public void SetWaterHeaterPowerKWatt(float value)
     {
-        BuildRequest()
+        CreateRequestBuilder()
             .Write(ShowerCodes.SetWaterHeaterPowerKWatt)
             .WriteFloat(value)
             .ReadOK();
@@ -437,7 +437,7 @@ public sealed class ShowerConnection : IShowerConnection, IDisposable
 
     public void SetButtonTimeMsec(byte value)
     {
-        BuildRequest()
+        CreateRequestBuilder()
             .Write(ShowerCodes.SetButtonTimeMsec)
             .WriteUInt8(value)
             .ReadOK();
@@ -450,7 +450,7 @@ public sealed class ShowerConnection : IShowerConnection, IDisposable
 
     public void SetButtonLongPressTimeMsec(ushort value)
     {
-        BuildRequest()
+        CreateRequestBuilder()
             .Write(ShowerCodes.SetButtonLongPressTimeMsec)
             .WriteUInt16(value)
             .ReadOK();
@@ -507,9 +507,9 @@ public sealed class ShowerConnection : IShowerConnection, IDisposable
         return Request<byte>(ShowerCodes.GetWaterValveCutOffPercent);
     }
 
-    public byte GetTempSensorInternalTempAverageSize()
+    public byte GetTemperatureSensorInternalTempAverageSize()
     {
-        return Request<byte>(ShowerCodes.GetTempSensorInternalTempAverageSize);
+        return Request<byte>(ShowerCodes.GetTemperatureSensorInternalTempAverageSize);
     }
 
     public byte GetButtonPressTimeMsec()
@@ -517,7 +517,7 @@ public sealed class ShowerConnection : IShowerConnection, IDisposable
         return Request<byte>(ShowerCodes.GetButtonTimeMsec);
     }
 
-    private RequestBuilder BuildRequest()
+    private RequestBuilder CreateRequestBuilder()
     {
         return new RequestBuilder(this, _writer, _reader, _nstream);
     }

@@ -23,6 +23,10 @@ public sealed partial class TemperatureViewModel : ObservableValidator
     private const string RecordFileFilter = "Json File|*.shower.txt";
     private const string SimulationFileFilter = "Json File|*.txt";
 
+    // Должны совпадать с диапазоном ползунка в TemperatureView.xaml.
+    private const double MinHeaterPower = 0.5;
+    private const double MaxHeaterPower = 3;
+
     private static readonly TimeSpan PollInterval = TimeSpan.FromSeconds(1);
     private static readonly TimeSpan ReconnectDelay = TimeSpan.FromSeconds(2);
 
@@ -56,10 +60,29 @@ public sealed partial class TemperatureViewModel : ObservableValidator
     [ObservableProperty]
     private int _forecastStartMinute;
 
+    /// <summary>
+    /// Мощность ТЭНа на ползунке, кВт. Используется для прогноза, если <see cref="HasHeaterPower"/>.
+    /// </summary>
     [ObservableProperty]
-    [NotifyDataErrorInfo]
-    [CustomValidation(typeof(TemperatureViewModel), nameof(ValidateHeaterPower))]
-    private string _heaterPowerText = "";
+    [NotifyPropertyChangedFor(nameof(HeaterPowerText), nameof(HeaterPowerDeltaText), nameof(IsHeaterPowerChanged))]
+    [NotifyCanExecuteChangedFor(nameof(ResetHeaterPowerCommand))]
+    private double _heaterPower = MinHeaterPower;
+
+    /// <summary>
+    /// Мощность ТЭНа задана: считана с контроллера или выбрана пользователем.
+    /// </summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HeaterPowerText), nameof(HeaterPowerDeltaText), nameof(IsHeaterPowerChanged))]
+    [NotifyCanExecuteChangedFor(nameof(ResetHeaterPowerCommand))]
+    private bool _hasHeaterPower;
+
+    /// <summary>
+    /// Мощность ТЭНа, записанная в контроллер, кВт.
+    /// </summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(HeaterPowerDeltaText), nameof(IsHeaterPowerChanged))]
+    [NotifyCanExecuteChangedFor(nameof(ResetHeaterPowerCommand))]
+    private float? _deviceHeaterPower;
 
     [ObservableProperty]
     [NotifyDataErrorInfo]
@@ -80,12 +103,49 @@ public sealed partial class TemperatureViewModel : ObservableValidator
 
     public bool IsBusy => IsRecording || IsSimulating;
 
-    public static ValidationResult? ValidateHeaterPower(string text, ValidationContext context)
+    public string HeaterPowerText => HasHeaterPower ? FormatKWatt(RoundedHeaterPower) + " кВт" : "—";
+
+    /// <summary>
+    /// Насколько мощность на ползунке отличается от записанной в контроллер.
+    /// </summary>
+    public string HeaterPowerDeltaText
     {
-        return TryParseHeaterPower(text, out _)
-            ? ValidationResult.Success
-            : new ValidationResult("Введите число больше 0 и меньше 3");
+        get
+        {
+            if (DeviceHeaterPower is not { } device)
+            {
+                return "В контроллере: нет данных";
+            }
+
+            var deviceText = $"В контроллере {FormatKWatt(device)} кВт";
+            if (!HasHeaterPower)
+            {
+                return deviceText;
+            }
+
+            var delta = HeaterPowerDelta;
+            if (delta == 0)
+            {
+                return deviceText + ", совпадает";
+            }
+
+            var percent = device > 0
+                ? string.Create(CultureInfo.InvariantCulture, $" ({delta / device:+0.0%;-0.0%})")
+                : "";
+            return string.Create(CultureInfo.InvariantCulture, $"{deviceText}, разница {delta:+0.00;-0.00} кВт{percent}");
+        }
     }
+
+    /// <summary>
+    /// Мощность на ползунке отличается от записанной в контроллер.
+    /// </summary>
+    public bool IsHeaterPowerChanged => HasHeaterPower && DeviceHeaterPower is not null && HeaterPowerDelta != 0;
+
+    private double RoundedHeaterPower => Math.Round(HeaterPower, 2);
+
+    private double HeaterPowerDelta => DeviceHeaterPower is { } device
+        ? Math.Round(RoundedHeaterPower - Math.Round(device, 2), 2)
+        : 0;
 
     public static ValidationResult? ValidateTankVolume(string text, ValidationContext context)
     {
@@ -210,6 +270,7 @@ public sealed partial class TemperatureViewModel : ObservableValidator
             _records.AddRange(records);
             Chart.AddRange(records);
             UpdateTimeLeft();
+            _ = ReadDeviceSettingsAsync();
         }
         catch (Exception ex)
         {
@@ -239,6 +300,7 @@ public sealed partial class TemperatureViewModel : ObservableValidator
         var cts = _cts = new CancellationTokenSource();
         IsSimulating = true;
         ClearRecords();
+        _ = ReadDeviceSettingsAsync();
 
         try
         {
@@ -258,9 +320,40 @@ public sealed partial class TemperatureViewModel : ObservableValidator
         }
     }
 
+    /// <summary>
+    /// Возвращает ползунок мощности ТЭНа к значению из контроллера.
+    /// </summary>
+    [RelayCommand(CanExecute = nameof(IsHeaterPowerChanged))]
+    private void ResetHeaterPower()
+    {
+        if (DeviceHeaterPower is { } device)
+        {
+            HeaterPower = ClampHeaterPower(device);
+        }
+    }
+
+    /// <summary>
+    /// Запоминает мощность ТЭНа из контроллера. Ползунок ставится на неё, если мощность ещё не была задана.
+    /// </summary>
+    public void SetDeviceHeaterPower(float? kWatt)
+    {
+        DeviceHeaterPower = kWatt;
+
+        if (kWatt is { } device && !HasHeaterPower)
+        {
+            HeaterPower = ClampHeaterPower(device);
+            HasHeaterPower = true;
+            UpdateCalculator();
+        }
+    }
+
     partial void OnForecastStartMinuteChanged(int value) => UpdateTimeLeft();
 
-    partial void OnHeaterPowerTextChanged(string value) => UpdateCalculator();
+    partial void OnHeaterPowerChanged(double value)
+    {
+        HasHeaterPower = true;
+        UpdateCalculator();
+    }
 
     partial void OnTankVolumeTextChanged(string value) => UpdateCalculator();
 
@@ -271,8 +364,25 @@ public sealed partial class TemperatureViewModel : ObservableValidator
         var heaterPower = await Device.RequestAsync(connection.GetWaterHeaterPowerKWattAsync, ct);
         var tankVolume = await Device.RequestAsync(connection.GetWaterTankVolumeLitreAsync, ct);
 
-        HeaterPowerText = heaterPower.ToString(CultureInfo.InvariantCulture);
+        SetDeviceHeaterPower(heaterPower);
         TankVolumeText = tankVolume.ToString(CultureInfo.InvariantCulture);
+    }
+
+    /// <summary>
+    /// Считывает мощность ТЭНа и объём бака для прогноза по записи, загруженной из файла.
+    /// </summary>
+    private async Task ReadDeviceSettingsAsync()
+    {
+        try
+        {
+            using var cts = new CancellationTokenSource(Device.RequestTimeout);
+            using var connection = await ConnectionHelper.CreateConnectionAsync(cts.Token);
+            await InitBeforeStartAsync(connection, cts.Token);
+        }
+        catch (Exception ex)
+        {
+            ErrorMessage = $"Не удалось считать мощность ТЭНа и объём бака: {ex.Message}";
+        }
     }
 
     private async Task RecordAsync(ShowerConnection connection, Stopwatch stopwatch, CancellationToken ct)
@@ -319,8 +429,8 @@ public sealed partial class TemperatureViewModel : ObservableValidator
 
     private void UpdateCalculator()
     {
-        _calculator = TryParseHeaterPower(HeaterPowerText, out var power) && TryParseTankVolume(TankVolumeText, out var volume)
-            ? new HeatingTimeLeft(volume, power)
+        _calculator = HasHeaterPower && TryParseTankVolume(TankVolumeText, out var volume)
+            ? new HeatingTimeLeft(volume, (float)RoundedHeaterPower)
             : null;
 
         UpdateTimeLeft();
@@ -353,10 +463,9 @@ public sealed partial class TemperatureViewModel : ObservableValidator
 
     private static string FormatTimeLeft(TimeSpan timeLeft) => timeLeft.ToString("hh\\:mm\\:ss");
 
-    private static bool TryParseHeaterPower(string? text, out float kWatt)
-    {
-        return TryParse(text, out kWatt) && kWatt > 0 && kWatt < 3;
-    }
+    private static double ClampHeaterPower(float kWatt) => Math.Clamp(Math.Round(kWatt, 2), MinHeaterPower, MaxHeaterPower);
+
+    private static string FormatKWatt(double kWatt) => kWatt.ToString("0.00", CultureInfo.InvariantCulture);
 
     private static bool TryParseTankVolume(string? text, out float litre)
     {

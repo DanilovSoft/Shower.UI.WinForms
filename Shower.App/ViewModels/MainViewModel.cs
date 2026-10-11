@@ -24,6 +24,9 @@ public sealed partial class MainViewModel : ObservableObject
         Calibration = new CalibrationViewModel();
         Parameters = new ParametersViewModel(dialogs);
         Debug = new DebugViewModel(dialogs);
+
+        // После записи параметров разница мощности ТЭНа на вкладке «Температура» считается от нового значения.
+        Parameters.PropertiesLoaded += model => Temperature.SetDeviceHeaterPower(model.WaterHeaterPowerKWatt);
     }
 
     public TemperatureViewModel Temperature { get; }

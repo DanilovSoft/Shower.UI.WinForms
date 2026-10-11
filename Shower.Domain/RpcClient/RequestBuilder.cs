@@ -3,16 +3,21 @@ using System.Text;
 
 namespace Shower.Domain.RpcClient;
 
-public class RequestBuilder
+public sealed class RequestBuilder
 {
     private readonly List<CallbackInfo> _callbacks = [];
     private readonly MyBinaryWriter _writer;
     private readonly ShowerBinaryReader _reader;
-    private readonly FixedNetworkStream _nstream;
+    private readonly Stream _nstream;
     private readonly ShowerConnection _con;
 
-    internal RequestBuilder(ShowerConnection con, MyBinaryWriter writer, ShowerBinaryReader reader, FixedNetworkStream nstream)
+    public RequestBuilder(ShowerConnection con, MyBinaryWriter writer, ShowerBinaryReader reader, Stream nstream)
     {
+        ArgumentNullException.ThrowIfNull(con);
+        ArgumentNullException.ThrowIfNull(writer);
+        ArgumentNullException.ThrowIfNull(reader);
+        ArgumentNullException.ThrowIfNull(nstream);
+
         _con = con;
         _writer = writer;
         _reader = reader;
@@ -60,14 +65,6 @@ public class RequestBuilder
         return this;
     }
 
-    private RequestBuilder Write<T>(ShowerCodes code, Action<T> callback) where T : struct
-    {
-        _writer.Write(code);
-        _writer.WriteEnd();
-        _callbacks.Add(CallbackInfo.Create(callback));
-        return this;
-    }
-
     public RequestBuilder WriteString(string value)
     {
         var str = Encoding.ASCII.GetBytes(value);
@@ -99,20 +96,19 @@ public class RequestBuilder
         _reader.ReadOK();
     }
 
-    public async Task<ShowerCodes> ReadCodeAsync(CancellationToken cancellationToken = default)
+    public async Task<ShowerCodes> ReadCodeAsync(CancellationToken ct)
     {
-        using (cancellationToken.Register(() => { _con.Dispose(); }))
+        using var _ = ct.Register(_con.Dispose);
+
+        try
         {
-            try
-            {
-                WriteEndAndSend();
-                return await _reader.ReadCodeAsync().ConfigureAwait(false);
-            }
-            catch when (cancellationToken.IsCancellationRequested)
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-                throw;
-            }
+            WriteEndAndSend();
+            return await _reader.ReadCodeAsync().ConfigureAwait(false);
+        }
+        catch when (ct.IsCancellationRequested)
+        {
+            ct.ThrowIfCancellationRequested();
+            throw;
         }
     }
 
@@ -164,11 +160,6 @@ public class RequestBuilder
     private ValueTask ReadExactlyAsync(Memory<byte> buffer, CancellationToken ct)
     {
         return _nstream.ReadExactlyAsync(buffer, ct);
-    }
-
-    private void Read(Span<byte> buffer)
-    {
-        _nstream.ReadExactly(buffer);
     }
 
     private readonly struct CallbackInfo

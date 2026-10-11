@@ -20,6 +20,7 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
                 <StackPanel Orientation="Horizontal">
@@ -38,50 +39,81 @@
                     <TextBlock Style="{StaticResource ErrorText}" MaxWidth="420" Text="{Binding ErrorMessage}" />
                 </StackPanel>
 
-                <DockPanel Grid.Column="1" Grid.RowSpan="2" Margin="24,0" VerticalAlignment="Center">
-                    <TextBlock DockPanel.Dock="Top" Style="{StaticResource SecondaryText}" TextTrimming="CharacterEllipsis"
-                               ToolTip="Прогноз строится от точки через указанное число минут после включения нагрева.&#x0a;0 — показывать оставшееся время, рассчитанное контроллером.">
-                        <Run Text="Точка прогноза:" />
-                        <Run Text="{Binding ForecastStartMinute, Mode=OneWay}" />
-                        <Run Text="мин после включения нагрева" />
-                    </TextBlock>
-                    <Slider Minimum="0" Maximum="50" SmallChange="2" LargeChange="5"
-                            TickFrequency="1" TickPlacement="BottomRight" IsSnapToTickEnabled="True"
-                            Value="{Binding ForecastStartMinute}" />
-                </DockPanel>
-
-                <Grid Grid.Column="2" Grid.RowSpan="2" VerticalAlignment="Center">
+                <Grid Grid.Row="2" Grid.ColumnSpan="3" Margin="0,12,0,0">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="Auto" />
-                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="32" />
+                        <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
 
-                    <StackPanel Grid.RowSpan="2" Margin="0,0,24,0" VerticalAlignment="Center">
+                    <DockPanel VerticalAlignment="Bottom">
+                        <TextBlock DockPanel.Dock="Top" Style="{StaticResource SecondaryText}" TextTrimming="CharacterEllipsis"
+                                   ToolTip="Прогноз строится от точки через указанное число минут после включения нагрева.&#x0a;0 — показывать оставшееся время, рассчитанное контроллером.">
+                            <Run Text="Точка прогноза:" />
+                            <Run Text="{Binding ForecastStartMinute, Mode=OneWay}" />
+                            <Run Text="мин после включения нагрева" />
+                        </TextBlock>
+                        <Slider Minimum="0" Maximum="50" SmallChange="2" LargeChange="5"
+                                TickFrequency="1" TickPlacement="BottomRight" IsSnapToTickEnabled="True"
+                                Value="{Binding ForecastStartMinute}" />
+                    </DockPanel>
+
+                    <!-- Диапазон должен совпадать с MinHeaterPower/MaxHeaterPower в TemperatureViewModel. -->
+                    <DockPanel Grid.Column="2" VerticalAlignment="Bottom">
+                        <Grid DockPanel.Dock="Top">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Style="{StaticResource SecondaryText}"
+                                       ToolTip="Мощность для прогноза времени нагрева.&#x0a;Стрелки ← → — шаг 0.01 кВт, PageUp/PageDown — 0.1 кВт.">
+                                <Run Text="Мощность ТЭНа:" />
+                                <Run Text="{Binding HeaterPowerText, Mode=OneWay}" />
+                            </TextBlock>
+                            <TextBlock Grid.Column="1" Margin="16,0,0,0" HorizontalAlignment="Right"
+                                       TextTrimming="CharacterEllipsis" Text="{Binding HeaterPowerDeltaText}">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock" BasedOn="{StaticResource SecondaryText}">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsHeaterPowerChanged}" Value="True">
+                                                <Setter Property="Foreground" Value="{DynamicResource SystemFillColorCriticalBrush}" />
+                                                <Setter Property="FontWeight" Value="SemiBold" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </Grid>
+                        <Button DockPanel.Dock="Right" Margin="8,0,0,0" VerticalAlignment="Center"
+                                Content="Сбросить" Command="{Binding ResetHeaterPowerCommand}"
+                                ToolTip="Вернуть мощность, записанную в контроллер" />
+                        <Slider Minimum="0.5" Maximum="3" SmallChange="0.01" LargeChange="0.1"
+                                TickFrequency="0.01" TickPlacement="None" IsSnapToTickEnabled="True"
+                                AutoToolTipPlacement="TopLeft" AutoToolTipPrecision="2"
+                                VerticalAlignment="Center"
+                                Value="{Binding HeaterPower}" />
+                    </DockPanel>
+                </Grid>
+
+                <StackPanel Grid.Column="2" Grid.RowSpan="2" Orientation="Horizontal" VerticalAlignment="Center">
+                    <StackPanel Margin="0,0,24,0" VerticalAlignment="Center">
                         <TextBlock Style="{StaticResource SecondaryText}" Text="Осталось:" />
                         <TextBlock FontSize="28" FontWeight="SemiBold" Text="{Binding TimeLeftText}" />
                     </StackPanel>
 
-                    <TextBlock Grid.Column="1" Style="{StaticResource SecondaryText}" Margin="0,0,8,4" Text="ТЭН, кВт" />
-                    <TextBox Grid.Column="2" Width="80" Margin="0,0,16,4"
-                             Text="{Binding HeaterPowerText, UpdateSourceTrigger=LostFocus}" />
+                    <StackPanel Margin="0,0,16,0" VerticalAlignment="Center">
+                        <TextBlock Style="{StaticResource SecondaryText}" Text="Бак, л" Margin="0,0,0,4" />
+                        <TextBox Width="80" HorizontalAlignment="Left"
+                                 Text="{Binding TankVolumeText, UpdateSourceTrigger=LostFocus}" />
+                    </StackPanel>
 
-                    <TextBlock Grid.Column="1" Grid.Row="1" Style="{StaticResource SecondaryText}" Margin="0,0,8,0" Text="Бак, л" />
-                    <TextBox Grid.Column="2" Grid.Row="1" Width="80" Margin="0,0,16,0"
-                             Text="{Binding TankVolumeText, UpdateSourceTrigger=LostFocus}" />
-
-                    <StackPanel Grid.Column="3" Grid.RowSpan="2" VerticalAlignment="Center">
+                    <StackPanel VerticalAlignment="Center">
                         <TextBlock Style="{StaticResource SecondaryText}" Text="Уровень воды, %" Margin="0,0,0,4" />
                         <TextBox Width="80" HorizontalAlignment="Left"
                                  ToolTip="Обновляется во время записи; для загруженных записей можно ввести вручную"
                                  Text="{Binding WaterLevelText, UpdateSourceTrigger=LostFocus}" />
                     </StackPanel>
-                </Grid>
+                </StackPanel>
             </Grid>
         </Border>
 

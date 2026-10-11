@@ -289,7 +289,7 @@ public partial class ParametersControl : UserControl
             WaterLevelMedianBufferSize = con.GetWaterLevelMedianSize(),
             WaterLevelAverageBufferSize = con.GetWaterLevelAverageFilterSize(),
             WaterValveCutOffPercent = con.GetWaterValveCutOffPercent(),
-            TempSensorInternalTempAverageSize = con.GetTempSensorInternalTempAverageSize(),
+            TempSensorInternalTempAverageSize = con.GetTemperatureSensorInternalTempAverageSize(),
             ButtonPressTimeMsec = con.GetButtonPressTimeMsec(),
             ButtonLongTimeMsec = con.GetButtonLongPressTimeMsec(),
             WatchDogWasReset = con.GetWatchDogWasReset(),

@@ -24,19 +24,19 @@ public sealed partial class ParametersViewModel : ObservableObject
     [NotifyPropertyChangedFor(nameof(IsEditable))]
     [NotifyCanExecuteChangedFor(nameof(LoadCommand), nameof(SaveCommand), nameof(ClearCommand), nameof(RestartCommand),
         nameof(ExportCommand), nameof(ImportCommand), nameof(CancelCommand))]
-    private bool _isLoading;
+    public partial bool IsLoading { get; private set; }
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsEditable))]
     [NotifyCanExecuteChangedFor(nameof(LoadCommand), nameof(SaveCommand), nameof(ClearCommand), nameof(RestartCommand),
         nameof(ExportCommand), nameof(ImportCommand))]
-    private bool _isBusy;
+    public partial bool IsBusy { get; private set; }
 
     /// <summary>
     /// Сработал ли сторожевой таймер контроллера с прошлого запуска. <see langword="null"/> — неизвестно.
     /// </summary>
     [ObservableProperty]
-    private bool? _watchDogWasReset;
+    public partial bool? WatchDogWasReset { get; set; }
 
     public ParametersViewModel(IDialogService dialogs)
     {
@@ -65,7 +65,7 @@ public sealed partial class ParametersViewModel : ObservableObject
             new WiFiPowerParameterViewModel("Мощность Wi-Fi (10..20.5 dBm)",
                 "Мощность передатчика Wi-Fi с шагом 0.25 dBm"),
             new ParameterViewModel<byte>("Время срабатывания кнопок (msec)",
-                "Время нажатия кнопки для её срабатывания (антидребезг), от 20 до 80 мсек.",
+                "Время нажатия кнопки для её срабатывания (антидребезг), от 5 до 50 мсек.",
                 m => m.ButtonPressTimeMsec, (m, v) => m.ButtonPressTimeMsec = v, (c, v) => c.SetButtonTimeMsec(v)),
             new ParameterViewModel<ushort>("Долгое нажатие кнопок (msec)",
                 "Время зажатой кнопки для определения длительного нажатия, от 1000 до 10000 мсек.",
@@ -109,6 +109,11 @@ public sealed partial class ParametersViewModel : ObservableObject
 
     public IReadOnlyList<ParameterViewModel> All { get; }
 
+    /// <summary>
+    /// Параметры считаны с контроллера.
+    /// </summary>
+    public event Action<PropertiesModel>? PropertiesLoaded;
+
     public bool IsEditable => !IsLoading && !IsBusy;
 
     [RelayCommand(CanExecute = nameof(IsEditable))]
@@ -123,6 +128,7 @@ public sealed partial class ParametersViewModel : ObservableObject
             if (!cts.IsCancellationRequested)
             {
                 SetOriginal(model);
+                PropertiesLoaded?.Invoke(model);
             }
         }
         catch when (cts.IsCancellationRequested)

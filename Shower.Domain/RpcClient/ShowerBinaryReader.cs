@@ -2,7 +2,7 @@
 
 namespace Shower.Domain.RpcClient;
 
-internal sealed class ShowerBinaryReader : BinaryReader
+public sealed class ShowerBinaryReader : BinaryReader
 {
     public ShowerBinaryReader(Stream input, Encoding encoding, bool leaveOpen) : base(input, encoding, leaveOpen)
     {

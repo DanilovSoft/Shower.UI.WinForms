@@ -7,15 +7,15 @@ public enum ShowerCodes : byte
     SetWaterLevelEmptyUsec = 2,
     GetWaterLevelFullUsec = 3,
     GetWaterLevelEmptyUsec = 4,
-    GetTempChart = 5,
-    SetTempChart = 6,
+    GetTemperatureChart = 5,
+    SetTemperatureChart = 6,
     Ping = 7,
     GetWaterLevel = 8,
     GetWaterPercent = 9,
-    GetExternalTemp = 10,
-    GetInternalTemp = 11,
-    GetAverageInternalTemp = 12,
-    GetAverageExternalTemp = 13,
+    GetAirTemperature = 10,
+    GetWaterTemperature = 11,
+    GetAverageInternalTemperature = 12,
+    GetAverageExternalTemperature = 13,
     GetMinimumWaterHeatingLevel = 14,
     SetMinimumWaterHeatingLevel = 15,
 
@@ -62,8 +62,8 @@ public enum ShowerCodes : byte
     GetWaterLevelAverageBufferSize = 45,
     SetWaterLevelAverageBufferSize = 46,
 
-    GetTempSensorInternalTempAverageSize = 47,
-    SetTempSensorInternalTempAverageSize = 48,
+    GetTemperatureSensorInternalTempAverageSize = 47,
+    SetTemperatureSensorInternalTempAverageSize = 48,
 
     GetWaterLevelUsecPerDeg = 49,
     SetWaterLevelUsecPerDeg = 50,
@@ -76,8 +76,8 @@ public enum ShowerCodes : byte
     GetButtonTimeMsec = 54,
     SetButtonTimeMsec = 55,
 
-    GetTempLowerBound = 56,
-    GetTempUpperBound = 57,
+    GetTemperatureLowerBound = 56,
+    GetTemperatureUpperBound = 57,
 
     GetWaterLevelMedianBufferSize = 58,
     SetWaterLevelMedianBufferSize = 59,
