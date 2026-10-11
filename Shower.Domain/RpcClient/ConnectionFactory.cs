@@ -7,7 +7,7 @@ public sealed class ConnectionFactory(IOptions<ShowerConnectionOptions> options)
 {
     private readonly ShowerConnectionOptions _options = options.Value;
 
-    public async Task<ShowerConnection> ConnectAsync(CancellationToken ct)
+    public async Task<ShowerConnection> CreateConnection(CancellationToken ct)
     {
         var tcp = new TcpClient
         {

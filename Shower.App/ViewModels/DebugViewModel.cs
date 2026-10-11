@@ -76,17 +76,10 @@ public sealed partial class DebugViewModel(IDialogService dialogs, Device device
                 ? null
                 : PhysicalAddress.Parse(Mac.Trim().Replace(":", "", StringComparison.InvariantCulture).Replace("-", "", StringComparison.InvariantCulture));
 
-            await device.RunAsync((connection) =>
-            {
-                if (isDefault)
-                {
-                    connection.SetDefAP(ssid, password, bssid);
-                }
-                else
-                {
-                    connection.SetCurAP(ssid, password, bssid);
-                }
-            }, ct);
+            await device.RunAsync((connection, ct) => isDefault
+                ? connection.SetDefAPAsync(ssid, password, bssid, ct)
+                : connection.SetCurAPAsync(ssid, password, bssid, ct),
+                ct);
 
             WiFiResult = "Команда выполнена";
         }

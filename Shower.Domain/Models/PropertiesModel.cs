@@ -82,30 +82,30 @@ public sealed class PropertiesModel
     /// <summary>
     /// Считывает все параметры с контроллера.
     /// </summary>
-    public static async Task<PropertiesModel> Load(ShowerConnection con, CancellationToken ct)
+    public static async Task<PropertiesModel> LoadAsync(ShowerConnection con, CancellationToken ct)
     {
         ArgumentNullException.ThrowIfNull(con);
 
         return new PropertiesModel
         {
-            WaterLevelFullUsec = await con.GetWaterLevelFullUsec(ct).ConfigureAwait(false),
-            WaterLevelEmptyUsec = con.GetWaterLevelEmptyUsec(),
-            MinimumWaterHeatingLevel = con.GetMinimumWaterHeatingLevel(),
-            AbsoluteHeatingTimeLimit = con.GetAbsoluteHeatingTimeLimit(),
-            HeatingTimeLimit = con.GetHeatingTimeLimit(),
-            LightBrightness = con.GetLightBrightness(),
-            WiFiPower = con.GetWiFiPower(),
-            WaterLevelMeasureInterval = con.GetWaterLevelMeasureInterval(),
-            WaterLevelMedianBufferSize = con.GetWaterLevelMedianSize(),
-            WaterLevelAverageBufferSize = con.GetWaterLevelAverageFilterSize(),
-            WaterValveCutOffPercent = con.GetWaterValveCutOffPercent(),
-            TempSensorInternalTempAverageSize = con.GetTemperatureSensorInternalTempAverageSize(),
-            ButtonPressTimeMsec = con.GetButtonPressTimeMsec(),
-            ButtonLongTimeMsec = con.GetButtonLongPressTimeMsec(),
-            WatchDogWasReset = con.GetWatchDogWasReset(),
-            WaterTankVolumeLitre = con.GetWaterTankVolumeLitre(),
-            WaterHeaterPowerKWatt = con.GetWaterHeaterPowerKWatt(),
-            WaterLevelErrorThreshhold = con.GetWaterLevelErrorThreshhold(),
+            WaterLevelFullUsec = await con.GetWaterLevelFullAsync(ct).ConfigureAwait(false),
+            WaterLevelEmptyUsec = await con.GetWaterLevelEmptyAsync(ct).ConfigureAwait(false),
+            MinimumWaterHeatingLevel = await con.GetMinimumWaterHeatingLevelAsync(ct).ConfigureAwait(false),
+            AbsoluteHeatingTimeLimit = await con.GetAbsoluteHeatingTimeLimitAsync(ct).ConfigureAwait(false),
+            HeatingTimeLimit = await con.GetHeatingTimeLimitAsync(ct).ConfigureAwait(false),
+            LightBrightness = await con.GetLightBrightnessAsync(ct).ConfigureAwait(false),
+            WiFiPower = await con.GetWiFiPowerAsync(ct).ConfigureAwait(false),
+            WaterLevelMeasureInterval = (byte)(await con.GetWaterLevelMeasureIntervalAsync(ct).ConfigureAwait(false)).TotalMilliseconds,
+            WaterLevelMedianBufferSize = await con.GetWaterLevelMedianSizeAsync(ct).ConfigureAwait(false),
+            WaterLevelAverageBufferSize = await con.GetWaterLevelAverageSizeAsync(ct).ConfigureAwait(false),
+            WaterValveCutOffPercent = await con.GetWaterValveCutOffPercentAsync(ct).ConfigureAwait(false),
+            TempSensorInternalTempAverageSize = await con.GetTemperatureSensorInternalTempAverageSizeAsync(ct).ConfigureAwait(false),
+            ButtonPressTimeMsec = await con.GetButtonPressTimeMsecAsync(ct).ConfigureAwait(false),
+            ButtonLongTimeMsec = await con.GetButtonLongPressTimeMsecAsync(ct).ConfigureAwait(false),
+            WatchDogWasReset = await con.GetWatchDogWasResetAsync(ct).ConfigureAwait(false),
+            WaterTankVolumeLitre = await con.GetWaterTankVolumeLitreAsync(ct).ConfigureAwait(false),
+            WaterHeaterPowerKWatt = await con.GetWaterHeaterPowerKWattAsync(ct).ConfigureAwait(false),
+            WaterLevelErrorThreshhold = await con.GetWaterLevelErrorThresholdAsync(ct).ConfigureAwait(false),
         };
     }
 }

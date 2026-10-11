@@ -48,58 +48,58 @@ public sealed partial class ParametersViewModel : ObservableObject
         [
             new ParameterViewModel<ushort>("Уровень полного бака (μs)",
                 "Число микросекунд соответствующие расстоянию когда бак полностью заполнен водой",
-                m => m.WaterLevelFullUsec, (m, v) => m.WaterLevelFullUsec = v, (c, v) => c.SetWaterLevelFullUsec(v)),
+                m => m.WaterLevelFullUsec, (m, v) => m.WaterLevelFullUsec = v, (c, v, ct) => c.SetWaterLevelFullUsecAsync(v, ct)),
             new ParameterViewModel<ushort>("Уровень пустого бака (μs)",
                 "Число микросекунд соответствующие расстоянию когда бак полностью пустой",
-                m => m.WaterLevelEmptyUsec, (m, v) => m.WaterLevelEmptyUsec = v, (c, v) => c.SetWaterLevelEmptyUsec(v)),
+                m => m.WaterLevelEmptyUsec, (m, v) => m.WaterLevelEmptyUsec = v, (c, v, ct) => c.SetWaterLevelEmptyUsecAsync(v, ct)),
             new ParameterViewModel<byte>("Минимальный уровень воды (%)",
                 "Уровень воды в баке ниже которого нагреватель не будет включаться",
-                m => m.MinimumWaterHeatingLevel, (m, v) => m.MinimumWaterHeatingLevel = v, (c, v) => c.SetMinimumWaterHeatingLevel(v)),
+                m => m.MinimumWaterHeatingLevel, (m, v) => m.MinimumWaterHeatingLevel = v, (c, v, ct) => c.SetMinimumWaterHeatingLevelAsync(v, ct)),
             new ParameterViewModel<byte>("Максимальное время нагрева (мин)",
                 "Если на протяжении заданного времени не была достигнута желаемая температура воды в баке, то нагрев прекращается и алгоритм переходит в аварийное состояние",
-                m => m.HeatingTimeLimit, (m, v) => m.HeatingTimeLimit = v, (c, v) => c.SetHeatingTimeLimit(v)),
+                m => m.HeatingTimeLimit, (m, v) => m.HeatingTimeLimit = v, (c, v, ct) => c.SetHeatingTimeLimitAsync(v, ct)),
             new ParameterViewModel<byte>("Абсолютное время нагрева (ч)",
                 "Если на протяжении заданного времени, автомат нагревателя не был физически выключен то нагрев прекратится и контроллер перейдёт в аварийное состояние",
-                m => m.AbsoluteHeatingTimeLimit, (m, v) => m.AbsoluteHeatingTimeLimit = v, (c, v) => c.SetAbsoluteHeatingTimeLimit(v)),
+                m => m.AbsoluteHeatingTimeLimit, (m, v) => m.AbsoluteHeatingTimeLimit = v, (c, v, ct) => c.SetAbsoluteHeatingTimeLimitAsync(v, ct)),
             new ParameterViewModel<byte>("Яркость освещения (%)",
                 "Яркость светодиодного освещения от 0 до 100%",
-                m => m.LightBrightness, (m, v) => m.LightBrightness = v, (c, v) => c.SetLightBrightness(v)),
+                m => m.LightBrightness, (m, v) => m.LightBrightness = v, (c, v, ct) => c.SetLightBrightnessAsync(v, ct)),
             new WiFiPowerParameterViewModel("Мощность Wi-Fi (10..20.5 dBm)",
                 "Мощность передатчика Wi-Fi с шагом 0.25 dBm"),
             new ParameterViewModel<byte>("Время срабатывания кнопок (msec)",
                 "Время нажатия кнопки для её срабатывания (антидребезг), от 5 до 50 мсек.",
-                m => m.ButtonPressTimeMsec, (m, v) => m.ButtonPressTimeMsec = v, (c, v) => c.SetButtonTimeMsec(v)),
+                m => m.ButtonPressTimeMsec, (m, v) => m.ButtonPressTimeMsec = v, (c, v, ct) => c.SetButtonTimeMsecAsync(v, ct)),
             new ParameterViewModel<ushort>("Долгое нажатие кнопок (msec)",
                 "Время зажатой кнопки для определения длительного нажатия, от 1000 до 10000 мсек.",
-                m => m.ButtonLongTimeMsec, (m, v) => m.ButtonLongTimeMsec = v, (c, v) => c.SetButtonLongPressTimeMsec(v)),
+                m => m.ButtonLongTimeMsec, (m, v) => m.ButtonLongTimeMsec = v, (c, v, ct) => c.SetButtonLongPressTimeMsecAsync(v, ct)),
         ];
 
         RightColumn =
         [
             new ParameterViewModel<byte>("Интервал замера уровня воды (msec)",
                 "Длительность паузы перед повторным измерением расстояния до воды в баке. Рекомендуется не меньше 60 мсек",
-                m => m.WaterLevelMeasureInterval, (m, v) => m.WaterLevelMeasureInterval = v, (c, v) => c.SetWaterLevelMeasureInterval(v)),
+                m => m.WaterLevelMeasureInterval, (m, v) => m.WaterLevelMeasureInterval = v, (c, v, ct) => c.SetWaterLevelMeasureIntervalAsync(v, ct)),
             new ParameterViewModel<byte>("Медианный фильтр для уровня воды",
                 "Размер буфера медианного фильтра для RAW показаний датчика уровня воды (от 1 до 255)",
-                m => m.WaterLevelMedianBufferSize, (m, v) => m.WaterLevelMedianBufferSize = v, (c, v) => c.SetWaterLevelMedianBufferSize(v)),
+                m => m.WaterLevelMedianBufferSize, (m, v) => m.WaterLevelMedianBufferSize = v, (c, v, ct) => c.SetWaterLevelMedianBufferSizeAsync(v, ct)),
             new ParameterViewModel<byte>("Скользящее среднее для уровня воды",
                 "Размер буфера фильтра 'скользящее среднее' для значений медианы датчика уровня воды (от 1 до 129)",
-                m => m.WaterLevelAverageBufferSize, (m, v) => m.WaterLevelAverageBufferSize = v, (c, v) => c.SetWaterLevelAverageBufferSize(v)),
+                m => m.WaterLevelAverageBufferSize, (m, v) => m.WaterLevelAverageBufferSize = v, (c, v, ct) => c.SetWaterLevelAverageBufferSizeAsync(v, ct)),
             new ParameterViewModel<byte>("Порог ошибок уровня воды",
                 "Число неудачных измерений уровня воды после которого на индикаторе отобразятся прочерки (от 1 до 255)",
-                m => m.WaterLevelErrorThreshhold, (m, v) => m.WaterLevelErrorThreshhold = v, (c, v) => c.SetWaterLevelErrorThreshold(v)),
+                m => m.WaterLevelErrorThreshhold, (m, v) => m.WaterLevelErrorThreshhold = v, (c, v, ct) => c.SetWaterLevelErrorThresholdAsync(v, ct)),
             new ParameterViewModel<byte>("Порог отключения набора воды (%)",
                 null,
-                m => m.WaterValveCutOffPercent, (m, v) => m.WaterValveCutOffPercent = v, (c, v) => c.SetWaterValveCutOffPercent(v)),
+                m => m.WaterValveCutOffPercent, (m, v) => m.WaterValveCutOffPercent = v, (c, v, ct) => c.SetWaterValveCutOffPercentAsync(v, ct)),
             new ParameterViewModel<byte>("Скользящее среднее для температуры в баке",
                 "Размер буфера фильтра 'скользящее среднее' для значений датчика температуры внутри бака (от 1 до 8)",
-                m => m.TempSensorInternalTempAverageSize, (m, v) => m.TempSensorInternalTempAverageSize = v, (c, v) => c.SetTempSensorInternalTempAverageSize(v)),
+                m => m.TempSensorInternalTempAverageSize, (m, v) => m.TempSensorInternalTempAverageSize = v, (c, v, ct) => c.SetTempSensorInternalTempAverageSizeAsync(v, ct)),
             new ParameterViewModel<float>("Объём воды полного бака (л)",
                 null,
-                m => m.WaterTankVolumeLitre, (m, v) => m.WaterTankVolumeLitre = v, (c, v) => c.SetWaterTankVolumeLitre(v)),
+                m => m.WaterTankVolumeLitre, (m, v) => m.WaterTankVolumeLitre = v, (c, v, ct) => c.SetWaterTankVolumeLitreAsync(v, ct)),
             new ParameterViewModel<float>("Мощность ТЭНа с учётом КПД (кВт)",
                 null,
-                m => m.WaterHeaterPowerKWatt, (m, v) => m.WaterHeaterPowerKWatt = v, (c, v) => c.SetWaterHeaterPowerKWatt(v)),
+                m => m.WaterHeaterPowerKWatt, (m, v) => m.WaterHeaterPowerKWatt = v, (c, v, ct) => c.SetWaterHeaterPowerKWattAsync(v, ct)),
         ];
 
         All = [.. LeftColumn, .. RightColumn];
@@ -126,7 +126,7 @@ public sealed partial class ParametersViewModel : ObservableObject
 
         try
         {
-            var model = await _device.RunAsync(PropertiesModel.Load, cts.Token).Unwrap();
+            var model = await _device.RunAsync(PropertiesModel.LoadAsync, cts.Token);
 
             SetOriginal(model);
             PropertiesLoaded?.Invoke(this, model);
@@ -172,14 +172,14 @@ public sealed partial class ParametersViewModel : ObservableObject
         IsBusy = true;
         try
         {
-            await _device.RunAsync(connection =>
+            await _device.RunAsync(async (connection, ct) =>
             {
                 foreach (var parameter in changed)
                 {
-                    parameter.Write(connection);
+                    await parameter.WriteAsync(connection, ct);
                     written.Add(parameter);
                 }
-                connection.Save();
+                await connection.SaveAsync(ct);
             },
             ct);
         }

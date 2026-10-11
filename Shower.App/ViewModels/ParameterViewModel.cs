@@ -60,7 +60,7 @@ public abstract partial class ParameterViewModel : ObservableObject, INotifyData
     /// <summary>
     /// Записывает текущее значение в контроллер.
     /// </summary>
-    public abstract void Write(ShowerConnection connection);
+    public abstract Task WriteAsync(ShowerConnection connection, CancellationToken ct);
 
     /// <summary>
     /// Текущее значение записано в контроллер.
@@ -111,14 +111,14 @@ public class ParameterViewModel<T> : ParameterViewModel where T : struct, INumbe
 {
     private readonly Func<PropertiesModel, T?> _get;
     private readonly Action<PropertiesModel, T?> _set;
-    private readonly Action<ShowerConnection, T> _write;
+    private readonly Func<ShowerConnection, T, CancellationToken, Task> _write;
 
     public ParameterViewModel(
         string caption,
         string? hint,
         Func<PropertiesModel, T?> get,
         Action<PropertiesModel, T?> set,
-        Action<ShowerConnection, T> write)
+        Func<ShowerConnection, T, CancellationToken, Task> write)
         : base(caption, hint)
     {
         _get = get;
@@ -149,13 +149,13 @@ public class ParameterViewModel<T> : ParameterViewModel where T : struct, INumbe
         _set(model, Value);
     }
 
-    public override void Write(ShowerConnection connection)
+    public override Task WriteAsync(ShowerConnection connection, CancellationToken ct)
     {
         if (!TryParse(Text, out var value, out var error))
         {
             throw new FormatException($"{Caption}: {error}");
         }
-        _write(connection, value);
+        return _write(connection, value, ct);
     }
 
     protected virtual string Format(T value)
@@ -196,7 +196,7 @@ public class ParameterViewModel<T> : ParameterViewModel where T : struct, INumbe
 public sealed class WiFiPowerParameterViewModel : ParameterViewModel<byte>
 {
     public WiFiPowerParameterViewModel(string caption, string? hint)
-        : base(caption, hint, m => m.WiFiPower, (m, v) => m.WiFiPower = v, (c, v) => c.SetWiFiPower(v))
+        : base(caption, hint, m => m.WiFiPower, (m, v) => m.WiFiPower = v, (c, v, ct) => c.SetWiFiPowerAsync(v, ct))
     {
     }
 

@@ -190,7 +190,7 @@ public sealed partial class WaterTemperatureViewModel : ObservableValidator
             {
                 try
                 {
-                    using var connection = await _device.ConnectAsync(cts.Token);
+                    using var connection = await _device.CreateConnection(cts.Token);
                     if (wasConnected)
                     {
                         ReconnectCount++;
@@ -378,7 +378,7 @@ public sealed partial class WaterTemperatureViewModel : ObservableValidator
         try
         {
             using var cts = new CancellationTokenSource(Device.RequestTimeout);
-            using var connection = await _device.ConnectAsync(cts.Token);
+            using var connection = await _device.CreateConnection(cts.Token);
             await InitBeforeStartAsync(connection, cts.Token);
         }
         catch (Exception ex)

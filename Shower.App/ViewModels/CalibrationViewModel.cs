@@ -70,7 +70,7 @@ public sealed partial class CalibrationViewModel : ObservableObject
 
                 try
                 {
-                    using var connection = await _device.ConnectAsync(cts.Token);
+                    using var connection = await _device.CreateConnection(cts.Token);
 
                     var measureInterval = await _device.RequestAsync(connection.GetWaterLevelMeasureIntervalAsync, cts.Token);
                     MeasureIntervalMsec = Math.Clamp((int)measureInterval.TotalMilliseconds, 0, MaxMeasureIntervalMsec);
@@ -143,7 +143,7 @@ public sealed partial class CalibrationViewModel : ObservableObject
         {
             try
             {
-                using var connection = await _device.ConnectAsync(ct);
+                using var connection = await _device.CreateConnection(ct);
                 using var timer = new PeriodicTimer(ErrorCountersInterval);
 
                 while (await timer.WaitForNextTickAsync(ct))
