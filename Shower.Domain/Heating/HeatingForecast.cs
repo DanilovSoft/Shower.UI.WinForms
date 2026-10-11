@@ -19,7 +19,7 @@ public readonly record struct HeatingForecast(DateTime StartTime, float StartTem
     /// <param name="limitTemp">Целевая температура.</param>
     /// <returns><see langword="null"/> если в записи нет подходящей точки.</returns>
     public static HeatingForecast? Calculate(
-        IReadOnlyList<InternalTempModel> records,
+        IReadOnlyList<WaterTemperatureModel> records,
         int startMinute,
         float waterLevel,
         HeatingTimeLeft calculator,
@@ -44,7 +44,7 @@ public readonly record struct HeatingForecast(DateTime StartTime, float StartTem
             return null;
         }
 
-        var timeLeft = calculator.CalcTimeLeft(point.InternalTemp, limitTemp, waterLevel);
-        return new HeatingForecast(point.Timestamp, point.InternalTemp, point.Timestamp + timeLeft, limitTemp, timeLeft);
+        var timeLeft = calculator.CalcTimeLeft(point.WaterTemperature, limitTemp, waterLevel);
+        return new HeatingForecast(point.Timestamp, point.WaterTemperature, point.Timestamp + timeLeft, limitTemp, timeLeft);
     }
 }

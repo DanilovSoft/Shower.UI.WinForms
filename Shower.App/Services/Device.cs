@@ -63,7 +63,7 @@ public sealed class Device
     /// Открывает соединение и выполняет на нём серию запросов. Вся серия ограничена таймаутом <see cref="RequestTimeout"/>.
     /// </summary>
     /// <exception cref="TimeoutException">Устройство не ответило вовремя.</exception>
-    public async Task<T> RunAsync<T>(Func<ShowerConnection, CancellationToken, Task<T>> action, CancellationToken ct)
+    public async Task<TResult> ConnectAndExecute<TResult>(Func<ShowerConnection, CancellationToken, Task<TResult>> action, CancellationToken ct)
     {
         ArgumentNullException.ThrowIfNull(action);
 
@@ -71,21 +71,21 @@ public sealed class Device
         return await RequestAsync(t => action(connection, t), ct).ConfigureAwait(false);
     }
 
-    /// <inheritdoc cref="RunAsync{T}(Func{ShowerConnection, CancellationToken, Task{T}}, CancellationToken)"/>
-    public Task RunAsync(Func<ShowerConnection, CancellationToken, Task> action, CancellationToken ct)
+    /// <inheritdoc cref="ConnectAndExecute{T}(Func{ShowerConnection, CancellationToken, Task{T}}, CancellationToken)"/>
+    public Task ConnectAndExecute(Func<ShowerConnection, CancellationToken, Task> action, CancellationToken ct)
     {
         ArgumentNullException.ThrowIfNull(action);
 
-        return RunAsync(async (connection, t) =>
+        return ConnectAndExecute(async (connection, t) =>
         {
             await action(connection, t).ConfigureAwait(false);
-            return true;
+            return 0;
         }, ct);
     }
 
     public Task RestartAsync(CancellationToken ct)
     {
-        return RunAsync((connection, t) => connection.ResetAsync(t), ct);
+        return ConnectAndExecute((connection, t) => connection.ResetAsync(t), ct);
     }
 
     public async Task<ShowerCode> PingAsync(CancellationToken cancellationToken)

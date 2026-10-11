@@ -51,14 +51,14 @@ public class HeatingTests
         Assert.Equal(Start.AddSeconds(70), forecast.Value.StartTime);
         Assert.Equal(20.7f, forecast.Value.StartTemp, precision: 3);
         Assert.Equal(40f, forecast.Value.EndTemp);
-        Assert.Equal(calculator.CalcTimeLeft(records[70].InternalTemp, 40, 1), forecast.Value.TimeLeft);
+        Assert.Equal(calculator.CalcTimeLeft(records[70].WaterTemperature, 40, 1), forecast.Value.TimeLeft);
         Assert.Equal(Start.AddSeconds(70) + forecast.Value.TimeLeft, forecast.Value.EndTime);
     }
 
     [Fact]
     public void Forecast_ZeroMinute_ReturnsNull()
     {
-        var records = new List<InternalTempModel> { Record(0, 20, heaterEnabled: true) };
+        var records = new List<WaterTemperatureModel> { Record(0, 20, heaterEnabled: true) };
 
         Assert.Null(HeatingForecast.Calculate(records, 0, 1, new HeatingTimeLeft(50, 2), 40));
     }
@@ -85,11 +85,11 @@ public class HeatingTests
 
     private static readonly DateTime Start = new(2026, 10, 1, 12, 0, 0);
 
-    private static InternalTempModel Record(int second, float temp, bool heaterEnabled) => new()
+    private static WaterTemperatureModel Record(int second, float temp, bool heaterEnabled) => new()
     {
         Timestamp = Start.AddSeconds(second),
         Second = second,
-        InternalTemp = temp,
+        WaterTemperature = temp,
         HeaterEnabled = heaterEnabled,
     };
 }

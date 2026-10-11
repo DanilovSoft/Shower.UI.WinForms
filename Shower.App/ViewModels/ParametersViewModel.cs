@@ -121,15 +121,13 @@ public sealed partial class ParametersViewModel : ObservableObject
     [RelayCommand(CanExecute = nameof(IsEditable))]
     private async Task LoadAsync()
     {
-        if (_loadCts == null || !_loadCts.TryReset())
-        {
-            _loadCts = new CancellationTokenSource();
-        }
-
-        var cts = _loadCts;
+        var cts = _loadCts = new CancellationTokenSource();
         try
         {
             await LoadAsync(_loadCts.Token);
+        }
+        catch (OperationCanceledException)
+        {
         }
         finally
         {
@@ -146,12 +144,9 @@ public sealed partial class ParametersViewModel : ObservableObject
             SetOriginal(model);
             PropertiesLoaded?.Invoke(this, model);
         }
-        catch when (ct.IsCancellationRequested)
+        catch (Exception e) when (!ct.IsCancellationRequested)
         {
-        }
-        catch (Exception ex)
-        {
-            _dialogs.ShowError(ex.Message);
+            _dialogs.ShowError(e.Message);
         }
         finally
         {
@@ -191,7 +186,7 @@ public sealed partial class ParametersViewModel : ObservableObject
         IsBusy = true;
         try
         {
-            await _device.RunAsync(async (connection, ct) =>
+            await _device.ConnectAndExecute(async (connection, ct) =>
             {
                 foreach (var parameter in changed)
                 {
@@ -202,9 +197,9 @@ public sealed partial class ParametersViewModel : ObservableObject
             },
             ct);
         }
-        catch (Exception ex)
+        catch (Exception e)
         {
-            _dialogs.ShowError(ex.Message);
+            _dialogs.ShowError(e.Message);
             return;
         }
         finally
@@ -216,7 +211,7 @@ public sealed partial class ParametersViewModel : ObservableObject
             IsBusy = false;
         }
 
-        await LoadAsync();
+        await LoadAsync(ct);
     }
 
     [RelayCommand(CanExecute = nameof(IsEditable))]

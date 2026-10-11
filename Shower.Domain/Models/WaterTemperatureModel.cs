@@ -6,7 +6,7 @@ namespace Shower.Domain.Models;
 /// Одно измерение температуры в баке.
 /// </summary>
 [DebuggerDisplay("{ToString(),nq}")]
-public sealed class InternalTempModel
+public sealed class WaterTemperatureModel
 {
     /// <summary>
     /// Момент времени когда были полученны данные.
@@ -21,7 +21,7 @@ public sealed class InternalTempModel
     /// <summary>
     /// Температура в баке.
     /// </summary>
-    public float InternalTemp { get; set; }
+    public float WaterTemperature { get; set; }
 
     public bool HeaterEnabled { get; set; }
 
@@ -29,6 +29,6 @@ public sealed class InternalTempModel
 
     public override string ToString()
     {
-        return $"Second = {Second}, InternalTemp = {InternalTemp}, HeaterEnabled = {HeaterEnabled}, TimeLeft = {TimeLeft}";
+        return $"WaterTemp = {WaterTemperature}, HeaterEnabled = {HeaterEnabled}, TimeLeft = {TimeLeft}";
     }
 }

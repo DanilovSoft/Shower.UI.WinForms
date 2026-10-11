@@ -25,7 +25,7 @@ public sealed class TemperatureChart : ChartModel
     private readonly List<double> _forecastTemps = new(2);
     private readonly Scatter _forecast;
     private readonly List<HorizontalSpan> _gaps = [];
-    private InternalTempModel? _last;
+    private WaterTemperatureModel? _last;
 
     public TemperatureChart()
     {
@@ -54,14 +54,14 @@ public sealed class TemperatureChart : ChartModel
         _forecast.LineColor = theme.Foreground;
     }
 
-    public void Add(InternalTempModel model)
+    public void Add(WaterTemperatureModel model)
     {
         AddPoint(model);
         UpdateLimits();
         RequestRefresh();
     }
 
-    public void AddRange(IEnumerable<InternalTempModel> models)
+    public void AddRange(IEnumerable<WaterTemperatureModel> models)
     {
         foreach (var model in models)
         {
@@ -107,7 +107,7 @@ public sealed class TemperatureChart : ChartModel
         RequestRefresh();
     }
 
-    private void AddPoint(InternalTempModel model)
+    private void AddPoint(WaterTemperatureModel model)
     {
         double time = model.Timestamp.ToOADate();
 
@@ -118,7 +118,7 @@ public sealed class TemperatureChart : ChartModel
         }
 
         // Точку переключения нагрева добавляем в обе серии, чтобы линия не прерывалась.
-        double temp = model.InternalTemp;
+        double temp = model.WaterTemperature;
         bool toHeaterOn = model.HeaterEnabled || _last?.HeaterEnabled == true;
         bool toHeaterOff = !model.HeaterEnabled || _last?.HeaterEnabled == false;
 

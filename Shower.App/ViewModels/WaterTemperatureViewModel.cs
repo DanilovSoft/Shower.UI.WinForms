@@ -33,7 +33,7 @@ public sealed partial class WaterTemperatureViewModel : ObservableValidator
     private static readonly TimeSpan ReconnectDelay = TimeSpan.FromSeconds(1);
 
     /// <summary>
-    /// В старых файлах нет <see cref="InternalTempModel.Timestamp"/>: не требуем его при чтении и восстанавливаем по <see cref="InternalTempModel.Second"/>.
+    /// В старых файлах нет <see cref="WaterTemperatureModel.Timestamp"/>: не требуем его при чтении и восстанавливаем по <see cref="WaterTemperatureModel.Second"/>.
     /// </summary>
     private static readonly JsonSerializerOptions ReadOptions = new()
     {
@@ -54,7 +54,7 @@ public sealed partial class WaterTemperatureViewModel : ObservableValidator
 
     private readonly IDialogService _dialogs;
     private readonly Device _device;
-    private readonly List<InternalTempModel> _records = new(600);
+    private readonly List<WaterTemperatureModel> _records = new(600);
     private CancellationTokenSource? _cts;
     private HeatingTimeLeft? _calculator;
 
@@ -310,7 +310,7 @@ public sealed partial class WaterTemperatureViewModel : ObservableValidator
             return;
         }
 
-        List<InternalTempModel> records;
+        List<WaterTemperatureModel> records;
         try
         {
             records = ReadRecords(path);
@@ -427,11 +427,11 @@ public sealed partial class WaterTemperatureViewModel : ObservableValidator
 
             WaterLevelText = PercentToString(waterPercent);
 
-            AddRecord(new InternalTempModel
+            AddRecord(new WaterTemperatureModel
             {
                 Timestamp = DateTime.Now,
                 Second = second,
-                InternalTemp = internalTemp.Value,
+                WaterTemperature = internalTemp.Value,
                 HeaterEnabled = heaterEnabled.Value != 0,
                 TimeLeft = TimeSpan.FromMinutes(minutesLeft.Value),
             });
@@ -453,7 +453,7 @@ public sealed partial class WaterTemperatureViewModel : ObservableValidator
         return StringPool.Shared.GetOrAdd(buffer[..charsWritten]);
     }
 
-    private void AddRecord(InternalTempModel record)
+    private void AddRecord(WaterTemperatureModel record)
     {
         _records.Add(record);
         Chart.Add(record);
@@ -495,9 +495,9 @@ public sealed partial class WaterTemperatureViewModel : ObservableValidator
         TimeLeftText = forecast is { } f ? FormatTimeLeft(f.TimeLeft) : TimeLeftPlaceholder;
     }
 
-    private static List<InternalTempModel> ReadRecords(string path)
+    private static List<WaterTemperatureModel> ReadRecords(string path)
     {
-        var records = JsonSerializer.Deserialize<List<InternalTempModel>>(File.ReadAllText(path), ReadOptions)
+        var records = JsonSerializer.Deserialize<List<WaterTemperatureModel>>(File.ReadAllText(path), ReadOptions)
             ?? throw new InvalidDataException("Файл не содержит записей.");
 
         // Старый файл сохранялся сразу после записи: считаем, что последнее измерение сделано в момент сохранения.

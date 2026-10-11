@@ -9,15 +9,10 @@ public sealed class ConnectionFactory(IOptions<ShowerConnectionOptions> options)
 
     public async Task<ShowerConnection> CreateConnection(CancellationToken ct)
     {
-        var tcp = new TcpClient
-        {
-            ReceiveTimeout = 10_000, // 10 секунд
-            SendTimeout = 10_000 // 10 секунд
-        };
+        var tcp = new TcpClient();
 
         try
         {
-
             await tcp.ConnectAsync(_options.Host, _options.Port, ct).ConfigureAwait(false);
 
             var connection = new ShowerConnection(tcp);
