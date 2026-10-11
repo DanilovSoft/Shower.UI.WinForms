@@ -41,24 +41,24 @@ public class HeatingTests
     {
         // Нагрев включается на 10-й секунде, температура растёт на 0.01° в секунду.
         var records = Enumerable.Range(0, 300)
-            .Select(s => new InternalTempModel { Second = s, InternalTemp = 20 + s * 0.01f, HeaterEnabled = s >= 10 })
+            .Select(s => Record(s, 20 + s * 0.01f, heaterEnabled: s >= 10))
             .ToList();
         var calculator = new HeatingTimeLeft(50, 2);
 
         var forecast = HeatingForecast.Calculate(records, startMinute: 1, waterLevel: 1, calculator, limitTemp: 40);
 
         Assert.NotNull(forecast);
-        Assert.Equal(70, forecast.Value.StartSecond);
+        Assert.Equal(Start.AddSeconds(70), forecast.Value.StartTime);
         Assert.Equal(20.7f, forecast.Value.StartTemp, precision: 3);
         Assert.Equal(40f, forecast.Value.EndTemp);
         Assert.Equal(calculator.CalcTimeLeft(records[70].InternalTemp, 40, 1), forecast.Value.TimeLeft);
-        Assert.Equal(70 + (int)forecast.Value.TimeLeft.TotalSeconds, forecast.Value.EndSecond);
+        Assert.Equal(Start.AddSeconds(70) + forecast.Value.TimeLeft, forecast.Value.EndTime);
     }
 
     [Fact]
     public void Forecast_ZeroMinute_ReturnsNull()
     {
-        var records = new List<InternalTempModel> { new() { Second = 0, InternalTemp = 20, HeaterEnabled = true } };
+        var records = new List<InternalTempModel> { Record(0, 20, heaterEnabled: true) };
 
         Assert.Null(HeatingForecast.Calculate(records, 0, 1, new HeatingTimeLeft(50, 2), 40));
     }
@@ -67,7 +67,7 @@ public class HeatingTests
     public void Forecast_HeaterNeverEnabled_ReturnsNull()
     {
         var records = Enumerable.Range(0, 300)
-            .Select(s => new InternalTempModel { Second = s, InternalTemp = 20, HeaterEnabled = false })
+            .Select(s => Record(s, 20, heaterEnabled: false))
             .ToList();
 
         Assert.Null(HeatingForecast.Calculate(records, 1, 1, new HeatingTimeLeft(50, 2), 40));
@@ -77,9 +77,19 @@ public class HeatingTests
     public void Forecast_RecordTooShort_ReturnsNull()
     {
         var records = Enumerable.Range(0, 30)
-            .Select(s => new InternalTempModel { Second = s, InternalTemp = 20, HeaterEnabled = true })
+            .Select(s => Record(s, 20, heaterEnabled: true))
             .ToList();
 
         Assert.Null(HeatingForecast.Calculate(records, 1, 1, new HeatingTimeLeft(50, 2), 40));
     }
+
+    private static readonly DateTime Start = new(2026, 10, 1, 12, 0, 0);
+
+    private static InternalTempModel Record(int second, float temp, bool heaterEnabled) => new()
+    {
+        Timestamp = Start.AddSeconds(second),
+        Second = second,
+        InternalTemp = temp,
+        HeaterEnabled = heaterEnabled,
+    };
 }

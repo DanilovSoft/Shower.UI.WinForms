@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Text.Json;
+using System.Text.Json.Serialization.Metadata;
 using CommunityToolkit.HighPerformance.Buffers;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -30,6 +31,26 @@ public sealed partial class WaterTemperatureViewModel : ObservableValidator
 
     private static readonly TimeSpan PollInterval = TimeSpan.FromSeconds(1);
     private static readonly TimeSpan ReconnectDelay = TimeSpan.FromSeconds(1);
+
+    /// <summary>
+    /// В старых файлах нет <see cref="InternalTempModel.Timestamp"/>: не требуем его при чтении и восстанавливаем по <see cref="InternalTempModel.Second"/>.
+    /// </summary>
+    private static readonly JsonSerializerOptions ReadOptions = new()
+    {
+        TypeInfoResolver = new DefaultJsonTypeInfoResolver
+        {
+            Modifiers =
+            {
+                static typeInfo =>
+                {
+                    foreach (var property in typeInfo.Properties)
+                    {
+                        property.IsRequired = false;
+                    }
+                },
+            },
+        },
+    };
 
     private readonly IDialogService _dialogs;
     private readonly Device _device;
@@ -476,8 +497,11 @@ public sealed partial class WaterTemperatureViewModel : ObservableValidator
 
     private static List<InternalTempModel> ReadRecords(string path)
     {
-        return JsonSerializer.Deserialize<List<InternalTempModel>>(File.ReadAllText(path))
+        var records = JsonSerializer.Deserialize<List<InternalTempModel>>(File.ReadAllText(path), ReadOptions)
             ?? throw new InvalidDataException("Файл не содержит записей.");
+
+        // Старый файл сохранялся сразу после записи: считаем, что последнее измерение сделано в момент сохранения.
+        return TemperatureRecords.RestoreTimestamps(records, File.GetLastWriteTime(path));
     }
 
     private static string FormatTimeLeft(TimeSpan timeLeft) => timeLeft.ToString("hh\\:mm\\:ss");
