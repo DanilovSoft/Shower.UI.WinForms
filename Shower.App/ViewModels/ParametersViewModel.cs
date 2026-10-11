@@ -121,17 +121,32 @@ public sealed partial class ParametersViewModel : ObservableObject
     [RelayCommand(CanExecute = nameof(IsEditable))]
     private async Task LoadAsync()
     {
-        var cts = _loadCts = new CancellationTokenSource();
-        IsLoading = true;
+        if (_loadCts == null || !_loadCts.TryReset())
+        {
+            _loadCts = new CancellationTokenSource();
+        }
 
+        var cts = _loadCts;
         try
         {
-            var model = await _device.RunAsync(PropertiesModel.LoadAsync, cts.Token);
+            await LoadAsync(_loadCts.Token);
+        }
+        finally
+        {
+            await cts.CancelAsync();
+        }
+    }
 
+    private async Task LoadAsync(CancellationToken ct)
+    {
+        IsLoading = true;
+        try
+        {
+            var model = await LoadProperties(ct);
             SetOriginal(model);
             PropertiesLoaded?.Invoke(this, model);
         }
-        catch when (cts.IsCancellationRequested)
+        catch when (ct.IsCancellationRequested)
         {
         }
         catch (Exception ex)
@@ -140,16 +155,20 @@ public sealed partial class ParametersViewModel : ObservableObject
         }
         finally
         {
-            cts.Cancel();
             IsLoading = false;
         }
+    }
+
+    private async Task<PropertiesModel> LoadProperties(CancellationToken ct)
+    {
+        await using var connection = await _device.CreateConnection(ct).ConfigureAwait(false);
+        return await PropertiesModel.LoadAsync(connection, ct);
     }
 
     [RelayCommand(CanExecute = nameof(IsLoading))]
     private void Cancel()
     {
         _loadCts?.Cancel();
-        IsLoading = false;
     }
 
     [RelayCommand(CanExecute = nameof(IsEditable))]

@@ -81,18 +81,18 @@ public sealed class ShowerConnectionProtocolTests : IAsyncLifetime
     }
 
     [Fact]
-    public async Task SyncAndAsyncRequests_ShareConnection()
+    public async Task SequentialRequests_ShareConnection()
     {
-        var syncRequest = Task.Run(() => _connection.SetWaterTankVolumeLitre(37.5f));
+        var setRequest = _connection.SetWaterTankVolumeLitreAsync(37.5f, CancellationToken.None);
         Assert.Equal(new byte[] { 6, (byte)ShowerCode.SetWaterTankVolumeLitre, 0x00, 0x00, 0x16, 0x42 }, await ReceiveAsync(6));
         await SendAsync((byte)ShowerCode.OK);
-        await syncRequest;
+        await setRequest;
 
-        var asyncRequest = _connection.PingAsync(CancellationToken.None);
+        var pingRequest = _connection.PingAsync(CancellationToken.None);
         Assert.Equal(new byte[] { 2, (byte)ShowerCode.Ping }, await ReceiveAsync(2));
         await SendAsync((byte)ShowerCode.Ping);
 
-        Assert.Equal(ShowerCode.Ping, await asyncRequest);
+        Assert.Equal(ShowerCode.Ping, await pingRequest);
     }
 
     [Fact]
