@@ -106,6 +106,7 @@ public sealed class PropertiesModel
         var waterTankVolumeLitre = batch.Get<float>(ShowerCode.GetWaterTankVolumeLitre);
         var waterHeaterPowerKWatt = batch.Get<float>(ShowerCode.GetWaterHeaterPowerKWatt);
         var waterLevelErrorThreshold = batch.Get<byte>(ShowerCode.GetWaterLevelErrorThreshold);
+        //var heaterHysteresis = batch.Get<float>(ShowerCode.GetHeaterHysteresis);
 
         await batch.ExecuteAsync(ct).ConfigureAwait(false);
 
