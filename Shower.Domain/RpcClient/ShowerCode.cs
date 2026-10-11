@@ -1,6 +1,6 @@
 ﻿namespace Shower.Domain.RpcClient;
 
-public enum ShowerCodes : byte
+public enum ShowerCode
 {
     None = 0,
     SetWaterLevelFullUsec = 1,

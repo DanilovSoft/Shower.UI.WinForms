@@ -14,7 +14,7 @@ public sealed class MyBinaryWriter : BinaryWriter
         OutStream.Position = 1;
     }
 
-    public void Write(ShowerCodes code)
+    public void WriteHeader(ShowerCode code)
     {
         Write((byte)code);
     }
@@ -22,7 +22,7 @@ public sealed class MyBinaryWriter : BinaryWriter
     /// <summary>
     /// Записывает в начало стрима 1 байт: размер последующих данных в стриме (до 200 байт).
     /// </summary>
-    public void WriteEnd()
+    public void WriteEndOfMessage()
     {
         if (OutStream.Length > MaxLength)
         {

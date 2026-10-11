@@ -53,28 +53,28 @@ public sealed class Device
     /// <summary>
     /// Выполняет синхронные запросы к контроллеру в фоновом потоке.
     /// </summary>
-    public async Task<T> RunAsync<T>(Func<ShowerConnection, T> action, CancellationToken ct)
+    public async Task<T> RunAsync<T>(Func<ShowerConnection, CancellationToken, T> action, CancellationToken ct)
     {
         using var connection = await ConnectAsync(ct).ConfigureAwait(false);
-        return await Task.Run(() => action(connection), ct).ConfigureAwait(false);
+        return await Task.Run(() => action(connection, ct), ct).ConfigureAwait(false);
     }
 
     /// <inheritdoc cref="RunAsync{T}(Func{ShowerConnection, T}, CancellationToken)"/>
-    public Task RunAsync(Action<ShowerConnection> action, CancellationToken ct = default)
+    public Task RunAsync(Action<ShowerConnection> action, CancellationToken ct)
     {
-        return RunAsync(connection =>
+        return RunAsync((connection, ct) =>
         {
             action(connection);
             return true;
         }, ct);
     }
 
-    public Task RestartAsync()
+    public Task RestartAsync(CancellationToken ct)
     {
-        return RunAsync(connection => connection.Reset());
+        return RunAsync((connection) => connection.Reset(), ct);
     }
 
-    public async Task<ShowerCodes> PingAsync(CancellationToken cancellationToken)
+    public async Task<ShowerCode> PingAsync(CancellationToken cancellationToken)
     {
         using var connection = await ConnectAsync(cancellationToken).ConfigureAwait(false);
         return await RequestAsync(connection.PingAsync, cancellationToken).ConfigureAwait(false);

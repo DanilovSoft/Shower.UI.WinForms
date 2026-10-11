@@ -75,7 +75,7 @@ public sealed partial class CalibrationViewModel : ObservableObject
                     var measureInterval = await _device.RequestAsync(connection.GetWaterLevelMeasureIntervalAsync, cts.Token);
                     MeasureIntervalMsec = Math.Clamp((int)measureInterval.TotalMilliseconds, 0, MaxMeasureIntervalMsec);
 
-                    var waterLevelEmpty = await _device.RequestAsync(t => connection.RequestAsync<ushort>(ShowerCodes.GetWaterLevelEmptyUsec, t), cts.Token);
+                    var waterLevelEmpty = await _device.RequestAsync(t => connection.RequestAsync<ushort>(ShowerCode.GetWaterLevelEmptyUsec, t), cts.Token);
                     Chart.SetCalibration(waterLevelEmpty);
                     ErrorMessage = null;
 
@@ -148,8 +148,8 @@ public sealed partial class CalibrationViewModel : ObservableObject
 
                 while (await timer.WaitForNextTickAsync(ct))
                 {
-                    var overflowCount = await _device.RequestAsync(t => connection.RequestAsync<ushort>(ShowerCodes.GetWaterLevelOverflowCounter, t), ct);
-                    var noiseErrors = await _device.RequestAsync(t => connection.RequestAsync<ushort>(ShowerCodes.GetWaterLevelNoiseErrorCounter, t), ct);
+                    var overflowCount = await _device.RequestAsync(t => connection.RequestAsync<ushort>(ShowerCode.GetWaterLevelOverflowCounter, t), ct);
+                    var noiseErrors = await _device.RequestAsync(t => connection.RequestAsync<ushort>(ShowerCode.GetWaterLevelNoiseErrorCounter, t), ct);
 
                     ErrorCountersText = $"Ошибки: Overflow: {overflowCount}, Noise: {noiseErrors}";
                 }

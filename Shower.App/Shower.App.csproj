@@ -33,4 +33,12 @@
     <None Update="appsettings.json" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
+  <ItemGroup>
+    <EditorConfigFiles Remove="C:\Users\Miles\source\repos\Shower.App\Shower.App\.editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="C:\Users\Miles\source\repos\Shower.App\Shower.App\.editorconfig" />
+  </ItemGroup>
+
 </Project>

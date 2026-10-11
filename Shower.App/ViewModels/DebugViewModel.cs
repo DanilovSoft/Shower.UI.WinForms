@@ -8,11 +8,8 @@ namespace Shower.App.ViewModels;
 /// <summary>
 /// Вкладка «Отладка»: проверка связи и подключение контроллера к точке доступа Wi-Fi.
 /// </summary>
-public sealed partial class DebugViewModel : ObservableObject
+public sealed partial class DebugViewModel(IDialogService dialogs, Device device) : ObservableObject
 {
-    private readonly IDialogService _dialogs;
-    private readonly Device _device;
-
     [ObservableProperty]
     public partial string? PingResult { get; set; }
 
@@ -31,19 +28,13 @@ public sealed partial class DebugViewModel : ObservableObject
     [ObservableProperty]
     public partial string? WiFiResult { get; set; }
 
-    public DebugViewModel(IDialogService dialogs, Device device)
-    {
-        _dialogs = dialogs;
-        _device = device;
-    }
-
     [RelayCommand(IncludeCancelCommand = true)]
     private async Task PingAsync(CancellationToken token)
     {
         PingResult = "Ожидание ответа…";
         try
         {
-            var code = await _device.PingAsync(token);
+            var code = await device.PingAsync(token);
             PingResult = $"Ответ: {code}";
         }
         catch when (token.IsCancellationRequested)
@@ -62,7 +53,7 @@ public sealed partial class DebugViewModel : ObservableObject
     [RelayCommand]
     private Task SetCurrentAccessPointAsync()
     {
-        return SetAccessPointAsync(isDefault: false);
+        return SetAccessPointAsync(isDefault: false, CancellationToken.None);
     }
 
     /// <summary>
@@ -71,10 +62,10 @@ public sealed partial class DebugViewModel : ObservableObject
     [RelayCommand]
     private Task SetDefaultAccessPointAsync()
     {
-        return SetAccessPointAsync(isDefault: true);
+        return SetAccessPointAsync(isDefault: true, CancellationToken.None);
     }
 
-    private async Task SetAccessPointAsync(bool isDefault)
+    private async Task SetAccessPointAsync(bool isDefault, CancellationToken ct)
     {
         WiFiResult = null;
         try
@@ -83,9 +74,9 @@ public sealed partial class DebugViewModel : ObservableObject
             var password = Password;
             var bssid = string.IsNullOrWhiteSpace(Mac)
                 ? null
-                : PhysicalAddress.Parse(Mac.Trim().Replace(":", "").Replace("-", ""));
+                : PhysicalAddress.Parse(Mac.Trim().Replace(":", "", StringComparison.InvariantCulture).Replace("-", "", StringComparison.InvariantCulture));
 
-            await _device.RunAsync(connection =>
+            await device.RunAsync((connection) =>
             {
                 if (isDefault)
                 {
@@ -95,13 +86,13 @@ public sealed partial class DebugViewModel : ObservableObject
                 {
                     connection.SetCurAP(ssid, password, bssid);
                 }
-            });
+            }, ct);
 
             WiFiResult = "Команда выполнена";
         }
         catch (Exception ex)
         {
-            _dialogs.ShowError(ex.Message);
+            dialogs.ShowError(ex.Message);
         }
     }
 }

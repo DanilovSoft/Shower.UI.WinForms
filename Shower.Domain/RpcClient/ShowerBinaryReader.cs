@@ -2,33 +2,20 @@
 
 namespace Shower.Domain.RpcClient;
 
-public sealed class ShowerBinaryReader : BinaryReader
+public sealed class ShowerBinaryReader(Stream input, Encoding encoding, bool leaveOpen) : BinaryReader(input, encoding, leaveOpen)
 {
-    public ShowerBinaryReader(Stream input, Encoding encoding, bool leaveOpen) : base(input, encoding, leaveOpen)
-    {
-
-    }
-
     /// <exception cref="InvalidDataException"/>
     public void ReadOK()
     {
-        var code = ReadByte();
+        var code = ReadHeader();
 
-        if (code != (byte)ShowerCodes.OK)
+        if (code != ShowerCode.OK)
         {
             throw new InvalidDataException($"Ожидался ответ 'OK' но получено значение '{code}'");
         }
     }
 
-    public ShowerCodes ReadCode()
-    {
-        var code = (ShowerCodes)ReadByte();
-        return code;
-    }
+    public ShowerCode ReadHeader() => (ShowerCode)ReadByte();
 
-    public async Task<ShowerCodes> ReadCodeAsync()
-    {
-        var code = await Task.Run(() => (ShowerCodes)ReadByte()).ConfigureAwait(false);
-        return code;
-    }
+    public Task<ShowerCode> ReadHeaderAsync(CancellationToken ct) => Task.Run(ReadHeader, ct);
 }

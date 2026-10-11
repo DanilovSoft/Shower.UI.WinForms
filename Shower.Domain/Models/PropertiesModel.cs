@@ -82,13 +82,13 @@ public sealed class PropertiesModel
     /// <summary>
     /// Считывает все параметры с контроллера.
     /// </summary>
-    public static PropertiesModel Load(ShowerConnection con)
+    public static async Task<PropertiesModel> Load(ShowerConnection con, CancellationToken ct)
     {
         ArgumentNullException.ThrowIfNull(con);
 
         return new PropertiesModel
         {
-            WaterLevelFullUsec = con.GetWaterLevelFullUsec(),
+            WaterLevelFullUsec = await con.GetWaterLevelFullUsec(ct).ConfigureAwait(false),
             WaterLevelEmptyUsec = con.GetWaterLevelEmptyUsec(),
             MinimumWaterHeatingLevel = con.GetMinimumWaterHeatingLevel(),
             AbsoluteHeatingTimeLimit = con.GetAbsoluteHeatingTimeLimit(),

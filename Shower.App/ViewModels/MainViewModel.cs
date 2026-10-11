@@ -14,7 +14,7 @@ public sealed partial class MainViewModel : ObservableObject
     /// </summary>
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsIdle))]
-    private bool _isBusy;
+    public partial bool IsBusy { get; set; }
 
     public MainViewModel(
         IDialogService dialogs,
@@ -32,10 +32,10 @@ public sealed partial class MainViewModel : ObservableObject
         Calibration = calibration;
         Parameters = parameters;
         Debug = debug;
-        this._device = device;
+        _device = device;
 
         // После записи параметров разница мощности ТЭНа на вкладке «Температура» считается от нового значения.
-        Parameters.PropertiesLoaded += model => Temperature.SetDeviceHeaterPower(model.WaterHeaterPowerKWatt);
+        Parameters.PropertiesLoaded += (_, model) => Temperature.SetDeviceHeaterPower(model.WaterHeaterPowerKWatt);
     }
 
     public WaterTemperatureViewModel Temperature { get; }
@@ -66,7 +66,7 @@ public sealed partial class MainViewModel : ObservableObject
         IsBusy = true;
         try
         {
-            await _device.RestartAsync();
+            await _device.RestartAsync(CancellationToken.None);
         }
         catch (Exception ex)
         {

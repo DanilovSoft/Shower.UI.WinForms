@@ -5,7 +5,6 @@ namespace Shower.Domain.RpcClient;
 
 public sealed class RequestBuilder
 {
-    private readonly List<CallbackInfo> _callbacks = [];
     private readonly MyBinaryWriter _writer;
     private readonly ShowerBinaryReader _reader;
     private readonly Stream _nstream;
@@ -59,9 +58,9 @@ public sealed class RequestBuilder
         return this;
     }
 
-    public RequestBuilder WriteHeader(ShowerCodes code)
+    public RequestBuilder WriteHeader(ShowerCode code)
     {
-        _writer.Write(code);
+        _writer.WriteHeader(code);
         return this;
     }
 
@@ -74,36 +73,24 @@ public sealed class RequestBuilder
         return this;
     }
 
-    public RequestBuilder Result<T>(Action<T> callback) where T : struct
-    {
-        _writer.WriteEnd();
-        _callbacks.Add(CallbackInfo.Create(callback));
-        return this;
-    }
-
-    public void Send()
-    {
-        WriteEndAndSend();
-    }
-
     /// <summary>
     /// Добавляет заголовок в стрим, отправляет все накопленные данные и читает один байт ответа.
     /// </summary>
     /// <exception cref="InvalidDataException"/>
-    public void ReadOK()
+    public void SendAndReadOK()
     {
         WriteEndAndSend();
         _reader.ReadOK();
     }
 
-    public async Task<ShowerCodes> ReadCodeAsync(CancellationToken ct)
+    public async ValueTask<ShowerCode> ReadHeaderAsync(CancellationToken ct)
     {
         using var _ = ct.Register(_con.Dispose);
 
         try
         {
             WriteEndAndSend();
-            return await _reader.ReadCodeAsync().ConfigureAwait(false);
+            return await _reader.ReadHeaderAsync(ct).ConfigureAwait(false);
         }
         catch when (ct.IsCancellationRequested)
         {
@@ -112,78 +99,12 @@ public sealed class RequestBuilder
         }
     }
 
-    //public void Execute()
-    //{
-    //    _writer.Send();
-
-    //    if (_callbacks.Count == 0)
-    //    {
-    //        return;
-    //    }
-
-    //    var totalSize = _callbacks.Sum(x => x.UnmanagedSize);
-    //    var buffer = new byte[totalSize];
-    //    Read(buffer);
-
-    //    var startIndex = 0;
-    //    for (var i = 0; i < _callbacks.Count; i++)
-    //    {
-    //        _callbacks[i].ReadPrimitiveCallback(buffer, ref startIndex);
-    //    }
-    //}
-
-    public Task ExecuteAsync() => ExecuteAsync(CancellationToken.None);
-
-    public async Task ExecuteAsync(CancellationToken cancellationToken = default)
-    {
-        await _writer.SendAsync(cancellationToken).ConfigureAwait(false);
-        var totalSize = _callbacks.Sum(x => x.UnmanagedSize);
-        var buffer = new byte[totalSize];
-        await ReadExactlyAsync(buffer, cancellationToken).ConfigureAwait(false);
-
-        var startIndex = 0;
-        for (var i = 0; i < _callbacks.Count; i++)
-        {
-            _callbacks[i].ReadPrimitiveCallback(buffer, ref startIndex);
-        }
-    }
-
     /// <summary>
     /// Добавляет заголовок в стрим и отправляет весь стрим и сбрасывает его размер.
     /// </summary>
     private void WriteEndAndSend()
     {
-        _writer.WriteEnd();
+        _writer.WriteEndOfMessage();
         _writer.Send();
-    }
-
-    private ValueTask ReadExactlyAsync(Memory<byte> buffer, CancellationToken ct)
-    {
-        return _nstream.ReadExactlyAsync(buffer, ct);
-    }
-
-    private readonly struct CallbackInfo
-    {
-        public delegate void ReadPrimitiveCallbackHandler(byte[] buffer, ref int startIndex);
-        public readonly ReadPrimitiveCallbackHandler ReadPrimitiveCallback;
-        public readonly int UnmanagedSize;
-
-        private CallbackInfo(int unmanagedSize, ReadPrimitiveCallbackHandler callback)
-        {
-            UnmanagedSize = unmanagedSize;
-            ReadPrimitiveCallback = callback;
-        }
-
-        public static CallbackInfo Create<T>(Action<T> callback) where T : struct
-        {
-            var unmanagedSize = Marshal.SizeOf<T>();
-
-            return new CallbackInfo(unmanagedSize, delegate (byte[] buf, ref int startIndex)
-            {
-                var obj = MySerializer.Read<T>(buf.AsSpan(startIndex, unmanagedSize));
-                startIndex += unmanagedSize;
-                callback(obj);
-            });
-        }
     }
 }

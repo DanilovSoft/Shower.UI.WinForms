@@ -25,13 +25,13 @@ public sealed partial class ParametersViewModel : ObservableObject
     [NotifyPropertyChangedFor(nameof(IsEditable))]
     [NotifyCanExecuteChangedFor(nameof(LoadCommand), nameof(SaveCommand), nameof(ClearCommand), nameof(RestartCommand),
         nameof(ExportCommand), nameof(ImportCommand), nameof(CancelCommand))]
-    public partial bool IsLoading { get; private set; }
+    public partial bool IsLoading { get; set; }
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsEditable))]
     [NotifyCanExecuteChangedFor(nameof(LoadCommand), nameof(SaveCommand), nameof(ClearCommand), nameof(RestartCommand),
         nameof(ExportCommand), nameof(ImportCommand))]
-    public partial bool IsBusy { get; private set; }
+    public partial bool IsBusy { get; set; }
 
     /// <summary>
     /// Сработал ли сторожевой таймер контроллера с прошлого запуска. <see langword="null"/> — неизвестно.
@@ -114,7 +114,7 @@ public sealed partial class ParametersViewModel : ObservableObject
     /// <summary>
     /// Параметры считаны с контроллера.
     /// </summary>
-    public event Action<PropertiesModel>? PropertiesLoaded;
+    public event EventHandler<PropertiesModel>? PropertiesLoaded;
 
     public bool IsEditable => !IsLoading && !IsBusy;
 
@@ -126,12 +126,10 @@ public sealed partial class ParametersViewModel : ObservableObject
 
         try
         {
-            var model = await _device.RunAsync(PropertiesModel.Load, cts.Token);
-            if (!cts.IsCancellationRequested)
-            {
-                SetOriginal(model);
-                PropertiesLoaded?.Invoke(model);
-            }
+            var model = await _device.RunAsync(PropertiesModel.Load, cts.Token).Unwrap();
+
+            SetOriginal(model);
+            PropertiesLoaded?.Invoke(this, model);
         }
         catch when (cts.IsCancellationRequested)
         {
@@ -155,7 +153,12 @@ public sealed partial class ParametersViewModel : ObservableObject
     }
 
     [RelayCommand(CanExecute = nameof(IsEditable))]
-    private async Task SaveAsync()
+    private Task SaveAsync()
+    {
+        return SaveAsync(CancellationToken.None);
+    }
+
+    private async Task SaveAsync(CancellationToken ct)
     {
         if (All.FirstOrDefault(p => p.HasChanges && p.HasErrors) is { } invalid)
         {
@@ -177,7 +180,8 @@ public sealed partial class ParametersViewModel : ObservableObject
                     written.Add(parameter);
                 }
                 connection.Save();
-            });
+            },
+            ct);
         }
         catch (Exception ex)
         {
@@ -208,7 +212,7 @@ public sealed partial class ParametersViewModel : ObservableObject
         IsBusy = true;
         try
         {
-            await _device.RestartAsync();
+            await _device.RestartAsync(CancellationToken.None);
         }
         catch (Exception ex)
         {
@@ -275,6 +279,7 @@ public sealed partial class ParametersViewModel : ObservableObject
         {
             parameter.SetOriginal(model);
         }
+
         WatchDogWasReset = model?.WatchDogWasReset;
     }
 }

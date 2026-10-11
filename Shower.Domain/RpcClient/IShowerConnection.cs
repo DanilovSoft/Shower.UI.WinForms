@@ -2,5 +2,5 @@
 
 public interface IShowerConnection
 {
-    ShowerConnection Write<T>(ShowerCodes code, Action<T> callback);
+    ShowerConnection Write<T>(ShowerCode code, Action<T> callback);
 }
