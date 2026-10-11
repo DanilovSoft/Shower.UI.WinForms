@@ -32,19 +32,27 @@ public sealed class TemperatureChart : ChartModel
         var heaterOn = Plot.Add.SignalXY(_times, _heaterOnTemps, Colors.Red);
         heaterOn.LineWidth = 2;
         heaterOn.LegendText = "Нагрев включён";
+        AddHoverSeries(heaterOn, _times, _heaterOnTemps, Colors.Red, FormatTemperature);
 
         var heaterOff = Plot.Add.SignalXY(_times, _heaterOffTemps, Colors.DodgerBlue);
         heaterOff.LineWidth = 2;
         heaterOff.LegendText = "Нагрев выключен";
+        AddHoverSeries(heaterOff, _times, _heaterOffTemps, Colors.DodgerBlue, FormatTemperature);
 
         _forecast = Plot.Add.ScatterLine(_forecastTimes, _forecastTemps, Colors.Black);
         _forecast.LineWidth = 2;
         _forecast.LegendText = "Прогноз";
+        AddHoverSeries(_forecast, _forecastTimes, _forecastTemps, Colors.Gray, (time, temp) => "Прогноз\n" + FormatTemperature(time, temp));
 
         var timeAxis = Plot.Axes.DateTimeTicksBottom();
         ((ScottPlot.TickGenerators.DateTimeAutomatic)timeAxis.TickGenerator).LabelFormatter =
             static time => time.ToString("HH:mm", CultureInfo.InvariantCulture);
         UpdateLimits();
+    }
+
+    private static string FormatTemperature(double time, double temp)
+    {
+        return string.Create(CultureInfo.InvariantCulture, $"{DateTime.FromOADate(time):HH:mm:ss}\n{temp:0.00} °C");
     }
 
     public override void ApplyTheme(ChartTheme theme)

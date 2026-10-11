@@ -1,4 +1,5 @@
-﻿using ScottPlot;
+﻿using System.Globalization;
+using ScottPlot;
 
 namespace Shower.App.Charts;
 
@@ -17,6 +18,8 @@ public sealed class CalibrationChart : ChartModel
     {
         var series = Plot.Add.SignalXY(_seconds, _usecs, new Color(240, 0, 0));
         series.LineWidth = 2;
+        AddHoverSeries(series, _seconds, _usecs, new Color(240, 0, 0),
+            static (second, usec) => string.Create(CultureInfo.InvariantCulture, $"{second:0.0} с\n{usec:0} мкс"));
 
         HideAxis(Plot.Axes.Bottom);
         SetUsecRange(0, 10);

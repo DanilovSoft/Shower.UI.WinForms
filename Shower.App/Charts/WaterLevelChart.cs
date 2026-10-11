@@ -1,4 +1,5 @@
-﻿using ScottPlot;
+﻿using System.Globalization;
+using ScottPlot;
 using ScottPlot.AxisRules;
 using ScottPlot.Interactivity;
 using ScottPlot.Plottables;
@@ -30,6 +31,11 @@ public sealed class WaterLevelChart : ChartModel
         _average = new Series(Plot, "Avg", Colors.MediumSeaGreen);
 
         _percent.Signal.Axes.YAxis = Plot.Axes.Right;
+
+        AddHoverSeries(_raw, Colors.DodgerBlue, "мкс");
+        AddHoverSeries(_median, Colors.Violet, "мкс (медиана)");
+        AddHoverSeries(_average, Colors.MediumSeaGreen, "мкс (среднее)");
+        AddHoverSeries(_percent, Colors.Red, "%");
 
         // Шкала микросекунд не отображается, сетка и подписи — по процентам.
         HideAxis(Plot.Axes.Left);
@@ -171,6 +177,12 @@ public sealed class WaterLevelChart : ChartModel
         {
             _percent.Add(index, percent);
         }
+    }
+
+    private void AddHoverSeries(Series series, Color color, string unit)
+    {
+        AddHoverSeries(series.Signal, series.Xs, series.Ys, color,
+            (index, value) => string.Create(CultureInfo.InvariantCulture, $"№ {index:0}\n{value:0} {unit}"));
     }
 
     private void ApplyUsecRange()

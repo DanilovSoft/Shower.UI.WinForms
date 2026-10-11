@@ -88,6 +88,8 @@ public static class ChartBinding
             ForegroundDescriptor.AddValueChanged(_control, OnForegroundChanged);
             _control.PreviewMouseWheel += OnUserInput;
             _control.PreviewMouseDown += OnUserInput;
+            _control.MouseMove += OnMouseMove;
+            _control.MouseLeave += OnMouseLeave;
 
             ApplyTheme();
             _control.Refresh();
@@ -105,11 +107,32 @@ public static class ChartBinding
             ForegroundDescriptor.RemoveValueChanged(_control, OnForegroundChanged);
             _control.PreviewMouseWheel -= OnUserInput;
             _control.PreviewMouseDown -= OnUserInput;
+            _control.MouseMove -= OnMouseMove;
+            _control.MouseLeave -= OnMouseLeave;
         }
 
         private void OnRefreshRequested(object? sender, EventArgs e) => _control.Refresh();
 
         private void OnUserInput(object sender, MouseEventArgs e) => _chart.OnUserInteraction();
+
+        private void OnMouseMove(object sender, MouseEventArgs e)
+        {
+            // ScottPlot работает в физических пикселях, WPF — в независимых от DPI единицах.
+            var position = e.GetPosition(_control);
+            var scale = _control.DisplayScale;
+            if (_chart.UpdateHover(new ScottPlot.Pixel(position.X * scale, position.Y * scale)))
+            {
+                _control.Refresh();
+            }
+        }
+
+        private void OnMouseLeave(object sender, MouseEventArgs e)
+        {
+            if (_chart.HideHover())
+            {
+                _control.Refresh();
+            }
+        }
 
         private void OnForegroundChanged(object? sender, EventArgs e)
         {
