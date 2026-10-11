@@ -11,7 +11,7 @@ namespace Shower.App.Charts;
 public sealed class TemperatureChart : ChartModel
 {
     private const double MinTemp = 15;
-    private const double MaxTemp = 39;
+    private const double MaxTemp = 42;
     private const double MinVisibleSeconds = 60;
 
     private readonly List<double> _seconds = new(3600);
