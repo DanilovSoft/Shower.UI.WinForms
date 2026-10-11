@@ -270,12 +270,12 @@ public sealed class ShowerConnection : IShowerConnection, IDisposable, IAsyncDis
 
     public Task<byte> GetTemperatureSensorInternalTempAverageSizeAsync(CancellationToken ct)
     {
-        return RequestAsync<byte>(ShowerCode.GetTemperatureSensorInternalTempAverageSize, ct);
+        return RequestAsync<byte>(ShowerCode.GetWaterTemperatureSensorAverageSize, ct);
     }
 
     public Task SetTempSensorInternalTempAverageSizeAsync(byte value, CancellationToken ct)
     {
-        return ExecuteAsync(ShowerCode.SetTemperatureSensorInternalTempAverageSize, value, ct);
+        return ExecuteAsync(ShowerCode.SetWaterTemperatureSensorAverageSize, value, ct);
     }
 
     public Task<float> GetWaterTankVolumeLitreAsync(CancellationToken ct)
