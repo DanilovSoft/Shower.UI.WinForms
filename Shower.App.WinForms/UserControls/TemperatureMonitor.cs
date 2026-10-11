@@ -56,7 +56,7 @@ public partial class TemperatureMonitor : UserControl
         Retry:
             try
             {
-                using var connection = await ConnectionFactory.ConnectAsync(cts.Token);
+                using var connection = await DeviceConnection.ConnectAsync(cts.Token);
                 errorProvider1.SetError(button_Start, null);
                 await InitBeforeStart(connection, cts.Token);
                 await Task.Run(() => RecordTempAsync(connection, cts.Token));

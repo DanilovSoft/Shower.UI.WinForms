@@ -1,20 +1,24 @@
-﻿using System.Net;
-using System.Net.Sockets;
+﻿using System.Net.Sockets;
+using Microsoft.Extensions.Options;
 
 namespace Shower.Domain.RpcClient;
 
-public static class ConnectionFactory
+public sealed class ConnectionFactory(IOptions<ShowerConnectionOptions> options)
 {
-    private static readonly IPEndPoint RemoteEP = new(IPAddress.Parse("10.2.2.218"), 333);
+    private readonly ShowerConnectionOptions _options = options.Value;
 
-    public static async Task<ShowerConnection> ConnectAsync(CancellationToken ct)
+    public async Task<ShowerConnection> ConnectAsync(CancellationToken ct)
     {
-        ct.ThrowIfCancellationRequested();
+        var tcp = new TcpClient
+        {
+            ReceiveTimeout = 10_000, // 10 секунд
+            SendTimeout = 10_000 // 10 секунд
+        };
 
-        var tcp = new TcpClient();
         try
         {
-            await tcp.ConnectAsync(RemoteEP, ct).ConfigureAwait(false);
+
+            await tcp.ConnectAsync(_options.Host, _options.Port, ct).ConfigureAwait(false);
 
             var connection = new ShowerConnection(tcp);
             tcp = null;

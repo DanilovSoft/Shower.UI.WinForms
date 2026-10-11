@@ -13,6 +13,21 @@ public sealed class Device
     /// </summary>
     public static readonly TimeSpan RequestTimeout = TimeSpan.FromSeconds(10);
 
+    private readonly ConnectionFactory _connectionFactory;
+
+    public Device(ConnectionFactory connectionFactory)
+    {
+        _connectionFactory = connectionFactory;
+    }
+
+    /// <summary>
+    /// Открывает новое соединение с контроллером.
+    /// </summary>
+    public Task<ShowerConnection> ConnectAsync(CancellationToken ct)
+    {
+        return _connectionFactory.ConnectAsync(ct);
+    }
+
     /// <summary>
     /// Выполняет асинхронный запрос с таймаутом <see cref="RequestTimeout"/>.
     /// </summary>
@@ -20,12 +35,14 @@ public sealed class Device
     /// <exception cref="OperationCanceledException">Отменено через <paramref name="ct"/>.</exception>
     public async Task<T> RequestAsync<T>(Func<CancellationToken, Task<T>> request, CancellationToken ct)
     {
+        ArgumentNullException.ThrowIfNull(request);
+
         using var timeout = CancellationTokenSource.CreateLinkedTokenSource(ct);
         timeout.CancelAfter(RequestTimeout);
 
         try
         {
-            return await request(timeout.Token);
+            return await request(timeout.Token).ConfigureAwait(false);
         }
         catch (OperationCanceledException ex) when (!ct.IsCancellationRequested)
         {
@@ -38,8 +55,8 @@ public sealed class Device
     /// </summary>
     public async Task<T> RunAsync<T>(Func<ShowerConnection, T> action, CancellationToken ct)
     {
-        using var connection = await ConnectionFactory.ConnectAsync(ct);
-        return await Task.Run(() => action(connection), ct);
+        using var connection = await ConnectAsync(ct).ConfigureAwait(false);
+        return await Task.Run(() => action(connection), ct).ConfigureAwait(false);
     }
 
     /// <inheritdoc cref="RunAsync{T}(Func{ShowerConnection, T}, CancellationToken)"/>
@@ -59,7 +76,7 @@ public sealed class Device
 
     public async Task<ShowerCodes> PingAsync(CancellationToken cancellationToken)
     {
-        using var connection = await ConnectionFactory.ConnectAsync(cancellationToken);
-        return await RequestAsync(connection.PingAsync, cancellationToken);
+        using var connection = await ConnectAsync(cancellationToken).ConfigureAwait(false);
+        return await RequestAsync(connection.PingAsync, cancellationToken).ConfigureAwait(false);
     }
 }

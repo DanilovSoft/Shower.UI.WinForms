@@ -19,7 +19,7 @@ public partial class ParametersControl : UserControl
         var cts = _cts = new CancellationTokenSource();
         try
         {
-            using var con = await ConnectionFactory.ConnectAsync(cts.Token);
+            using var con = await DeviceConnection.ConnectAsync(cts.Token);
             await LoadPropertiesAsync(con, cts.Token);
         }
         catch when (cts.IsCancellationRequested)
@@ -178,7 +178,7 @@ public partial class ParametersControl : UserControl
 
         try
         {
-            using (var con = await ConnectionFactory.ConnectAsync(CancellationToken.None))
+            using (var con = await DeviceConnection.ConnectAsync(CancellationToken.None))
             {
                 SaveProperties(con);
             }
@@ -204,7 +204,7 @@ public partial class ParametersControl : UserControl
         try
         {
             Parent.Enabled = false;
-            using var connection = await ConnectionFactory.ConnectAsync(CancellationToken.None);
+            using var connection = await DeviceConnection.ConnectAsync(CancellationToken.None);
             connection.Reset();
         }
         catch (Exception ex)

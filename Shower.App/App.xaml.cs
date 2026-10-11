@@ -1,8 +1,11 @@
 ﻿using System.Windows;
 using System.Windows.Threading;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Shower.App.Services;
 using Shower.App.ViewModels;
+using Shower.Domain.RpcClient;
 
 namespace Shower.App;
 
@@ -14,11 +17,23 @@ public partial class App : Application
     {
         base.OnStartup(e);
 
-        _services = ConfigureServices().BuildServiceProvider(new ServiceProviderOptions
+        try
         {
-            ValidateScopes = true,
-            ValidateOnBuild = true,
-        });
+            _services = ConfigureServices(LoadConfiguration()).BuildServiceProvider(new ServiceProviderOptions
+            {
+                ValidateScopes = true,
+                ValidateOnBuild = true,
+            });
+
+            // Без хоста ValidateOnStart сам не срабатывает — проверяем настройки до показа окна.
+            _services.GetRequiredService<IStartupValidator>().Validate();
+        }
+        catch (Exception ex)
+        {
+            new DialogService().ShowError(ex.Message, "Ошибка в настройках приложения");
+            Shutdown(1);
+            return;
+        }
 
         DispatcherUnhandledException += OnDispatcherUnhandledException;
 
@@ -36,9 +51,24 @@ public partial class App : Application
         base.OnExit(e);
     }
 
-    private static ServiceCollection ConfigureServices()
+    private static IConfiguration LoadConfiguration()
+    {
+        return new ConfigurationBuilder()
+            .SetBasePath(AppContext.BaseDirectory)
+            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)
+            .Build();
+    }
+
+    private static ServiceCollection ConfigureServices(IConfiguration configuration)
     {
         var services = new ServiceCollection();
+
+        services.AddSingleton(configuration);
+        services.AddOptions<ShowerConnectionOptions>()
+            .Bind(configuration.GetSection(ShowerConnectionOptions.SectionName))
+            .ValidateDataAnnotations()
+            .ValidateOnStart();
+        services.AddSingleton<ConnectionFactory>();
 
         services.AddSingleton<IDialogService, DialogService>();
 

@@ -14,22 +14,22 @@ public sealed partial class DebugViewModel : ObservableObject
     private readonly Device _device;
 
     [ObservableProperty]
-    public partial string? PingResult { get; private set; }
+    public partial string? PingResult { get; set; }
 
     [ObservableProperty]
-    public partial string Ssid { get; private set; } = "";
+    public partial string Ssid { get; set; } = "";
 
     [ObservableProperty]
-    public partial string Password { get; private set; } = "";
+    public partial string Password { get; set; } = "";
 
     /// <summary>
     /// MAC-адрес (BSSID) точки доступа, необязательный.
     /// </summary>
     [ObservableProperty]
-    public partial string Mac { get; private set; } = "";
+    public partial string Mac { get; set; } = "";
 
     [ObservableProperty]
-    public partial string? WiFiResult { get; private set; }
+    public partial string? WiFiResult { get; set; }
 
     public DebugViewModel(IDialogService dialogs, Device device)
     {

@@ -8,7 +8,6 @@ namespace Shower.Domain.RpcClient;
 /// <remarks>Не потокобезопасный</remarks>
 public sealed class ShowerConnection : IShowerConnection, IDisposable
 {
-    //private const int ReadTimeoutMsec = 10_000;
     private readonly Stream _socketStream;
     private readonly ShowerBinaryReader _reader;
     private readonly MyBinaryWriter _writer;
@@ -16,13 +15,9 @@ public sealed class ShowerConnection : IShowerConnection, IDisposable
 
     public ShowerConnection(TcpClient connection)
     {
-        _socketStream = connection.GetStream();
-        
-        //{
-        //    ReadTimeout = ReadTimeoutMsec,
-        //    WriteTimeout = 5000
-        //};
+        ArgumentNullException.ThrowIfNull(connection);
 
+        _socketStream = connection.GetStream();
         _writer = new MyBinaryWriter(_socketStream);
         _reader = new ShowerBinaryReader(_socketStream, Encoding.ASCII, leaveOpen: true);
     }
@@ -88,9 +83,9 @@ public sealed class ShowerConnection : IShowerConnection, IDisposable
             .ReadCodeAsync(cancellationToken).GetAwaiter().GetResult();
     }
 
-    public async Task<ShowerCodes> PingAsync(CancellationToken ct)
+    public Task<ShowerCodes> PingAsync(CancellationToken ct)
     {
-        return await CreateRequestBuilder()
+        return CreateRequestBuilder()
             .WriteHeader(ShowerCodes.Ping)
             .ReadCodeAsync(ct);
     }
@@ -295,9 +290,9 @@ public sealed class ShowerConnection : IShowerConnection, IDisposable
     /// <summary>
     /// 
     /// </summary>
-    public Task<float> GetWaterTankVolumeLitreAsync(CancellationToken cancellationToken = default)
+    public Task<float> GetWaterTankVolumeLitreAsync(CancellationToken ct)
     {
-        return RequestAsync<float>(ShowerCodes.GetWaterTankVolumeLitre, cancellationToken);
+        return RequestAsync<float>(ShowerCodes.GetWaterTankVolumeLitre, ct);
     }
 
     /// <summary>
@@ -319,9 +314,9 @@ public sealed class ShowerConnection : IShowerConnection, IDisposable
     /// <summary>
     /// 
     /// </summary>
-    public Task<float> GetWaterHeaterPowerKWattAsync(CancellationToken cancellationToken = default)
+    public Task<float> GetWaterHeaterPowerKWattAsync(CancellationToken ct)
     {
-        return RequestAsync<float>(ShowerCodes.GetWaterHeaterPowerKWatt, cancellationToken);
+        return RequestAsync<float>(ShowerCodes.GetWaterHeaterPowerKWatt, ct);
     }
 
     /// <summary>
@@ -492,9 +487,9 @@ public sealed class ShowerConnection : IShowerConnection, IDisposable
         return Request<byte>(ShowerCodes.GetWaterLevelMeasureInterval);
     }
 
-    public async Task<TimeSpan> GetWaterLevelMeasureIntervalAsync(CancellationToken cancellationToken = default)
+    public async Task<TimeSpan> GetWaterLevelMeasureIntervalAsync(CancellationToken ct)
     {
-        var value = await RequestAsync<byte>(ShowerCodes.GetWaterLevelMeasureInterval, cancellationToken);
+        var value = await RequestAsync<byte>(ShowerCodes.GetWaterLevelMeasureInterval, ct).ConfigureAwait(false);
         return TimeSpan.FromMilliseconds(value);
     }
 

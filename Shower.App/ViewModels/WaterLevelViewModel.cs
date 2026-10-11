@@ -34,47 +34,47 @@ public sealed partial class WaterLevelViewModel : ObservableObject
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(StartCommand), nameof(StopCommand), nameof(LoadCommand))]
-    public partial bool IsRecording { get; private set; }
+    public partial bool IsRecording { get; set; }
 
     [ObservableProperty]
-    public partial int ReconnectCount { get; private set; }
+    public partial int ReconnectCount { get; set; }
 
     [ObservableProperty]
-    public partial string? ErrorMessage { get; private set; }
+    public partial string? ErrorMessage { get; set; }
 
     /// <summary>
     /// Показание датчика (мкс) для полного бака.
     /// </summary>
     [ObservableProperty]
-    public partial ushort? MinWaterLevel { get; private set; }
+    public partial ushort? MinWaterLevel { get; set; }
 
     /// <summary>
     /// Показание датчика (мкс) для пустого бака.
     /// </summary>
     [ObservableProperty]
-    public partial ushort? MaxWaterLevel { get; private set; }
+    public partial ushort? MaxWaterLevel { get; set; }
 
     /// <summary>
     /// Положение ползунка медианного фильтра, размер окна = 2 * значение + 1.
     /// </summary>
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(MedianWindow))]
-    public partial int MedianSlider { get; private set; } = 1;
+    public partial int MedianSlider { get; set; } = 1;
 
     [ObservableProperty]
-    public partial int AverageWindow { get; private set; } = 1;
+    public partial int AverageWindow { get; set; } = 1;
 
     [ObservableProperty]
-    public partial bool ShowRaw { get; private set; } = true;
+    public partial bool ShowRaw { get; set; } = true;
 
     [ObservableProperty]
-    public partial bool ShowMedian { get; private set; }
+    public partial bool ShowMedian { get; set; }
 
     [ObservableProperty]
-    public partial bool ShowAverage { get; private set; }
+    public partial bool ShowAverage { get; set; }
 
     [ObservableProperty]
-    public partial bool ShowPercent { get; private set; } = true;
+    public partial bool ShowPercent { get; set; } = true;
 
     public WaterLevelViewModel(IDialogService dialogs, Device device)
     {
@@ -109,7 +109,7 @@ public sealed partial class WaterLevelViewModel : ObservableObject
             {
                 try
                 {
-                    using var connection = await ConnectionFactory.ConnectAsync(cts.Token);
+                    using var connection = await _device.ConnectAsync(cts.Token);
                     if (wasConnected)
                     {
                         ReconnectCount++;
@@ -219,7 +219,7 @@ public sealed partial class WaterLevelViewModel : ObservableObject
         try
         {
             using var cts = new CancellationTokenSource(Device.RequestTimeout);
-            using var connection = await ConnectionFactory.ConnectAsync(cts.Token);
+            using var connection = await _device.ConnectAsync(cts.Token);
             session.WaterLevelEmpty = await connection.GetWaterLevelEmptyAsync(cts.Token);
             session.WaterLevelFull = await connection.GetWaterLevelFullAsync(cts.Token);
         }
