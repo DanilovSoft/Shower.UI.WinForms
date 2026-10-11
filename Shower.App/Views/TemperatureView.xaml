@@ -7,7 +7,7 @@
              xmlns:charts="clr-namespace:Shower.App.Charts"
              xmlns:vm="clr-namespace:Shower.App.ViewModels"
              mc:Ignorable="d"
-             d:DataContext="{d:DesignInstance Type=vm:TemperatureViewModel}"
+             d:DataContext="{d:DesignInstance Type=vm:WaterTemperatureViewModel}"
              d:DesignWidth="1300" d:DesignHeight="700">
     <DockPanel>
         <Border DockPanel.Dock="Bottom" Style="{StaticResource ToolPanel}">

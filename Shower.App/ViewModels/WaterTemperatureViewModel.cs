@@ -16,9 +16,9 @@ namespace Shower.App.ViewModels;
 /// <summary>
 /// Вкладка «Температура»: запись температуры в баке и прогноз времени нагрева.
 /// </summary>
-public sealed partial class TemperatureViewModel : ObservableValidator
+public sealed partial class WaterTemperatureViewModel : ObservableValidator
 {
-    private const int CalculationTempLimit = 40;
+    private const int CalculationTemperatureLimit = 42;
     private const string TimeLeftPlaceholder = "__:__:__";
     private const string RecordFileFilter = "Json File|*.shower.txt";
     private const string SimulationFileFilter = "Json File|*.txt";
@@ -31,6 +31,7 @@ public sealed partial class TemperatureViewModel : ObservableValidator
     private static readonly TimeSpan ReconnectDelay = TimeSpan.FromSeconds(2);
 
     private readonly IDialogService _dialogs;
+    private readonly Device _device;
     private readonly List<InternalTempModel> _records = new(600);
     private CancellationTokenSource? _cts;
     private HeatingTimeLeft? _calculator;
@@ -86,17 +87,18 @@ public sealed partial class TemperatureViewModel : ObservableValidator
 
     [ObservableProperty]
     [NotifyDataErrorInfo]
-    [CustomValidation(typeof(TemperatureViewModel), nameof(ValidateTankVolume))]
+    [CustomValidation(typeof(WaterTemperatureViewModel), nameof(ValidateTankVolume))]
     private string _tankVolumeText = "";
 
     [ObservableProperty]
     [NotifyDataErrorInfo]
-    [CustomValidation(typeof(TemperatureViewModel), nameof(ValidateWaterLevel))]
+    [CustomValidation(typeof(WaterTemperatureViewModel), nameof(ValidateWaterLevel))]
     private string _waterLevelText = "";
 
-    public TemperatureViewModel(IDialogService dialogs)
+    public WaterTemperatureViewModel(IDialogService dialogs, Device device)
     {
         _dialogs = dialogs;
+        _device = device;
     }
 
     public TemperatureChart Chart { get; } = new();
@@ -361,8 +363,8 @@ public sealed partial class TemperatureViewModel : ObservableValidator
 
     private async Task InitBeforeStartAsync(ShowerConnection connection, CancellationToken ct)
     {
-        var heaterPower = await Device.RequestAsync(connection.GetWaterHeaterPowerKWattAsync, ct);
-        var tankVolume = await Device.RequestAsync(connection.GetWaterTankVolumeLitreAsync, ct);
+        var heaterPower = await _device.RequestAsync(connection.GetWaterHeaterPowerKWattAsync, ct);
+        var tankVolume = await _device.RequestAsync(connection.GetWaterTankVolumeLitreAsync, ct);
 
         SetDeviceHeaterPower(heaterPower);
         TankVolumeText = tankVolume.ToString(CultureInfo.InvariantCulture);
@@ -381,7 +383,8 @@ public sealed partial class TemperatureViewModel : ObservableValidator
         }
         catch (Exception ex)
         {
-            ErrorMessage = $"Не удалось считать мощность ТЭНа и объём бака: {ex.Message}";
+            var reason = ex is OperationCanceledException ? "устройство не ответило за отведённое время." : ex.Message;
+            ErrorMessage = $"Не удалось считать мощность ТЭНа и объём бака: {reason}";
         }
     }
 
@@ -390,14 +393,14 @@ public sealed partial class TemperatureViewModel : ObservableValidator
         for (var i = 0; !ct.IsCancellationRequested; i++)
         {
             var second = (int)stopwatch.Elapsed.TotalSeconds;
-            var internalTemp = await Device.RequestAsync(connection.GetWaterTemperatureAsync, ct);
-            var heaterEnabled = await Device.RequestAsync(connection.GetHeaterEnabledAsync, ct);
-            var minutesLeft = await Device.RequestAsync(connection.GetMinutesLeftAsync, ct);
+            var internalTemp = await _device.RequestAsync(connection.GetWaterTemperatureAsync, ct);
+            var heaterEnabled = await _device.RequestAsync(connection.GetHeaterEnabledAsync, ct);
+            var minutesLeft = await _device.RequestAsync(connection.GetMinutesLeftAsync, ct);
 
             // Уровень воды меняется медленно — достаточно раз в 2 секунды.
             if (i % 2 == 0)
             {
-                var waterPercent = await Device.RequestAsync(connection.GetWaterPercentAsync, ct);
+                var waterPercent = await _device.RequestAsync(connection.GetWaterPercentAsync, ct);
                 WaterLevelText = waterPercent.ToString(CultureInfo.InvariantCulture);
             }
 
@@ -448,7 +451,7 @@ public sealed partial class TemperatureViewModel : ObservableValidator
         HeatingForecast? forecast = null;
         if (_calculator is { } calculator && TryParseWaterLevel(WaterLevelText, out var waterPercent))
         {
-            forecast = HeatingForecast.Calculate(_records, ForecastStartMinute, waterPercent / 100f, calculator, CalculationTempLimit);
+            forecast = HeatingForecast.Calculate(_records, ForecastStartMinute, waterPercent / 100f, calculator, CalculationTemperatureLimit);
         }
 
         Chart.SetForecast(forecast);

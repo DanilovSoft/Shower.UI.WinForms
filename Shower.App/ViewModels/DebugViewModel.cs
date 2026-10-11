@@ -11,28 +11,30 @@ namespace Shower.App.ViewModels;
 public sealed partial class DebugViewModel : ObservableObject
 {
     private readonly IDialogService _dialogs;
+    private readonly Device _device;
 
     [ObservableProperty]
-    private string? _pingResult;
+    public partial string? PingResult { get; private set; }
 
     [ObservableProperty]
-    private string _ssid = "";
+    public partial string Ssid { get; private set; } = "";
 
     [ObservableProperty]
-    private string _password = "";
+    public partial string Password { get; private set; } = "";
 
     /// <summary>
     /// MAC-адрес (BSSID) точки доступа, необязательный.
     /// </summary>
     [ObservableProperty]
-    private string _mac = "";
+    public partial string Mac { get; private set; } = "";
 
     [ObservableProperty]
-    private string? _wiFiResult;
+    public partial string? WiFiResult { get; private set; }
 
-    public DebugViewModel(IDialogService dialogs)
+    public DebugViewModel(IDialogService dialogs, Device device)
     {
         _dialogs = dialogs;
+        _device = device;
     }
 
     [RelayCommand(IncludeCancelCommand = true)]
@@ -41,7 +43,7 @@ public sealed partial class DebugViewModel : ObservableObject
         PingResult = "Ожидание ответа…";
         try
         {
-            var code = await Device.PingAsync(token);
+            var code = await _device.PingAsync(token);
             PingResult = $"Ответ: {code}";
         }
         catch when (token.IsCancellationRequested)
@@ -83,7 +85,7 @@ public sealed partial class DebugViewModel : ObservableObject
                 ? null
                 : PhysicalAddress.Parse(Mac.Trim().Replace(":", "").Replace("-", ""));
 
-            await Device.RunAsync(connection =>
+            await _device.RunAsync(connection =>
             {
                 if (isDefault)
                 {

@@ -20,6 +20,7 @@ public sealed partial class WaterLevelViewModel : ObservableObject
     private static readonly TimeSpan RebuildDelay = TimeSpan.FromMilliseconds(150);
 
     private readonly IDialogService _dialogs;
+    private readonly Device _device;
 
     /// <summary>
     /// Номер точки на графике для каждого элемента <see cref="WaterLevelSession.UsecList"/>.
@@ -33,51 +34,52 @@ public sealed partial class WaterLevelViewModel : ObservableObject
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(StartCommand), nameof(StopCommand), nameof(LoadCommand))]
-    private bool _isRecording;
+    public partial bool IsRecording { get; private set; }
 
     [ObservableProperty]
-    private int _reconnectCount;
+    public partial int ReconnectCount { get; private set; }
 
     [ObservableProperty]
-    private string? _errorMessage;
+    public partial string? ErrorMessage { get; private set; }
 
     /// <summary>
     /// Показание датчика (мкс) для полного бака.
     /// </summary>
     [ObservableProperty]
-    private ushort? _minWaterLevel;
+    public partial ushort? MinWaterLevel { get; private set; }
 
     /// <summary>
     /// Показание датчика (мкс) для пустого бака.
     /// </summary>
     [ObservableProperty]
-    private ushort? _maxWaterLevel;
+    public partial ushort? MaxWaterLevel { get; private set; }
 
     /// <summary>
     /// Положение ползунка медианного фильтра, размер окна = 2 * значение + 1.
     /// </summary>
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(MedianWindow))]
-    private int _medianSlider = 1;
+    public partial int MedianSlider { get; private set; } = 1;
 
     [ObservableProperty]
-    private int _averageWindow = 1;
+    public partial int AverageWindow { get; private set; } = 1;
 
     [ObservableProperty]
-    private bool _showRaw = true;
+    public partial bool ShowRaw { get; private set; } = true;
 
     [ObservableProperty]
-    private bool _showMedian;
+    public partial bool ShowMedian { get; private set; }
 
     [ObservableProperty]
-    private bool _showAverage;
+    public partial bool ShowAverage { get; private set; }
 
     [ObservableProperty]
-    private bool _showPercent = true;
+    public partial bool ShowPercent { get; private set; } = true;
 
-    public WaterLevelViewModel(IDialogService dialogs)
+    public WaterLevelViewModel(IDialogService dialogs, Device device)
     {
         _dialogs = dialogs;
+        _device = device;
         _pipeline = CreatePipeline();
         UpdateVisibility();
     }
@@ -253,10 +255,10 @@ public sealed partial class WaterLevelViewModel : ObservableObject
 
     private async Task RecordAsync(ShowerConnection connection, CancellationToken ct)
     {
-        var empty = await Device.RequestAsync(connection.GetWaterLevelEmptyAsync, ct);
-        var full = await Device.RequestAsync(connection.GetWaterLevelFullAsync, ct);
-        var medianSize = await Device.RequestAsync(_ => connection.GetWaterLevelMedianSizeAsync(), ct);
-        var averageSize = await Device.RequestAsync(_ => connection.GetWaterLevelAverageSizeAsync(), ct);
+        var empty = await _device.RequestAsync(connection.GetWaterLevelEmptyAsync, ct);
+        var full = await _device.RequestAsync(connection.GetWaterLevelFullAsync, ct);
+        var medianSize = await _device.RequestAsync(connection.GetWaterLevelMedianSizeAsync, ct);
+        var averageSize = await _device.RequestAsync(connection.GetWaterLevelAverageSizeAsync, ct);
 
         _session.WaterLevelEmpty = empty;
         _session.WaterLevelFull = full;
@@ -271,7 +273,7 @@ public sealed partial class WaterLevelViewModel : ObservableObject
         while (!ct.IsCancellationRequested)
         {
             await Task.Delay(PollInterval, ct);
-            var rawUsec = await Device.RequestAsync(connection.GetWaterLevelRawAsync, ct);
+            var rawUsec = await _device.RequestAsync(connection.GetWaterLevelRawAsync, ct);
 
             // -1 — у датчика произошёл таймаут.
             if (rawUsec != -1)

@@ -3,7 +3,6 @@
 public sealed class HeatingTimeLeft
 {
     private const float Q = 0.00117f;
-    private const double Voltage = 228; // По стандарту должно быть 230, по факту замерил — 228.
 
     /// <summary>
     /// Объём воды полного бака в литрах.
@@ -19,37 +18,11 @@ public sealed class HeatingTimeLeft
     /// <param name="heaterPowerKWatt">Мощность ТЭНа в киловатах с учётом его КПД.</param>
     public HeatingTimeLeft(float tankVolumeLitre, float heaterPowerKWatt)
     {
-        ArgumentOutOfRangeException.ThrowIfNegative(tankVolumeLitre);
-        ArgumentOutOfRangeException.ThrowIfNegative(heaterPowerKWatt);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(tankVolumeLitre);
+        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(heaterPowerKWatt);
 
         _tankVolumeLitre = tankVolumeLitre;
         _heaterPowerKWatt = heaterPowerKWatt;
-    }
-
-    /// <param name="tankHeightMil">Высота цилиндра в миллиметрах.</param>
-    /// <param name="tankDiameterMil">Диамметр цилиндра в миллиметрах.</param>
-    /// <param name="heaterPowerKWatt">Мощность ТЭНа в киловатах с учётом его КПД.</param>
-    public HeatingTimeLeft(float tankHeightMil, float tankDiameterMil, float heaterPowerKWatt)
-    {
-        ArgumentOutOfRangeException.ThrowIfNegative(tankHeightMil);
-        ArgumentOutOfRangeException.ThrowIfNegative(tankDiameterMil);
-        ArgumentOutOfRangeException.ThrowIfNegative(heaterPowerKWatt);
-
-        // Переведём мм в метры.
-        double tankHeight = tankHeightMil / 1_000;
-        double tankDiameter = tankDiameterMil / 1_000;
-
-        _tankVolumeLitre = (float)CalcCylinderVolume(tankHeight, tankDiameter);
-        _heaterPowerKWatt = heaterPowerKWatt;
-    }
-
-    /// <param name="heaterResistanceOhm">Сопротивление тена в омах.</param>
-    /// <returns>Мощность тена в ватах.</returns>
-    public static double CalcHeaterPower(float heaterResistanceOhm)
-    {
-        // P = U^2 / R
-        double heaterPowerWatt = Voltage / heaterResistanceOhm * Voltage;
-        return heaterPowerWatt;
     }
 
     /// <param name="cylinderHeightMil">Высота цилиндра в миллиметрах.</param>
@@ -78,24 +51,23 @@ public sealed class HeatingTimeLeft
         return tankVolumeLitre;
     }
 
-    /// <param name="internalTemp">Текущая температура воды в баке.</param>
-    /// <param name="limitTemp">Целевая темпаратура.</param>
+    /// <param name="currentTemp">Текущая температура воды в баке.</param>
+    /// <param name="targetTemperature">Целевая темпаратура.</param>
     /// <param name="waterLevel">Уровень воды в баке, от 0 до 1.</param>
     /// <returns>Время до окончания нагрева.</returns>
-    public TimeSpan CalcTimeLeft(float internalTemp, float limitTemp, float waterLevel)
+    public TimeSpan CalcTimeLeft(float currentTemp, float targetTemperature, float waterLevel)
     {
         //  Формула расчета времени нагрева T = 0,00117 * V * (tк - tн) / W
         //  Т – время нагрева воды, час
         //  V – объем водонагревательного бака(л)
-        //  tк – конечная температура воды, °С(обычно 60°C)
+        //  tк – конечная температура воды, °С(обычно 40°C)
         //  tн – начальная температура воды, °С
         //  W – электрическая мощность нагревательного элемента — ТЭНа, кВТ
 
         // Учитываем что бак может быть не полным.
         float tankVolume = _tankVolumeLitre * waterLevel;
 
-        double timeH = Q * tankVolume * (limitTemp - internalTemp) / _heaterPowerKWatt;
-        var time = TimeSpan.FromHours(timeH);
-        return time;
+        double timeH = Q * tankVolume * (targetTemperature - currentTemp) / _heaterPowerKWatt;
+        return TimeSpan.FromHours(timeH);
     }
 }

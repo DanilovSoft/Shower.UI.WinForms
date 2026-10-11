@@ -12,7 +12,7 @@ public class HeatingTests
         var calculator = new HeatingTimeLeft(tankVolumeLitre: 50, heaterPowerKWatt: 2);
 
         // T = 0.00117 * 50 * (40 - 20) / 2 = 0.585 ч.
-        var timeLeft = calculator.CalcTimeLeft(internalTemp: 20, limitTemp: 40, waterLevel: 1);
+        var timeLeft = calculator.CalcTimeLeft(currentTemp: 20, targetTemperature: 40, waterLevel: 1);
 
         Assert.Equal(0.585 * 3600, timeLeft.TotalSeconds, precision: 0);
     }

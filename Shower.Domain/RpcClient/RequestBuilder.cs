@@ -59,7 +59,7 @@ public sealed class RequestBuilder
         return this;
     }
 
-    public RequestBuilder Write(ShowerCodes code)
+    public RequestBuilder WriteHeader(ShowerCodes code)
     {
         _writer.Write(code);
         return this;

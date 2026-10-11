@@ -7,6 +7,7 @@ namespace Shower.App.ViewModels;
 public sealed partial class MainViewModel : ObservableObject
 {
     private readonly IDialogService _dialogs;
+    private readonly Device _device;
 
     /// <summary>
     /// Выполняется команда, на время которой окно блокируется.
@@ -15,21 +16,29 @@ public sealed partial class MainViewModel : ObservableObject
     [NotifyPropertyChangedFor(nameof(IsIdle))]
     private bool _isBusy;
 
-    public MainViewModel(IDialogService dialogs)
+    public MainViewModel(
+        IDialogService dialogs,
+        WaterTemperatureViewModel temperature,
+        WaterLevelViewModel waterLevel,
+        CalibrationViewModel calibration,
+        ParametersViewModel parameters,
+        DebugViewModel debug,
+        Device device)
     {
         _dialogs = dialogs;
 
-        Temperature = new TemperatureViewModel(dialogs);
-        WaterLevel = new WaterLevelViewModel(dialogs);
-        Calibration = new CalibrationViewModel();
-        Parameters = new ParametersViewModel(dialogs);
-        Debug = new DebugViewModel(dialogs);
+        Temperature = temperature;
+        WaterLevel = waterLevel;
+        Calibration = calibration;
+        Parameters = parameters;
+        Debug = debug;
+        this._device = device;
 
         // После записи параметров разница мощности ТЭНа на вкладке «Температура» считается от нового значения.
         Parameters.PropertiesLoaded += model => Temperature.SetDeviceHeaterPower(model.WaterHeaterPowerKWatt);
     }
 
-    public TemperatureViewModel Temperature { get; }
+    public WaterTemperatureViewModel Temperature { get; }
 
     public WaterLevelViewModel WaterLevel { get; }
 
@@ -57,7 +66,7 @@ public sealed partial class MainViewModel : ObservableObject
         IsBusy = true;
         try
         {
-            await Device.RestartAsync();
+            await _device.RestartAsync();
         }
         catch (Exception ex)
         {
@@ -76,7 +85,7 @@ public sealed partial class MainViewModel : ObservableObject
         try
         {
             using var cts = new CancellationTokenSource(Device.RequestTimeout);
-            var code = await Device.PingAsync(cts.Token);
+            var code = await _device.PingAsync(cts.Token);
             _dialogs.ShowInfo($"Ответ контроллера: {code}", "Ping");
         }
         catch (Exception ex)

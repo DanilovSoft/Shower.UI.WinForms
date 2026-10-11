@@ -18,6 +18,7 @@ public sealed partial class ParametersViewModel : ObservableObject
     private static readonly JsonSerializerOptions ExportOptions = new() { WriteIndented = true };
 
     private readonly IDialogService _dialogs;
+    private readonly Device _device;
     private CancellationTokenSource? _loadCts;
 
     [ObservableProperty]
@@ -38,9 +39,10 @@ public sealed partial class ParametersViewModel : ObservableObject
     [ObservableProperty]
     public partial bool? WatchDogWasReset { get; set; }
 
-    public ParametersViewModel(IDialogService dialogs)
+    public ParametersViewModel(IDialogService dialogs, Device device)
     {
         _dialogs = dialogs;
+        _device = device;
 
         LeftColumn =
         [
@@ -124,7 +126,7 @@ public sealed partial class ParametersViewModel : ObservableObject
 
         try
         {
-            var model = await Device.RunAsync(PropertiesModel.Load, cts.Token);
+            var model = await _device.RunAsync(PropertiesModel.Load, cts.Token);
             if (!cts.IsCancellationRequested)
             {
                 SetOriginal(model);
@@ -167,7 +169,7 @@ public sealed partial class ParametersViewModel : ObservableObject
         IsBusy = true;
         try
         {
-            await Device.RunAsync(connection =>
+            await _device.RunAsync(connection =>
             {
                 foreach (var parameter in changed)
                 {
@@ -206,7 +208,7 @@ public sealed partial class ParametersViewModel : ObservableObject
         IsBusy = true;
         try
         {
-            await Device.RestartAsync();
+            await _device.RestartAsync();
         }
         catch (Exception ex)
         {

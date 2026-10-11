@@ -20,6 +20,12 @@ public sealed partial class CalibrationViewModel : ObservableObject
     private static readonly TimeSpan ErrorCountersInterval = TimeSpan.FromSeconds(1);
 
     private CancellationTokenSource? _cts;
+    private Device _device;
+
+    public CalibrationViewModel(Device device)
+    {
+        _device = device;
+    }
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(StartCommand), nameof(StopCommand))]
@@ -66,10 +72,10 @@ public sealed partial class CalibrationViewModel : ObservableObject
                 {
                     using var connection = await ConnectionFactory.ConnectAsync(cts.Token);
 
-                    var measureInterval = await Device.RequestAsync(connection.GetWaterLevelMeasureIntervalAsync, cts.Token);
+                    var measureInterval = await _device.RequestAsync(connection.GetWaterLevelMeasureIntervalAsync, cts.Token);
                     MeasureIntervalMsec = Math.Clamp((int)measureInterval.TotalMilliseconds, 0, MaxMeasureIntervalMsec);
 
-                    var waterLevelEmpty = await Device.RequestAsync(t => connection.RequestAsync<ushort>(ShowerCodes.GetWaterLevelEmptyUsec, t), cts.Token);
+                    var waterLevelEmpty = await _device.RequestAsync(t => connection.RequestAsync<ushort>(ShowerCodes.GetWaterLevelEmptyUsec, t), cts.Token);
                     Chart.SetCalibration(waterLevelEmpty);
                     ErrorMessage = null;
 
@@ -78,7 +84,7 @@ public sealed partial class CalibrationViewModel : ObservableObject
                     {
                         requestTimer.Restart();
                         await Task.Delay(MeasureIntervalMsec, cts.Token);
-                        var usec = await Device.RequestAsync(connection.GetWaterLevelRawAsync, cts.Token);
+                        var usec = await _device.RequestAsync(connection.GetWaterLevelRawAsync, cts.Token);
                         requestTimer.Stop();
 
                         var elapsed = elapsedFilter.Add((ushort)Math.Min(requestTimer.ElapsedMilliseconds, ushort.MaxValue));
@@ -142,8 +148,8 @@ public sealed partial class CalibrationViewModel : ObservableObject
 
                 while (await timer.WaitForNextTickAsync(ct))
                 {
-                    var overflowCount = await Device.RequestAsync(t => connection.RequestAsync<ushort>(ShowerCodes.GetWaterLevelOverflowCounter, t), ct);
-                    var noiseErrors = await Device.RequestAsync(t => connection.RequestAsync<ushort>(ShowerCodes.GetWaterLevelNoiseErrorCounter, t), ct);
+                    var overflowCount = await _device.RequestAsync(t => connection.RequestAsync<ushort>(ShowerCodes.GetWaterLevelOverflowCounter, t), ct);
+                    var noiseErrors = await _device.RequestAsync(t => connection.RequestAsync<ushort>(ShowerCodes.GetWaterLevelNoiseErrorCounter, t), ct);
 
                     ErrorCountersText = $"Ошибки: Overflow: {overflowCount}, Noise: {noiseErrors}";
                 }

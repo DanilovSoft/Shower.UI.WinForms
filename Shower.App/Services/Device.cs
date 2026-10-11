@@ -5,7 +5,8 @@ namespace Shower.App.Services;
 /// <summary>
 /// Общие операции с контроллером душа.
 /// </summary>
-public static class Device
+/// <remarks>Singleton</remarks>
+public sealed class Device
 {
     /// <summary>
     /// Сколько ждать ответа на один запрос в циклах опроса.
@@ -16,17 +17,17 @@ public static class Device
     /// Выполняет асинхронный запрос с таймаутом <see cref="RequestTimeout"/>.
     /// </summary>
     /// <exception cref="TimeoutException">Устройство не ответило вовремя.</exception>
-    /// <exception cref="OperationCanceledException">Отменено через <paramref name="cancellationToken"/>.</exception>
-    public static async Task<T> RequestAsync<T>(Func<CancellationToken, Task<T>> request, CancellationToken cancellationToken)
+    /// <exception cref="OperationCanceledException">Отменено через <paramref name="ct"/>.</exception>
+    public async Task<T> RequestAsync<T>(Func<CancellationToken, Task<T>> request, CancellationToken ct)
     {
-        using var timeout = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+        using var timeout = CancellationTokenSource.CreateLinkedTokenSource(ct);
         timeout.CancelAfter(RequestTimeout);
 
         try
         {
             return await request(timeout.Token);
         }
-        catch (OperationCanceledException ex) when (!cancellationToken.IsCancellationRequested)
+        catch (OperationCanceledException ex) when (!ct.IsCancellationRequested)
         {
             throw new TimeoutException("Устройство не ответило за отведённое время.", ex);
         }
@@ -35,28 +36,28 @@ public static class Device
     /// <summary>
     /// Выполняет синхронные запросы к контроллеру в фоновом потоке.
     /// </summary>
-    public static async Task<T> RunAsync<T>(Func<ShowerConnection, T> action, CancellationToken cancellationToken = default)
+    public async Task<T> RunAsync<T>(Func<ShowerConnection, T> action, CancellationToken ct)
     {
-        using var connection = await ConnectionFactory.ConnectAsync(cancellationToken);
-        return await Task.Run(() => action(connection), cancellationToken);
+        using var connection = await ConnectionFactory.ConnectAsync(ct);
+        return await Task.Run(() => action(connection), ct);
     }
 
     /// <inheritdoc cref="RunAsync{T}(Func{ShowerConnection, T}, CancellationToken)"/>
-    public static Task RunAsync(Action<ShowerConnection> action, CancellationToken cancellationToken = default)
+    public Task RunAsync(Action<ShowerConnection> action, CancellationToken ct = default)
     {
         return RunAsync(connection =>
         {
             action(connection);
             return true;
-        }, cancellationToken);
+        }, ct);
     }
 
-    public static Task RestartAsync()
+    public Task RestartAsync()
     {
         return RunAsync(connection => connection.Reset());
     }
 
-    public static async Task<ShowerCodes> PingAsync(CancellationToken cancellationToken)
+    public async Task<ShowerCodes> PingAsync(CancellationToken cancellationToken)
     {
         using var connection = await ConnectionFactory.ConnectAsync(cancellationToken);
         return await RequestAsync(connection.PingAsync, cancellationToken);
