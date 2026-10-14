@@ -366,7 +366,14 @@ public enum ShowerCode
     /// <remarks>Ответ: ushort.</remarks>
     GetWaterLevelNoiseErrorCounter = 83,
 
+    /// <summary>
+    /// Гистерезис нагревателя: на сколько градусов вода должна остыть ниже целевой температуры, чтобы нагрев включился снова.
+    /// </summary>
+    /// <remarks>Ответ: float, °C.</remarks>
     GetHeaterHysteresis = 84,
+
+    /// <inheritdoc cref="GetHeaterHysteresis"/>
+    /// <remarks>Аргумент: float, °C.</remarks>
     SetHeaterHysteresis = 85,
 
     /// <summary>

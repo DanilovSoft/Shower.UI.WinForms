@@ -100,6 +100,9 @@ public sealed partial class ParametersViewModel : ObservableObject
             new ParameterViewModel<float>("Мощность ТЭНа с учётом КПД (кВт)",
                 null,
                 m => m.WaterHeaterPowerKWatt, (m, v) => m.WaterHeaterPowerKWatt = v, (c, v, ct) => c.SetWaterHeaterPowerKWattAsync(v, ct)),
+            new ParameterViewModel<float>("Гистерезис нагревателя (°C)",
+                "На сколько градусов вода должна остыть ниже целевой температуры, чтобы нагрев включился снова",
+                m => m.HeaterHysteresis, (m, v) => m.HeaterHysteresis = v, (c, v, ct) => c.SetHeaterHysteresisAsync(v, ct)),
         ];
 
         All = [.. LeftColumn, .. RightColumn];

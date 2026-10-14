@@ -298,6 +298,16 @@ public sealed class ShowerConnection : IShowerConnection, IDisposable, IAsyncDis
         return ExecuteAsync(ShowerCode.SetWaterHeaterPowerKWatt, value, ct);
     }
 
+    public Task<float> GetHeaterHysteresisAsync(CancellationToken ct)
+    {
+        return RequestAsync<float>(ShowerCode.GetHeaterHysteresis, ct);
+    }
+
+    public Task SetHeaterHysteresisAsync(float value, CancellationToken ct)
+    {
+        return ExecuteAsync(ShowerCode.SetHeaterHysteresis, value, ct);
+    }
+
     /// <summary>
     /// Уровень воды в микросекундах, без всякой фильтрации.
     /// </summary>

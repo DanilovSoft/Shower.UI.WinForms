@@ -80,13 +80,19 @@ public sealed class PropertiesModel
     public byte? WaterLevelErrorThreshhold { get; set; }
 
     /// <summary>
+    /// Гистерезис нагревателя, °C.
+    /// </summary>
+    [JsonPropertyName("HeaterHysteresis")]
+    public float? HeaterHysteresis { get; set; }
+
+    /// <summary>
     /// Считывает все параметры с контроллера.
     /// </summary>
     public static async Task<PropertiesModel> LoadAsync(ShowerConnection con, CancellationToken ct)
     {
         ArgumentNullException.ThrowIfNull(con);
 
-        // Все параметры запрашиваются одним пакетом — один раундтрип вместо 18.
+        // Все параметры запрашиваются одним пакетом — один раундтрип вместо 19.
         var batch = con.CreateBatch();
         var watchDogWasReset = batch.Get<byte>(ShowerCode.GetWatchDogWasReset);
         var waterLevelFull = batch.Get<ushort>(ShowerCode.GetWaterLevelFullUsec);
@@ -106,7 +112,7 @@ public sealed class PropertiesModel
         var waterTankVolumeLitre = batch.Get<float>(ShowerCode.GetWaterTankVolumeLitre);
         var waterHeaterPowerKWatt = batch.Get<float>(ShowerCode.GetWaterHeaterPowerKWatt);
         var waterLevelErrorThreshold = batch.Get<byte>(ShowerCode.GetWaterLevelErrorThreshold);
-        //var heaterHysteresis = batch.Get<float>(ShowerCode.GetHeaterHysteresis);
+        var heaterHysteresis = batch.Get<float>(ShowerCode.GetHeaterHysteresis);
 
         await batch.ExecuteAsync(ct).ConfigureAwait(false);
 
@@ -130,6 +136,7 @@ public sealed class PropertiesModel
             WaterTankVolumeLitre = waterTankVolumeLitre.Value,
             WaterHeaterPowerKWatt = waterHeaterPowerKWatt.Value,
             WaterLevelErrorThreshhold = waterLevelErrorThreshold.Value,
+            HeaterHysteresis = heaterHysteresis.Value,
         };
     }
 }
